@@ -13,6 +13,7 @@
 		1D7235C32C72CE38003B419B /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 1D7235C22C72CE38003B419B /* Base */; };
 		1D7235C52C72CE38003B419B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D7235C42C72CE38003B419B /* Assets.xcassets */; };
 		1D7235C82C72CE38003B419B /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 1D7235C72C72CE38003B419B /* Base */; };
+		6F3634FB2C72DDB9009BA755 /* SuperEasyLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 6F3634FA2C72DDB9009BA755 /* SuperEasyLayout */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F3634FB2C72DDB9009BA755 /* SuperEasyLayout in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +85,9 @@
 			dependencies = (
 			);
 			name = "chat-app";
+			packageProductDependencies = (
+				6F3634FA2C72DDB9009BA755 /* SuperEasyLayout */,
+			);
 			productName = "chat-app";
 			productReference = 1D7235B82C72CE37003B419B /* chat-app.app */;
 			productType = "com.apple.product-type.application";
@@ -111,6 +116,9 @@
 				Base,
 			);
 			mainGroup = 1D7235AF2C72CE37003B419B;
+			packageReferences = (
+				6F3634F92C72DDB9009BA755 /* XCRemoteSwiftPackageReference "SuperEasyLayout" */,
+			);
 			productRefGroup = 1D7235B92C72CE37003B419B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -363,6 +371,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6F3634F92C72DDB9009BA755 /* XCRemoteSwiftPackageReference "SuperEasyLayout" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/doil6317/SuperEasyLayout.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6F3634FA2C72DDB9009BA755 /* SuperEasyLayout */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6F3634F92C72DDB9009BA755 /* XCRemoteSwiftPackageReference "SuperEasyLayout" */;
+			productName = SuperEasyLayout;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1D7235B02C72CE37003B419B /* Project object */;
 }
