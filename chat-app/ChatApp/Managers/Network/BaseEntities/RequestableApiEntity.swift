@@ -1,0 +1,36 @@
+//
+//  RequestableApiEntity.swift
+//  ChatApp
+//
+//  Created by Ramon Jr Bahio on 8/19/24.
+//
+
+import Foundation
+
+protocol RequestableApiEntity: RequestableEntity {
+    var scheme: String? { get }
+    var host: String? { get }
+    var path: String { get }
+    var apiVersion: String { get }
+}
+
+extension RequestableApiEntity {
+    var scheme: String? { nil }
+    var host: String? { nil }
+    var apiVersion: String { "v2" }
+
+    var requestURL: URL {
+        let scheme = scheme ?? AppConstant.shared.appServerScheme
+        let host = host ?? AppConstant.shared.appServerHost
+
+        let baseUrl = "\(scheme)://\(host)"
+        guard let url = URL(string: "\(baseUrl)/api/\(apiVersion)\(path)") else {
+            fatalError("Failed to make url=> \(self)")
+        }
+        if let queryParams = queryParams,
+           let url = url.addQueryItems(queryParams) {
+            return url
+        }
+        return url
+    }
+}
