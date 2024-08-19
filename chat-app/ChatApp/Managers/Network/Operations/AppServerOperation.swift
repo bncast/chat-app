@@ -23,7 +23,23 @@ class AppServerOperation<Req: RequestableEntity, Res: RespondableEntity>: BaseNe
     override var method: Method { Req.method }
 
     override var header: [String: String]? {
-        [String: String]()
+        guard requestEntity is (any RequestableApiEntity) else { return nil }
+        let timestamp = "\(Date())"
+        let deviceKey = (0..<20).map { _ in
+            guard let randomElement = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".randomElement()
+            else { return "" }
+            return "\(randomElement)"
+        }.joined()
+
+        var header = [
+            "Cache-Control": "no-cache",
+            "X-CHATAPP-Timestamp": timestamp,
+            "X-CHATAPP-Key": deviceKey,
+            "X-CHATAPP-Signature": "chatapp\(deviceKey)\(timestamp)",
+            "Content-Type": "application/json; charset=utf-8"
+        ]
+
+        return header
     }
 
     override var backgroundTaskIdentifier: String? {
