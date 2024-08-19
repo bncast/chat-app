@@ -109,6 +109,7 @@ class AppServerOperation<Req: RequestableEntity, Res: RespondableEntity>: BaseNe
         try await withCheckedThrowingContinuation { continuation in
             self.continuation = continuation
             self.priority = priority
+            NetworkManager.shared.register(operation: self)
         }
     }
 }
