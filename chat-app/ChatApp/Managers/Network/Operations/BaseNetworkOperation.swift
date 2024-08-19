@@ -119,6 +119,9 @@ extension BaseNetworkOperation {
             isDone = true
             return
         }
+        #if DEBUG
+        printRequestInfo()
+        #endif
         if let backgroundTaskIdentifier {
             runBackgroundTask(with: backgroundTaskIdentifier)
         } else {
@@ -164,6 +167,11 @@ extension BaseNetworkOperation {
         self.httpResponse = httpResponse
 
         let result = try checkResponse(httpResponse, responseBody: responseBody)
+        print("""
+                ========= Start Response ========= \(Date().toString(by: "yyyy-MM-dd HH:mm:ss"))
+                \(getResponseInfoString(responseBody, result, nil))
+                =========  End  Response =========
+                """)
         completedOperation(with: result, error: nil)
         if autoDone {
             isDone = true
@@ -216,4 +224,59 @@ extension BaseNetworkOperation: URLSessionTaskDelegate, URLSessionDataDelegate {
         }
     }
 }
+
+// MARK: - For debug
+extension BaseNetworkOperation {
+    private func printRequestInfo() {
+        let urlString = request.url?.absoluteString ?? ""
+        let method = method
+        let header = request.allHTTPHeaderFields?.prettyPrintedJSON ?? ""
+        let body = if let requestBody = request.httpBody {
+            if requestBody.count < 2000 {
+                "\nBODY:\(requestBody.utf8String?.removingPercentEncoding ?? "")"
+            } else {
+                "\nThe request body size is too large to print log. size:\(requestBody.count)"
+            }
+        } else {
+            ""
+        }
+
+        print("""
+        ========= Start Request ========= \(Date().toString(by: "yyyy-MM-dd HH:mm:ss"))
+        Request \(urlString)
+        Method:\(method)
+        HEADER:\(header)\(body)
+        =========  End  Request  =========
+        """)
+    }
+
+    private func getResponseInfoString(_ responseBody: Data?, _ response: Any?,
+                                       _ networkError: NetworkError?) -> String {
+        var result = ""
+        let urlString = request.url?.absoluteString ?? ""
+        result.append("Response \(urlString) Method:\(method)")
+        if let httpResponse {
+            result.append("\nHTTP Status code:\(httpResponse.statusCode)")
+            //            result.append("HTTP Headers:\(httpResponse.allHeaderFields.prettyPrintedJSON ?? "")")
+        }
+        if let error = networkError {
+            result.append("\nERROR:\(error)")
+            if let responseBody {
+                if let jsonBody = responseBody.prettyPrintedJSON {
+                    result.append("\nBODY:\(jsonBody)")
+                } else {
+                    result.append("\nBODY:\(String(data: responseBody, encoding: .utf8) ?? "")")
+                }
+            }
+        } else {
+            if let json = response as? [String: Any] {
+                result.append("\nBODY:\(json.prettyPrintedJSON ?? "")")
+            } else if let string = response as? String {
+                result.append("\nBODY:\(string)")
+            }
+        }
+        return result
+    }
+}
+
 

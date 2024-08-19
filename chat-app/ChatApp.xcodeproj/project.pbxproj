@@ -35,9 +35,11 @@
 		6F0B7E892C732CAD00BFC370 /* JSONEncoderHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B7E882C732CAD00BFC370 /* JSONEncoderHelpers.swift */; };
 		6F3634FB2C72DDB9009BA755 /* SuperEasyLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 6F3634FA2C72DDB9009BA755 /* SuperEasyLayout */; };
 		6F9894E82C733E9D00F20D1E /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9894E72C733E9D00F20D1E /* NetworkManager.swift */; };
+		6FA44ED82C737C1A00013866 /* DictionaryHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA44ED72C737C1A00013866 /* DictionaryHelpers.swift */; };
 		6FBE7BEA2C72E4AF00AE0ACB /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBE7BE92C72E4AF00AE0ACB /* AppColors.swift */; };
 		6FBE7BEC2C72E4BC00AE0ACB /* AppFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBE7BEB2C72E4BC00AE0ACB /* AppFonts.swift */; };
 		6FBE7BEF2C72ED2400AE0ACB /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6FBE7BEE2C72ED2400AE0ACB /* Colors.xcassets */; };
+		6FD425A32C7350F2004F9820 /* GetChatroomListEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD425A22C7350F2004F9820 /* GetChatroomListEntity.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,9 +71,11 @@
 		6F0B7E862C732B0F00BFC370 /* URLHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLHelpers.swift; sourceTree = "<group>"; };
 		6F0B7E882C732CAD00BFC370 /* JSONEncoderHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONEncoderHelpers.swift; sourceTree = "<group>"; };
 		6F9894E72C733E9D00F20D1E /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		6FA44ED72C737C1A00013866 /* DictionaryHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryHelpers.swift; sourceTree = "<group>"; };
 		6FBE7BE92C72E4AF00AE0ACB /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
 		6FBE7BEB2C72E4BC00AE0ACB /* AppFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFonts.swift; sourceTree = "<group>"; };
 		6FBE7BEE2C72ED2400AE0ACB /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		6FD425A22C7350F2004F9820 /* GetChatroomListEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatroomListEntity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +186,7 @@
 			isa = PBXGroup;
 			children = (
 				1DD9AD142C73361A00B5E28F /* AppVersionEntity.swift */,
+				6FD425A22C7350F2004F9820 /* GetChatroomListEntity.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -213,6 +218,7 @@
 				6F0B7E742C7325D000BFC370 /* StringHelpers.swift */,
 				6F0B7E7F2C7328B500BFC370 /* DateHelpers.swift */,
 				6F0B7E862C732B0F00BFC370 /* URLHelpers.swift */,
+				6FA44ED72C737C1A00013866 /* DictionaryHelpers.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -332,6 +338,7 @@
 				6F0B7E7B2C7326D200BFC370 /* AppConstant.swift in Sources */,
 				1DD9AD152C73361A00B5E28F /* AppVersionEntity.swift in Sources */,
 				6F0B7E6B2C7323D400BFC370 /* RespondableEntity.swift in Sources */,
+				6FD425A32C7350F2004F9820 /* GetChatroomListEntity.swift in Sources */,
 				6F0B7E792C73268100BFC370 /* RequestableApiEntity.swift in Sources */,
 				1D7235BC2C72CE37003B419B /* AppDelegate.swift in Sources */,
 				6F0B7E822C73291300BFC370 /* IntHelpers.swift in Sources */,
@@ -339,6 +346,7 @@
 				6F0B7E772C73263400BFC370 /* AppServerOperation.swift in Sources */,
 				6F0B7E802C7328B500BFC370 /* DateHelpers.swift in Sources */,
 				1D7235BE2C72CE37003B419B /* SceneDelegate.swift in Sources */,
+				6FA44ED82C737C1A00013866 /* DictionaryHelpers.swift in Sources */,
 				6F07ACE92C7304010010E21A /* MainViewController.swift in Sources */,
 				6F0B7E692C731F3700BFC370 /* ErrorEntity.swift in Sources */,
 			);

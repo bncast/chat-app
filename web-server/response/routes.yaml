@@ -4,7 +4,7 @@ routes:
       - statusCode: 200
         delay: 1000
         filename: stub_version.json
-  /rooms:
+  /api/rooms:
     GET:
       - statusCode: 200
         delay: 500

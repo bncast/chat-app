@@ -17,4 +17,14 @@ extension Date {
     var toIso8601: String {
         ISO8601DateFormatter().string(from: self)
     }
+
+    func toString(by format: String) -> String {
+        let calendar = Calendar(identifier: .gregorian)
+        let formatter = DateFormatter()
+        formatter.locale = Locale.current
+        formatter.calendar = calendar
+        formatter.dateFormat = format
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter.string(from: self)
+    }
 }
