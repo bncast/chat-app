@@ -1,0 +1,6 @@
+routes:
+  /api/version:
+    GET:
+      - statusCode: 200
+        delay: 1000
+        filename: stub_version.json
