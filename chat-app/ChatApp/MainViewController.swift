@@ -8,5 +8,16 @@
 import UIKit
 
 class MainViewController: BaseViewController {
-    
+    override func setupActions() {
+        view.backgroundColor = UIColor.main
+
+        Task {
+            do {
+                let request = try await AppVersionEntity().run()
+            } catch {
+                var message = ""
+                message += "Error \(error.localizedDescription)"
+            }
+        }
+    }
 }
