@@ -22,8 +22,6 @@ struct GetChatroomRequestBody: RequestUrlEncodedBody {
 
 // MARK: Defining response
 struct GetChatroomListRespondableEntity: RespondableApiEntity {
-    var encoder: JSONEncoder { JSONEncoder.snakeCaseEncoder() }
-
     var success: Int
     var error: ErrorMessage?
     var chatrooms: [ChatRoomEntity]
