@@ -100,6 +100,9 @@ class ChatRoomListViewController: BaseViewController {
         ])
 
         collectionView.refreshControl = refreshControl
+
+        guard AppConstant.shared.isNewUser else { return }
+        showProfile()
     }
 
     override func setupConstraints() {
@@ -151,6 +154,10 @@ class ChatRoomListViewController: BaseViewController {
     private func didPullToRefresh(_ sender: UIRefreshControl) {
         refreshControl.endRefreshing()
         print("[ChatroomListViewController] didPullToRefresh")
+    }
+
+    func showProfile() {
+        ProfileViewController.show(on: self)
     }
 }
 

@@ -25,17 +25,13 @@ class AppServerOperation<Req: RequestableEntity, Res: RespondableEntity>: BaseNe
     override var header: [String: String]? {
         guard requestEntity is (any RequestableApiEntity) else { return nil }
         let timestamp = "\(Date())"
-        let deviceKey = (0..<20).map { _ in
-            guard let randomElement = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".randomElement()
-            else { return "" }
-            return "\(randomElement)"
-        }.joined()
+        let deviceId = AppConstant.shared.deviceId ?? ""
 
         let header = [
             "Cache-Control": "no-cache",
             "X-CHATAPP-Timestamp": timestamp,
-            "X-CHATAPP-Key": deviceKey,
-            "X-CHATAPP-Signature": "chatapp\(deviceKey)\(timestamp)",
+            "X-CHATAPP-Key": deviceId,
+            "X-CHATAPP-Signature": "chatapp\(deviceId)\(timestamp)",
             "Content-Type": "application/json; charset=utf-8"
         ]
 

@@ -353,10 +353,19 @@ class AppConstant: NSObject {
     var manualHost: String
     @KeychainReadAndWrite("keychainValue", default: nil)
     var keychainValue: String?
-    @KeychainReadAndWrite("deviceKey", default: nil)
-    var deviceKey: String?
-    @KeychainReadAndWrite("secretKey", default: nil)
-    var secretKey: String?
+    @KeychainReadAndWrite("deviceId", default: nil)
+    var deviceId: String?
+    @KeychainReadAndWrite("displayName", default: nil)
+    var displayName: String?
+
+    var forRegister = false
+
+    let screen: (Size) -> CGFloat = { size in
+        switch size {
+        case .width: UIScreen.main.bounds.width
+        case .height: UIScreen.main.bounds.height
+        }
+    }
 }
 
 // MARK: - App specification infos
@@ -397,7 +406,7 @@ extension AppConstant {
         let defaults = UserDefaults.standard
         defaults.dictionaryRepresentation().keys.forEach {
             switch $0 {
-            case "SERVER_TYPE", "MANUAL_HOST", "FIREBASE_TOKEN": return
+            case "SERVER_TYPE", "MANUAL_HOST" : return
             default: break
             }
             defaults.removeObject(forKey: $0)
@@ -405,15 +414,15 @@ extension AppConstant {
     }
 }
 
+// MARK: - Device Key
+extension AppConstant {
+    var isNewUser: Bool {
+        deviceId == nil
+    }
+}
+
 // MARK: - Screen size
 extension AppConstant {
-    static let screen: (Size) -> CGFloat = { size in
-        switch size {
-        case .width: UIScreen.main.bounds.width
-        case .height: UIScreen.main.bounds.height
-        }
-    }
-
     enum Size {
         case width, height
     }

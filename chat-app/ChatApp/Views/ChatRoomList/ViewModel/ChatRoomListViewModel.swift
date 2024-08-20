@@ -32,17 +32,23 @@ final class ChatRoomListViewModel {
     @Published var items: [Section: [Item]] = [:]
 
     func load() async {
+        guard let chatrooms = try? await GetChatroomListEntity().run().chatrooms else {
+            await loadEmptyRooms()
+            return
+        }
+
+        let groupedItems = Dictionary(
+            grouping: chatrooms,
+            by: { $0.isJoined ? Section.myRooms : Section.otherRooms }
+        )
+
         items = [
-            .myRooms: [
-                .room(ItemInfo(name: "Lorem", preview: "User1: Lorem ipsum dolor")),
-                .room(ItemInfo(name: "Nullam", preview: "User2: Nullam et porttitor justo, eu interdum lacus. Suspendisse feugiat sodales nulla id malesuada. Nunc felis elit, commodo at feugiat vel, consectetur vitae sapien. Vivamus tempor ante at auctor tempus. Sed ligula urna, volutpat vel viverra sit amet, malesuada a nibh.")),
-                .room(ItemInfo(name: "Quisque", preview: "User3: Hendrerit mattis arcu nec"))
-            ],
-            .otherRooms: [
-                .room(ItemInfo(name: "Aenean", preview: "User4: Cras nec enim eu nisi maximus dapibus congue eu ligula. Vivamus ac mollis sapien. Nulla interdum dui luctus urna tincidunt fringilla. Donec molestie tellus ac ligula fringilla commodo.")),
-                .room(ItemInfo(name: "Donec", preview: "User5: Vivamus ac mollis sapien")),
-                .room(ItemInfo(name: "Fusce", preview: "User6: Nulla interdum dui luctus"))
-            ]
+            .myRooms: groupedItems[.myRooms]?.compactMap { room in
+                Item.room(ItemInfo(name: room.chatName, preview: room.preview))
+            } ?? [],
+            .otherRooms: groupedItems[.otherRooms]?.compactMap { room in
+                Item.room(ItemInfo(name: room.chatName, preview: room.preview))
+            } ?? []
         ]
     }
 

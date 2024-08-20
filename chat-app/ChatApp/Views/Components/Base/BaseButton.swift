@@ -19,12 +19,6 @@ class BaseButton: UIButton {
     override var isEnabled: Bool {
         didSet {
             if isProcessing { oldIsEnabled = isEnabled }
-            if let color = backgroundColors[isEnabled ? .normal : .disabled] {
-                backgroundColor = color
-            }
-            if let color = titleColors[isEnabled ? .normal : .disabled] {
-                tintColor = color
-            }
         }
     }
 
