@@ -75,6 +75,7 @@
 		A700BF652C74177000B38530 /* UITextFieldHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A700BF642C74177000B38530 /* UITextFieldHelpers.swift */; };
 		A700BF672C74199000B38530 /* NSAttributedStringHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A700BF662C74199000B38530 /* NSAttributedStringHelpers.swift */; };
 		A7FB9C222C746199008DE3F3 /* NoDataCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C212C746199008DE3F3 /* NoDataCollectionViewCell.swift */; };
+		A7FB9C2C2C756A81008DE3F3 /* AsyncAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C2B2C756A81008DE3F3 /* AsyncAlertController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -145,6 +146,7 @@
 		A700BF642C74177000B38530 /* UITextFieldHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextFieldHelpers.swift; sourceTree = "<group>"; };
 		A700BF662C74199000B38530 /* NSAttributedStringHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSAttributedStringHelpers.swift; sourceTree = "<group>"; };
 		A7FB9C212C746199008DE3F3 /* NoDataCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoDataCollectionViewCell.swift; sourceTree = "<group>"; };
+		A7FB9C2B2C756A81008DE3F3 /* AsyncAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncAlertController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -237,6 +239,7 @@
 		6F0B7E5E2C73153300BFC370 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				A7FB9C2A2C756A51008DE3F3 /* Alert */,
 				6F0B7E622C73159A00BFC370 /* Network */,
 			);
 			path = Managers;
@@ -418,6 +421,14 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		A7FB9C2A2C756A51008DE3F3 /* Alert */ = {
+			isa = PBXGroup;
+			children = (
+				A7FB9C2B2C756A81008DE3F3 /* AsyncAlertController.swift */,
+			);
+			path = Alert;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -559,6 +570,7 @@
 				6F0B7E692C731F3700BFC370 /* ErrorEntity.swift in Sources */,
 				A700BF512C732EEE00B38530 /* UIStackViewHelpers.swift in Sources */,
 				A700BF632C7416DD00B38530 /* BaseTextField.swift in Sources */,
+				A7FB9C2C2C756A81008DE3F3 /* AsyncAlertController.swift in Sources */,
 				A700BF3F2C73166B00B38530 /* ChatRoomListViewController.swift in Sources */,
 				A700BF5F2C73AD2200B38530 /* ChatRoomListNavigationBar.swift in Sources */,
 				6F07ACE92C7304010010E21A /* MainViewController.swift in Sources */,
