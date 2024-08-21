@@ -83,6 +83,7 @@
 		A7FB9C2E2C7589E6008DE3F3 /* JoinChatRoomEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C2D2C7589E6008DE3F3 /* JoinChatRoomEntity.swift */; };
 		A7FB9C3C2C75FEEB008DE3F3 /* CreateChatRoomViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C382C75FEEB008DE3F3 /* CreateChatRoomViewModel.swift */; };
 		A7FB9C3D2C75FEEB008DE3F3 /* CreateChatRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C3A2C75FEEB008DE3F3 /* CreateChatRoomViewController.swift */; };
+		A7FB9C432C76D1CA008DE3F3 /* CreateChatRoomEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C422C76D1CA008DE3F3 /* CreateChatRoomEntity.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -166,6 +167,7 @@
 		A7FB9C2D2C7589E6008DE3F3 /* JoinChatRoomEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinChatRoomEntity.swift; sourceTree = "<group>"; };
 		A7FB9C382C75FEEB008DE3F3 /* CreateChatRoomViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateChatRoomViewModel.swift; sourceTree = "<group>"; };
 		A7FB9C3A2C75FEEB008DE3F3 /* CreateChatRoomViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateChatRoomViewController.swift; sourceTree = "<group>"; };
+		A7FB9C422C76D1CA008DE3F3 /* CreateChatRoomEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChatRoomEntity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -327,6 +329,7 @@
 				A7FB9C2D2C7589E6008DE3F3 /* JoinChatRoomEntity.swift */,
 				1D3A9FB42C75BBB200AC3AD6 /* GetChatRoomMessagesEntity.swift */,
 				6F84CF6E2C7616F300F5C112 /* UpdateChatRoomNameEntity.swift */,
+				A7FB9C422C76D1CA008DE3F3 /* CreateChatRoomEntity.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -525,9 +528,9 @@
 		A7FB9C3B2C75FEEB008DE3F3 /* CreateChatRoom */ = {
 			isa = PBXGroup;
 			children = (
+				A7FB9C3A2C75FEEB008DE3F3 /* CreateChatRoomViewController.swift */,
 				A7FB9C372C75FEEB008DE3F3 /* Subviews */,
 				A7FB9C392C75FEEB008DE3F3 /* ViewModel */,
-				A7FB9C3A2C75FEEB008DE3F3 /* CreateChatRoomViewController.swift */,
 			);
 			path = CreateChatRoom;
 			sourceTree = "<group>";
@@ -628,6 +631,9 @@
 				6F0B7E6E2C73249C00BFC370 /* DataHelpers.swift in Sources */,
 				6F0B7E702C7324D800BFC370 /* RespondableApiEntity.swift in Sources */,
 				6F4CDE932C7466A000F310A1 /* UIStackViewHelpers.swift in Sources */,
+				A7FB9C432C76D1CA008DE3F3 /* CreateChatRoomEntity.swift in Sources */,
+				6FBE7BEC2C72E4BC00AE0ACB /* AppFonts.swift in Sources */,
+				6F0B7E752C7325D000BFC370 /* StringHelpers.swift in Sources */,
 				6F0B7E642C7315C300BFC370 /* BaseNetworkOperation.swift in Sources */,
 				6F0B7E892C732CAD00BFC370 /* JSONEncoderHelpers.swift in Sources */,
 				6F0B7E872C732B0F00BFC370 /* URLHelpers.swift in Sources */,

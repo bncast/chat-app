@@ -7,6 +7,7 @@
 
 import UIKit
 import SuperEasyLayout
+import Combine
 
 class CreateChatRoomViewController: BaseViewController {
     private lazy var closeButton: BaseButton = {
@@ -70,7 +71,7 @@ class CreateChatRoomViewController: BaseViewController {
 
     private lazy var createButton: BaseButton = {
         let view = BaseButton()
-        view.backgroundColor = .button(.active)
+        view.backgroundColor = .button(.inactive)
         view.setTitle("CREATE", for: .normal)
         view.titleLabel?.textColor = .text(.caption)
         view.titleLabel?.font = .title3
@@ -139,14 +140,42 @@ class CreateChatRoomViewController: BaseViewController {
         cancelButton.height == 44
     }
 
+    override func setupBindings() {
+        roomTextField.textPublisher
+            .sink { [weak self] text in
+                guard let text else { return }
+                self?.createButton.isEnabled = !text.isEmpty
+                self?.createButton.backgroundColor = text.isEmpty ? .inactive : .active
+            }
+            .store(in: &cancellables)
+    }
+
     override func setupActions() {
         roomTextField.becomeFirstResponder()
         keyboardAppear = self
 
         createButton.tapHandlerAsync = { [weak self] _ in
+            guard let self,
+                  let deviceId = AppConstant.shared.deviceId,
+                  let roomName = roomTextField.text,
+                  let password = passwordTextField.text,
+                  !roomName.isEmpty
+            else { return }
+
             await IndicatorController.shared.show()
+            do {
+                await IndicatorController.shared.show()
+                let _ = try await viewModel.createChatRoom(
+                    name: roomName, deviceId: deviceId,
+                    password: password.isEmpty ? nil : password
+                )
+                await IndicatorController.shared.dismiss()
+            } catch {
+                print("[CreateChatRoomViewController] Error! \(error as! NetworkError)")
+                await IndicatorController.shared.dismiss()
+            }
             await IndicatorController.shared.dismiss()
-            self?.dismiss(animated: true)
+            self.dismiss(animated: true)
         }
         cancelButton.tapHandler = { [weak self] _ in
             self?.dismiss(animated: true)
