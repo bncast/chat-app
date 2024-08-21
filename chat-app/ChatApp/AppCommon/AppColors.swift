@@ -15,6 +15,7 @@ extension UIColor {
         case .profileImage: .profile
         case .delete: .delete
         case .accent: .accent
+        case .mainLight: .mainLight
         }
     }
 
@@ -38,6 +39,7 @@ extension UIColor {
 
 enum BackgroundColor {
     case main
+    case mainLight
     case compose
     case profileImage
     case delete

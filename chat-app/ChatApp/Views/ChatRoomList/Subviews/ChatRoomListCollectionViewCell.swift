@@ -63,8 +63,8 @@ class ChatRoomListCollectionViewCell: BaseCollectionViewCell {
 
     private lazy var detailImageView: UIImageView = {
         let view = UIImageView(image: UIImage(systemName: "chevron.right")?.withRenderingMode(.alwaysTemplate))
-        view.contentMode = .scaleAspectFit
-        view.tintColor = .white
+        view.contentMode = .center
+        view.tintColor = .background(.accent)
         return view
     }()
 
@@ -111,8 +111,8 @@ class ChatRoomListCollectionViewCell: BaseCollectionViewCell {
         imageView.width == 50
         imageView.height == 50
 
-        detailImageView.width == 25
-        detailImageView.height == 50
+        detailImageView.width == 44
+        detailImageView.height == 44
     }
 
     override func setupActions() {

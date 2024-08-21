@@ -102,8 +102,8 @@ class ProfileViewController: BaseViewController {
 
         closeButton.right == containerView.right
         closeButton.top == containerView.top
-        closeButton.width == 40
-        closeButton.height == 40
+        closeButton.width == 44
+        closeButton.height == 44
 
         profileImage.centerX == containerView.centerX
         profileImage.top == titleLabel.bottom + 20
@@ -118,7 +118,7 @@ class ProfileViewController: BaseViewController {
         saveButton.left == containerView.left + 20
         saveButton.right == containerView.right - 20
         saveButton.top == nameTextField.bottom + 20
-        saveButton.height == 40
+        saveButton.height == 44
         saveButton.bottom == containerView.bottom - 20
     }
 
@@ -171,7 +171,7 @@ class ProfileViewController: BaseViewController {
 
 extension ProfileViewController: ViewControllerKeyboardAppear {
     func willShowKeyboard(frame: CGRect, duration: TimeInterval, curve: UIView.AnimationCurve) {
-        containerViewCenterYConstraint?.constant = -abs((containerView.frame.height) - frame.height) - 40
+        containerViewCenterYConstraint?.constant = -abs((containerView.frame.height) - frame.height) - 44
         UIView.animate(withDuration: duration, delay: 0, options: curve.animationOptions) { [weak self] in
             self?.view.layoutIfNeeded()
         }
