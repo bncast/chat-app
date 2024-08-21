@@ -405,3 +405,17 @@ extension AppConstant {
     }
 }
 
+// MARK: - Screen size
+extension AppConstant {
+    static let screen: (Size) -> CGFloat = { size in
+        switch size {
+        case .width: UIScreen.main.bounds.width
+        case .height: UIScreen.main.bounds.height
+        }
+    }
+
+    enum Size {
+        case width, height
+    }
+}
+

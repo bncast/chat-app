@@ -31,7 +31,7 @@ class AppServerOperation<Req: RequestableEntity, Res: RespondableEntity>: BaseNe
             return "\(randomElement)"
         }.joined()
 
-        var header = [
+        let header = [
             "Cache-Control": "no-cache",
             "X-CHATAPP-Timestamp": timestamp,
             "X-CHATAPP-Key": deviceKey,

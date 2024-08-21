@@ -64,6 +64,7 @@ class BaseViewController: UIViewController {
     lazy var observers = [NSKeyValueObservation]()
     lazy var objectProtocols = [NSObjectProtocol]()
     lazy var cancellables = Set<AnyCancellable>()
+    lazy var fadeInAnimator = FadeInAnimator()
     var shouldPopViewControllerHandler: ((@escaping (Bool) -> Void) -> Void)?
 
     weak var keyboardAppear: ViewControllerKeyboardAppear? { didSet {

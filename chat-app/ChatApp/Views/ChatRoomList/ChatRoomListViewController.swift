@@ -133,7 +133,8 @@ class ChatRoomListViewController: BaseViewController {
             print("[ChatroomListViewController] navigationBar?.invitationTapHandler")
         }
         navigationBar?.profileTapHandler = { [weak self] _ in
-            print("[ChatroomListViewController] navigationBar?.profileTapHandler")
+            guard let self else { return }
+            ProfileViewController.show(on: self)
         }
 
         searchBarView.onChanged = { [weak self] _, text in
