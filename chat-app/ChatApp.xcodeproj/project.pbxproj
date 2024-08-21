@@ -328,8 +328,8 @@
 				1DE2848E2C7452780054B79E /* SendMessageEntity.swift */,
 				A7FB9C2D2C7589E6008DE3F3 /* JoinChatRoomEntity.swift */,
 				1D3A9FB42C75BBB200AC3AD6 /* GetChatRoomMessagesEntity.swift */,
-				6F84CF6E2C7616F300F5C112 /* UpdateChatRoomNameEntity.swift */,
 				A7FB9C422C76D1CA008DE3F3 /* CreateChatRoomEntity.swift */,
+				6F84CF6E2C7616F300F5C112 /* UpdateChatRoomNameEntity.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
