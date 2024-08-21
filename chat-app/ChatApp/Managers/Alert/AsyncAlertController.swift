@@ -61,7 +61,9 @@ class AsyncInputAlertController<T> {
         self.message = message
 
         self.alertController = UIAlertController(title: title, message: message, preferredStyle: preferredStyle)
-        self.alertController.addTextField()
+        self.alertController.addTextField { textField in
+            textField.text = name
+        }
         self.alertController.view.tintColor = UIColor.accent
     }
 
