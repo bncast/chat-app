@@ -45,7 +45,7 @@ class ChatRoomListViewController: BaseViewController {
     private lazy var collectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundView = nil
-        view.backgroundColor = .white
+        view.backgroundColor = .background(.main)
 
         NoDataCollectionViewCell.registerCell(to: view)
         ChatRoomListCollectionViewCell.registerCell(to: view)
@@ -265,6 +265,10 @@ extension ChatRoomListViewController {
 
             print("[ChatRoomListViewController] Chat Room password: \(password)")
         }
+        if indexPath.row % 2 == 0 {
+            cell.backgroundColor = .background(.mainLight)
+        }
+
         return cell
     }
 
