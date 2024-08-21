@@ -26,6 +26,7 @@ class ProfileViewController: BaseViewController {
         view.layer.cornerRadius = 12
         return view
     }()
+    private weak var containerViewCenterYConstraint: NSLayoutConstraint?
 
     private lazy var titleLabel: UILabel = {
         let view = UILabel()
@@ -50,8 +51,8 @@ class ProfileViewController: BaseViewController {
         return view
     }()
 
-    private lazy var nameTextField: UITextField = {
-        let view = UITextField()
+    private lazy var nameTextField: BaseTextField = {
+        let view = BaseTextField()
         view.placeholder = AppConstant.shared.isNewUser ? "Enter display name to register" : "Display Name"
         view.borderStyle = .roundedRect
         return view
@@ -92,7 +93,7 @@ class ProfileViewController: BaseViewController {
 
         containerView.width == AppConstant.shared.screen(.width) - 40
         containerView.centerX == view.centerX
-        containerView.centerY == view.centerY
+        containerViewCenterYConstraint = containerView.centerY == view.centerY
 
         titleLabel.left == containerView.left + 20
         titleLabel.right == containerView.right - 20
@@ -153,6 +154,8 @@ class ProfileViewController: BaseViewController {
             }
         }
 
+        keyboardAppear = self
+
         guard AppConstant.shared.isNewUser else { return }
         nameTextField.becomeFirstResponder()
     }
@@ -163,5 +166,21 @@ class ProfileViewController: BaseViewController {
         profileViewController.transitioningDelegate = profileViewController.fadeInAnimator
         profileViewController.viewModel.load()
         parentViewController.present(profileViewController, animated: true)
+    }
+}
+
+extension ProfileViewController: ViewControllerKeyboardAppear {
+    func willShowKeyboard(frame: CGRect, duration: TimeInterval, curve: UIView.AnimationCurve) {
+        containerViewCenterYConstraint?.constant = -abs((containerView.frame.height) - frame.height) - 40
+        UIView.animate(withDuration: duration, delay: 0, options: curve.animationOptions) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+    }
+    
+    func willHideKeyboard(frame: CGRect, duration: TimeInterval, curve: UIView.AnimationCurve) {
+        containerViewCenterYConstraint?.constant = 0
+        UIView.animate(withDuration: duration, delay: 0, options: curve.animationOptions) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
     }
 }
