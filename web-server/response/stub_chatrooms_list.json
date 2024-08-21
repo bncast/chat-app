@@ -89,6 +89,36 @@
 					"room_user_id": 11303
 				}
 			]
+		},
+		{
+			"room_id": 10004,
+			"author_id": 11004,
+			"author_name": "Author4",
+			"preview": "Author4: hello world",
+			"is_joined": false,
+			"has_password": true,
+			"chat_name": "Hello chat4!",
+			"chat_image_url": "",
+			"member_details": [
+				{
+					"name": "Author1",
+					"is_admin": false,
+					"user_image_url": "",
+					"room_user_id": 11301
+				},
+				{
+					"name": "Author2",
+					"is_admin": false,
+					"user_image_url": "",
+					"room_user_id": 11302
+				},
+				{
+					"name": "Author3",
+					"is_admin": true,
+					"user_image_url": "",
+					"room_user_id": 11303
+				}
+			]
 		}
 	],
 	"success": 1,

@@ -52,13 +52,13 @@ class ProfileViewController: BaseViewController {
 
     private lazy var nameTextField: UITextField = {
         let view = UITextField()
-        view.placeholder = "Display Name"
+        view.placeholder = AppConstant.shared.isNewUser ? "Enter display name to register" : "Display Name"
         view.borderStyle = .roundedRect
         return view
     }()
 
-    private lazy var saveButton: UIButton = {
-        let view = UIButton()
+    private lazy var saveButton: BaseButton = {
+        let view = BaseButton()
         view.backgroundColor = .button(.active)
         view.setTitle("SAVE", for: .normal)
         view.titleLabel?.textColor = .text(.caption)
@@ -66,6 +66,8 @@ class ProfileViewController: BaseViewController {
         view.layer.cornerRadius = 8
         return view
     }()
+
+    let viewModel = ProfileViewModel()
 
     override func setupLayout() {
         view.backgroundColor = .clear
@@ -88,7 +90,7 @@ class ProfileViewController: BaseViewController {
         visualEffectView.width == view.width
         visualEffectView.height == view.height
 
-        containerView.width == AppConstant.screen(.width) - 40
+        containerView.width == AppConstant.shared.screen(.width) - 40
         containerView.centerX == view.centerX
         containerView.centerY == view.centerY
 
@@ -119,6 +121,15 @@ class ProfileViewController: BaseViewController {
         saveButton.bottom == containerView.bottom - 20
     }
 
+    override func setupBindings() {
+        viewModel.$displayName
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] displayName in
+                self?.nameTextField.text = displayName
+            }
+            .store(in: &cancellables)
+    }
+
     override func setupActions() {
         closeButton.tapHandler = { [weak self] _ in
             self?.dismiss(animated: true)
@@ -126,12 +137,31 @@ class ProfileViewController: BaseViewController {
         tapRecognizer.tapHandler = { [weak self] _ in
             self?.dismiss(animated: true)
         }
+        saveButton.tapHandlerAsync = { [weak self] _ in
+            do {
+                guard let text = self?.nameTextField.text, !text.isEmpty else { return }
+
+                self?.nameTextField.resignFirstResponder()
+                await IndicatorController.shared.show()
+                try await self?.viewModel.updateName(name: text)
+                await IndicatorController.shared.dismiss()
+
+                self?.viewModel.setDisplayName(name: text)
+            } catch {
+                print("\(error as! NetworkError)")
+                await IndicatorController.shared.dismiss()
+            }
+        }
+
+        guard AppConstant.shared.isNewUser else { return }
+        nameTextField.becomeFirstResponder()
     }
 
     static func show(on parentViewController: UIViewController) {
         let profileViewController = Self()
         profileViewController.modalPresentationStyle = .overFullScreen
         profileViewController.transitioningDelegate = profileViewController.fadeInAnimator
+        profileViewController.viewModel.load()
         parentViewController.present(profileViewController, animated: true)
     }
 }

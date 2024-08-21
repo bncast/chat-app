@@ -11,7 +11,7 @@ class GetChatroomListEntity: RequestableApiEntity {
     typealias ResponseEntity = GetChatroomListRespondableEntity
 
     static var method: BaseNetworkOperation.Method { .get }
-    var path: String { "/rooms" }
+    var path: String { "rooms" }
     var body: RequestBody? { GetChatroomRequestBody() }
 }
 

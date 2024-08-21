@@ -20,7 +20,7 @@ class ChatRoomListCollectionViewCell: BaseCollectionViewCell {
         let view = UIImageView(image: UIImage(systemName: "person.3.fill")?.withRenderingMode(.alwaysTemplate))
         view.contentMode = .scaleAspectFit
         view.tintColor = .red
-        view.backgroundColor = .black
+        view.backgroundColor = .background(.profileImage)
         view.layer.cornerRadius = 25
         return view
     }()
