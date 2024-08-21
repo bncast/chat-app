@@ -14,6 +14,9 @@
 		1D7235C52C72CE38003B419B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D7235C42C72CE38003B419B /* Assets.xcassets */; };
 		1D7235C82C72CE38003B419B /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 1D7235C72C72CE38003B419B /* Base */; };
 		1DD9AD152C73361A00B5E28F /* AppVersionEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD9AD142C73361A00B5E28F /* AppVersionEntity.swift */; };
+		1DE284892C7449680054B79E /* GetMessageEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE284882C7449680054B79E /* GetMessageEntity.swift */; };
+		1DE2848B2C744C2D0054B79E /* BaseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE2848A2C744C2D0054B79E /* BaseButton.swift */; };
+		1DE2848F2C7452780054B79E /* SendMessageEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE2848E2C7452780054B79E /* SendMessageEntity.swift */; };
 		6F07ACE92C7304010010E21A /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F07ACE82C7304010010E21A /* MainViewController.swift */; };
 		6F07ACEE2C7306730010E21A /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F07ACED2C7306730010E21A /* BaseViewController.swift */; };
 		6F0B7E642C7315C300BFC370 /* BaseNetworkOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B7E632C7315C300BFC370 /* BaseNetworkOperation.swift */; };
@@ -84,6 +87,9 @@
 		1D7235C72C72CE38003B419B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1D7235C92C72CE38003B419B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1DD9AD142C73361A00B5E28F /* AppVersionEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersionEntity.swift; sourceTree = "<group>"; };
+		1DE284882C7449680054B79E /* GetMessageEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetMessageEntity.swift; sourceTree = "<group>"; };
+		1DE2848A2C744C2D0054B79E /* BaseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseButton.swift; sourceTree = "<group>"; };
+		1DE2848E2C7452780054B79E /* SendMessageEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMessageEntity.swift; sourceTree = "<group>"; };
 		6F07ACE82C7304010010E21A /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		6F07ACED2C7306730010E21A /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		6F0B7E632C7315C300BFC370 /* BaseNetworkOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNetworkOperation.swift; sourceTree = "<group>"; };
@@ -223,6 +229,7 @@
 				A700BF5C2C73A66800B38530 /* BaseNavigationBar.swift */,
 				A700BF622C7416DD00B38530 /* BaseTextField.swift */,
 				6F163A462C7570230034EF27 /* BaseTapGestureRecognizer.swift */,
+				1DE2848A2C744C2D0054B79E /* BaseButton.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -264,6 +271,8 @@
 				1DD9AD142C73361A00B5E28F /* AppVersionEntity.swift */,
 				6FD425A22C7350F2004F9820 /* GetChatroomListEntity.swift */,
 				6F4CDE882C745A1500F310A1 /* UpdateUserEntity.swift */,
+				1DE284882C7449680054B79E /* GetMessageEntity.swift */,
+				1DE2848E2C7452780054B79E /* SendMessageEntity.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -520,6 +529,7 @@
 				A700BF592C73982D00B38530 /* BaseButton.swift in Sources */,
 				A700BF672C74199000B38530 /* NSAttributedStringHelpers.swift in Sources */,
 				A700BF482C7324DA00B38530 /* BaseCollectionViewCell.swift in Sources */,
+				1DE284892C7449680054B79E /* GetMessageEntity.swift in Sources */,
 				6FBE7BEA2C72E4AF00AE0ACB /* AppColors.swift in Sources */,
 				6F9894E82C733E9D00F20D1E /* NetworkManager.swift in Sources */,
 				6F4CDE872C74598700F310A1 /* ProfileViewModel.swift in Sources */,
@@ -532,6 +542,8 @@
 				A7FB9C222C746199008DE3F3 /* NoDataCollectionViewCell.swift in Sources */,
 				6FA430C62C74F4810086B62C /* BaseView.swift in Sources */,
 				6F4CDE7F2C74253A00F310A1 /* ProfileViewController.swift in Sources */,
+				1DE2848F2C7452780054B79E /* SendMessageEntity.swift in Sources */,
+				1DE2848B2C744C2D0054B79E /* BaseButton.swift in Sources */,
 				1D7235BC2C72CE37003B419B /* AppDelegate.swift in Sources */,
 				6F4CDE832C742BA100F310A1 /* UIViewHelpers.swift in Sources */,
 				6F4CDE8C2C7464CC00F310A1 /* IndicatorController.swift in Sources */,
