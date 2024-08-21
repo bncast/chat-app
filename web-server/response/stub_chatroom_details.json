@@ -1,0 +1,37 @@
+{
+	"chatroom" : {
+		"room_id": 10001,
+		"author_id": 11001,
+		"author_name": "Author1",
+		"preview": "Author1: hello world",
+		"is_joined": true,
+		"has_password": false,
+		"chat_name": "Hello chat!",
+		"chat_image_url": "",
+		"member_details": [
+			{
+				"name": "Author1",
+				"is_admin": true,
+				"user_image_url": "",
+				"room_user_id": 11101
+			},
+			{
+				"name": "Author2",
+				"is_admin": true,
+				"user_image_url": "",
+				"room_user_id": 11102
+			},
+			{
+				"name": "Author3",
+				"is_admin": false,
+				"user_image_url": "",
+				"room_user_id": 11103
+			}
+		]
+	},
+	"success": 1,
+	"error": {
+		"code": "000",
+		"message": ""
+	}
+}
