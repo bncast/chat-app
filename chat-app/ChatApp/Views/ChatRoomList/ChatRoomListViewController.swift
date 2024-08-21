@@ -87,7 +87,7 @@ class ChatRoomListViewController: BaseViewController {
     // MARK: - Setups
 
     override func setupNavigation() {
-        title = "Chatrooms"
+        title = "Chat Rooms"
 
         setNavigationBarDefaultStyle()
     }
@@ -158,6 +158,16 @@ class ChatRoomListViewController: BaseViewController {
 
     func showProfile() {
         ProfileViewController.show(on: self)
+    }
+
+    @MainActor
+    private func showChatRoomPasswordAlert(in viewController: UIViewController) async -> String? {
+        return await AsyncInputAlertController<String>(
+            title: "CHAT ROOM",
+            message: "Password required."
+        )
+        .addButton(title: "Ok")
+        .register(in: viewController)
     }
 }
 
@@ -248,7 +258,12 @@ extension ChatRoomListViewController {
         cell.name = item.name
         cell.preview = item.preview
         cell.tapHandlerAsync = { [weak self] _ in
-            print("[getRoomCell] \(cell.name)")
+            guard let self,
+                  let password = await showChatRoomPasswordAlert(in: self), !password.isEmpty
+            else { return }
+
+
+            print("[ChatRoomListViewController] Chat Room password: \(password)")
         }
         return cell
     }
