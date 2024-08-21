@@ -59,7 +59,7 @@ class ChatRoomDetailsViewController: BaseViewController {
     private typealias DataSource = UICollectionViewDiffableDataSource<Int,ItemInfo>
     private var dataSource: DataSource?
 
-    let viewModel = ChatRoomDetailsViewModel()
+    private let viewModel = ChatRoomDetailsViewModel()
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -113,6 +113,17 @@ class ChatRoomDetailsViewController: BaseViewController {
         closeButton.tapHandler = { [weak self] _ in
             self?.dismiss(animated: true)
         }
+    }
+
+    @MainActor
+    private func showChatRoomEditNameAlert(in viewController: UIViewController, currentName: String) async -> String? {
+        return await AsyncInputAlertController<String>(
+            title: "CHAT ROOM",
+            message: "Edit chatroom name.",
+            name: currentName
+        )
+        .addButton(title: "Ok")
+        .register(in: viewController)
     }
 
     static func show(on parentViewController: UIViewController) {
@@ -182,6 +193,11 @@ extension ChatRoomDetailsViewController {
         let view = MemberHeaderCollectionReusableView.dequeueView(from: collectionView, for: indexPath)
 
         view.title = "Chat Room"
+        view.editHandler = { [weak self] currentName in
+            guard let self, let updatedChatroomName = await self.showChatRoomEditNameAlert(in: self, currentName: currentName) else { return "" }
+            
+            return updatedChatroomName
+        }
         return view
     }
 
