@@ -80,6 +80,8 @@
 		A7FB9C222C746199008DE3F3 /* NoDataCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C212C746199008DE3F3 /* NoDataCollectionViewCell.swift */; };
 		A7FB9C2C2C756A81008DE3F3 /* AsyncAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C2B2C756A81008DE3F3 /* AsyncAlertController.swift */; };
 		A7FB9C2E2C7589E6008DE3F3 /* JoinChatRoomEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C2D2C7589E6008DE3F3 /* JoinChatRoomEntity.swift */; };
+		A7FB9C3C2C75FEEB008DE3F3 /* CreateChatRoomViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C382C75FEEB008DE3F3 /* CreateChatRoomViewModel.swift */; };
+		A7FB9C3D2C75FEEB008DE3F3 /* CreateChatRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C3A2C75FEEB008DE3F3 /* CreateChatRoomViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -160,6 +162,8 @@
 		A7FB9C212C746199008DE3F3 /* NoDataCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoDataCollectionViewCell.swift; sourceTree = "<group>"; };
 		A7FB9C2B2C756A81008DE3F3 /* AsyncAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncAlertController.swift; sourceTree = "<group>"; };
 		A7FB9C2D2C7589E6008DE3F3 /* JoinChatRoomEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinChatRoomEntity.swift; sourceTree = "<group>"; };
+		A7FB9C382C75FEEB008DE3F3 /* CreateChatRoomViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateChatRoomViewModel.swift; sourceTree = "<group>"; };
+		A7FB9C3A2C75FEEB008DE3F3 /* CreateChatRoomViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateChatRoomViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -243,6 +247,7 @@
 		6F07ACEA2C7306430010E21A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				A7FB9C3B2C75FEEB008DE3F3 /* CreateChatRoom */,
 				6F07ACEB2C73064B0010E21A /* Components */,
 				1D1293472C75E8090079C48C /* ChatRoom */,
 				6F4CDE7C2C74237400F310A1 /* Profile */,
@@ -499,6 +504,31 @@
 			path = Alert;
 			sourceTree = "<group>";
 		};
+		A7FB9C372C75FEEB008DE3F3 /* Subviews */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Subviews;
+			sourceTree = "<group>";
+		};
+		A7FB9C392C75FEEB008DE3F3 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				A7FB9C382C75FEEB008DE3F3 /* CreateChatRoomViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		A7FB9C3B2C75FEEB008DE3F3 /* CreateChatRoom */ = {
+			isa = PBXGroup;
+			children = (
+				A7FB9C372C75FEEB008DE3F3 /* Subviews */,
+				A7FB9C392C75FEEB008DE3F3 /* ViewModel */,
+				A7FB9C3A2C75FEEB008DE3F3 /* CreateChatRoomViewController.swift */,
+			);
+			path = CreateChatRoom;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -637,6 +667,8 @@
 				6F0B7E802C7328B500BFC370 /* DateHelpers.swift in Sources */,
 				1D7235BE2C72CE37003B419B /* SceneDelegate.swift in Sources */,
 				6FA44ED82C737C1A00013866 /* DictionaryHelpers.swift in Sources */,
+				A7FB9C3D2C75FEEB008DE3F3 /* CreateChatRoomViewController.swift in Sources */,
+				6F07ACE92C7304010010E21A /* MainViewController.swift in Sources */,
 				6F0B7E692C731F3700BFC370 /* ErrorEntity.swift in Sources */,
 				1D3A9FB52C75BBB200AC3AD6 /* GetChatRoomMessagesEntity.swift in Sources */,
 				1D1293492C75E8210079C48C /* ChatRoomViewController.swift in Sources */,
@@ -644,6 +676,8 @@
 				A7FB9C2C2C756A81008DE3F3 /* AsyncAlertController.swift in Sources */,
 				A700BF3F2C73166B00B38530 /* ChatRoomListViewController.swift in Sources */,
 				A700BF5F2C73AD2200B38530 /* ChatRoomListNavigationBar.swift in Sources */,
+				6F07ACE92C7304010010E21A /* MainViewController.swift in Sources */,
+				A7FB9C3C2C75FEEB008DE3F3 /* CreateChatRoomViewModel.swift in Sources */,
 				A700BF432C73176500B38530 /* ChatRoomListViewModel.swift in Sources */,
 				6FB326552C749D9E00F1B2E4 /* FadeInAnimator.swift in Sources */,
 				6F7969782C75CD690010B427 /* ChatRoomDetailsViewModel.swift in Sources */,

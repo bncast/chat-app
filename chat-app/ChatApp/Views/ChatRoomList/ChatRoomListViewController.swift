@@ -141,12 +141,15 @@ class ChatRoomListViewController: BaseViewController {
         searchBarView.onChanged = { _, text in
             print("[ChatroomListViewController] searchBarView.onChanged \(text ?? "")")
         }
-        composeButton.tapHandlerAsync = { _ in
-            print("[ChatroomListViewController] composeButton.tapHandlerAsync")
+        composeButton.tapHandlerAsync = { [weak self] _ in
+            guard let self else { return }
+            CreateChatRoomViewController.show(on: self)
         }
 
         refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
     }
+
+    // MARK: - Other Methods
 
     @objc
     private func didPullToRefresh(_ sender: UIRefreshControl) {
