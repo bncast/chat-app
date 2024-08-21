@@ -76,6 +76,7 @@
 		A700BF672C74199000B38530 /* NSAttributedStringHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A700BF662C74199000B38530 /* NSAttributedStringHelpers.swift */; };
 		A7FB9C222C746199008DE3F3 /* NoDataCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C212C746199008DE3F3 /* NoDataCollectionViewCell.swift */; };
 		A7FB9C2C2C756A81008DE3F3 /* AsyncAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C2B2C756A81008DE3F3 /* AsyncAlertController.swift */; };
+		A7FB9C2E2C7589E6008DE3F3 /* JoinChatRoomEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C2D2C7589E6008DE3F3 /* JoinChatRoomEntity.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -147,6 +148,7 @@
 		A700BF662C74199000B38530 /* NSAttributedStringHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSAttributedStringHelpers.swift; sourceTree = "<group>"; };
 		A7FB9C212C746199008DE3F3 /* NoDataCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoDataCollectionViewCell.swift; sourceTree = "<group>"; };
 		A7FB9C2B2C756A81008DE3F3 /* AsyncAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncAlertController.swift; sourceTree = "<group>"; };
+		A7FB9C2D2C7589E6008DE3F3 /* JoinChatRoomEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinChatRoomEntity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -276,6 +278,7 @@
 				6F4CDE882C745A1500F310A1 /* UpdateUserEntity.swift */,
 				1DE284882C7449680054B79E /* GetMessageEntity.swift */,
 				1DE2848E2C7452780054B79E /* SendMessageEntity.swift */,
+				A7FB9C2D2C7589E6008DE3F3 /* JoinChatRoomEntity.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -533,6 +536,7 @@
 				A700BF4A2C73258700B38530 /* ChatRoomListCollectionViewCell.swift in Sources */,
 				A700BF652C74177000B38530 /* UITextFieldHelpers.swift in Sources */,
 				A700BF612C74168500B38530 /* SearchBarView.swift in Sources */,
+				A7FB9C2E2C7589E6008DE3F3 /* JoinChatRoomEntity.swift in Sources */,
 				A700BF4A2C73258700B38530 /* ChatRoomListCollectionViewCell.swift in Sources */,
 				A700BF4D2C73276B00B38530 /* UIViewControllerHelpers.swift in Sources */,
 				6FBE7BEC2C72E4BC00AE0ACB /* AppFonts.swift in Sources */,

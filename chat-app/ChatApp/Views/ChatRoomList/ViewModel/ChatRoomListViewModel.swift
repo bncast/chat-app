@@ -25,8 +25,10 @@ final class ChatRoomListViewModel {
         }
 
         var id = UUID().uuidString
+        var roomId: Int
         var name: String
         var preview: String
+        var hasPassword: Bool
     }
 
     @Published var items: [Section: [Item]] = [:]
@@ -44,17 +46,29 @@ final class ChatRoomListViewModel {
 
         items = [
             .myRooms: groupedItems[.myRooms]?.compactMap { room in
-                Item.room(ItemInfo(name: room.chatName, preview: room.preview))
+                Item.room(ItemInfo(
+                    roomId: room.roomId, name: room.chatName, preview: room.preview, hasPassword: room.hasPassword
+                ))
             } ?? [],
             .otherRooms: groupedItems[.otherRooms]?.compactMap { room in
-                Item.room(ItemInfo(name: room.chatName, preview: room.preview))
+                Item.room(ItemInfo(
+                    roomId: room.roomId, name: room.chatName, preview: room.preview, hasPassword: room.hasPassword
+                ))
             } ?? []
         ]
     }
 
-    func loadEmptyRooms() async {
+    private func loadEmptyRooms() async {
         items = [
             .whole: [.noData]
         ]
+    }
+
+    func joinChatRoom(roomId: Int, deviceId: String, password: String?) async throws -> ChatRoomEntity? {
+        guard let chatRoom = try await JoinChatRoomEntity(
+            roomId: roomId, deviceId: deviceId, password: password
+        ).run().chatroom else { return nil }
+
+        return chatRoom
     }
 }

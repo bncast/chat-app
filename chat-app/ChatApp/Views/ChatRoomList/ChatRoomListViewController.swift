@@ -87,7 +87,7 @@ class ChatRoomListViewController: BaseViewController {
     // MARK: - Setups
 
     override func setupNavigation() {
-        title = "Chat Rooms"
+        title = "Chatrooms"
 
         setNavigationBarDefaultStyle()
     }
@@ -100,9 +100,6 @@ class ChatRoomListViewController: BaseViewController {
         ])
 
         collectionView.refreshControl = refreshControl
-
-        guard AppConstant.shared.isNewUser else { return }
-        showProfile()
     }
 
     override func setupConstraints() {
@@ -154,10 +151,6 @@ class ChatRoomListViewController: BaseViewController {
     private func didPullToRefresh(_ sender: UIRefreshControl) {
         refreshControl.endRefreshing()
         print("[ChatroomListViewController] didPullToRefresh")
-    }
-
-    func showProfile() {
-        ProfileViewController.show(on: self)
     }
 
     @MainActor
@@ -258,12 +251,23 @@ extension ChatRoomListViewController {
         cell.name = item.name
         cell.preview = item.preview
         cell.tapHandlerAsync = { [weak self] _ in
-            guard let self,
-                  let password = await showChatRoomPasswordAlert(in: self), !password.isEmpty
-            else { return }
+            guard let self, let deviceId = AppConstant.shared.deviceId else { return }
 
-
-            print("[ChatRoomListViewController] Chat Room password: \(password)")
+            var password: String?
+            if item.hasPassword {
+                password = await showChatRoomPasswordAlert(in: self)
+            }
+            do {
+                await IndicatorController.shared.show()
+                let _ = try await viewModel.joinChatRoom(
+                    roomId: item.roomId, deviceId: deviceId, password: password
+                )
+                await IndicatorController.shared.dismiss()
+                print("[ChatRoomListViewController] Show Messages from Room (\(item.roomId))")
+            } catch {
+                print("[ChatRoomListViewController] Error! \(error as! NetworkError)")
+                await IndicatorController.shared.dismiss()
+            }
         }
         return cell
     }
