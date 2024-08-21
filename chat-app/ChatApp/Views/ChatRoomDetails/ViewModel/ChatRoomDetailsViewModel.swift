@@ -40,4 +40,8 @@ final class ChatRoomDetailsViewModel {
         }
         items = sortedItems
     }
+
+    func updateChatRoomNameInServer(name: String) async throws {
+        try await UpdateChatRoomNameEntity(name: name, roomUserId: 11106).run()
+    }
 }

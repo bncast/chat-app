@@ -69,6 +69,7 @@ class MemberHeaderCollectionReusableView: BaseCollectionReusableView {
     }
 
     var editHandler: ((String) async -> String)?
+    var editNameInServerHandler: ((String) async -> String?)?
 
     override func setupLayout() {
         addSubviews([
@@ -119,9 +120,11 @@ class MemberHeaderCollectionReusableView: BaseCollectionReusableView {
             guard let self, let editHandler, let currentTitle = title else { return }
 
             let newTitle = await editHandler(currentTitle)
-            guard !newTitle.isEmpty else { return }
+            guard newTitle != title, !newTitle.isEmpty,
+                  let editNameInServerHandler,
+                  let titleFromServer = await editNameInServerHandler(newTitle) else { return }
 
-            title = newTitle
+            title = titleFromServer
         }
     }
 }
