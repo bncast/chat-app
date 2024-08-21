@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1D3A9FB52C75BBB200AC3AD6 /* GetChatRoomMessagesEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D3A9FB42C75BBB200AC3AD6 /* GetChatRoomMessagesEntity.swift */; };
 		1D7235BC2C72CE37003B419B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D7235BB2C72CE37003B419B /* AppDelegate.swift */; };
 		1D7235BE2C72CE37003B419B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D7235BD2C72CE37003B419B /* SceneDelegate.swift */; };
 		1D7235C02C72CE37003B419B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D7235BF2C72CE37003B419B /* ViewController.swift */; };
@@ -59,7 +60,7 @@
 		6FBE7BEA2C72E4AF00AE0ACB /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBE7BE92C72E4AF00AE0ACB /* AppColors.swift */; };
 		6FBE7BEC2C72E4BC00AE0ACB /* AppFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBE7BEB2C72E4BC00AE0ACB /* AppFonts.swift */; };
 		6FBE7BEF2C72ED2400AE0ACB /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6FBE7BEE2C72ED2400AE0ACB /* Colors.xcassets */; };
-		6FD425A32C7350F2004F9820 /* GetChatroomListEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD425A22C7350F2004F9820 /* GetChatroomListEntity.swift */; };
+		6FD425A32C7350F2004F9820 /* GetChatRoomListEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD425A22C7350F2004F9820 /* GetChatRoomListEntity.swift */; };
 		A700BF3F2C73166B00B38530 /* ChatRoomListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A700BF3E2C73166B00B38530 /* ChatRoomListViewController.swift */; };
 		A700BF432C73176500B38530 /* ChatRoomListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A700BF422C73176500B38530 /* ChatRoomListViewModel.swift */; };
 		A700BF462C7323EF00B38530 /* ArrayHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A700BF452C7323EF00B38530 /* ArrayHelpers.swift */; };
@@ -84,6 +85,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1D3A9FB42C75BBB200AC3AD6 /* GetChatRoomMessagesEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatRoomMessagesEntity.swift; sourceTree = "<group>"; };
 		1D7235B82C72CE37003B419B /* ChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D7235BB2C72CE37003B419B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1D7235BD2C72CE37003B419B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -135,7 +137,7 @@
 		6FBE7BE92C72E4AF00AE0ACB /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
 		6FBE7BEB2C72E4BC00AE0ACB /* AppFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFonts.swift; sourceTree = "<group>"; };
 		6FBE7BEE2C72ED2400AE0ACB /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
-		6FD425A22C7350F2004F9820 /* GetChatroomListEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatroomListEntity.swift; sourceTree = "<group>"; };
+		6FD425A22C7350F2004F9820 /* GetChatRoomListEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatRoomListEntity.swift; sourceTree = "<group>"; };
 		A700BF3E2C73166B00B38530 /* ChatRoomListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListViewController.swift; sourceTree = "<group>"; };
 		A700BF422C73176500B38530 /* ChatRoomListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListViewModel.swift; sourceTree = "<group>"; };
 		A700BF452C7323EF00B38530 /* ArrayHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayHelpers.swift; sourceTree = "<group>"; };
@@ -283,11 +285,12 @@
 			isa = PBXGroup;
 			children = (
 				1DD9AD142C73361A00B5E28F /* AppVersionEntity.swift */,
-				6FD425A22C7350F2004F9820 /* GetChatroomListEntity.swift */,
+				6FD425A22C7350F2004F9820 /* GetChatRoomListEntity.swift */,
 				6F4CDE882C745A1500F310A1 /* UpdateUserEntity.swift */,
 				1DE284882C7449680054B79E /* GetMessageEntity.swift */,
 				1DE2848E2C7452780054B79E /* SendMessageEntity.swift */,
 				A7FB9C2D2C7589E6008DE3F3 /* JoinChatRoomEntity.swift */,
+				1D3A9FB42C75BBB200AC3AD6 /* GetChatRoomMessagesEntity.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -590,7 +593,7 @@
 				6F0B7E7B2C7326D200BFC370 /* AppConstant.swift in Sources */,
 				1DD9AD152C73361A00B5E28F /* AppVersionEntity.swift in Sources */,
 				6F0B7E6B2C7323D400BFC370 /* RespondableEntity.swift in Sources */,
-				6FD425A32C7350F2004F9820 /* GetChatroomListEntity.swift in Sources */,
+				6FD425A32C7350F2004F9820 /* GetChatRoomListEntity.swift in Sources */,
 				6F0B7E792C73268100BFC370 /* RequestableApiEntity.swift in Sources */,
 				A700BF5D2C73A66800B38530 /* BaseNavigationBar.swift in Sources */,
 				A7FB9C222C746199008DE3F3 /* NoDataCollectionViewCell.swift in Sources */,
@@ -611,6 +614,7 @@
 				6FA44ED82C737C1A00013866 /* DictionaryHelpers.swift in Sources */,
 				6F07ACE92C7304010010E21A /* MainViewController.swift in Sources */,
 				6F0B7E692C731F3700BFC370 /* ErrorEntity.swift in Sources */,
+				1D3A9FB52C75BBB200AC3AD6 /* GetChatRoomMessagesEntity.swift in Sources */,
 				A700BF512C732EEE00B38530 /* UIStackViewHelpers.swift in Sources */,
 				A700BF632C7416DD00B38530 /* BaseTextField.swift in Sources */,
 				A7FB9C2C2C756A81008DE3F3 /* AsyncAlertController.swift in Sources */,

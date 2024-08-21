@@ -6,6 +6,14 @@
 //
 
 import Foundation
+extension Calendar {
+    static func getUTC() -> Calendar {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC") ?? TimeZone.autoupdatingCurrent
+        calendar.locale = Locale(identifier: "en_US_POSIX")
+        return calendar
+    }
+}
 
 extension Date {
     init?(iso8601 string: String) {
@@ -27,4 +35,13 @@ extension Date {
         formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter.string(from: self)
     }
+
+    static var utcDateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar.getUTC()
+        return formatter
+    }
+
 }
