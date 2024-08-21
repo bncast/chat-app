@@ -22,6 +22,13 @@ extension UIView {
         bottom == view.bottom - margins.bottom
     }
 
+    func setLayoutEqualTo(_ view: UIView, space: CGFloat) {
+        top == view.top + space
+        left == view.left + space
+        right == view.right - space
+        bottom == view.bottom - space
+    }
+
     func setLayoutEqualTo(
         _ view: UIView,
         leftMargin: CGFloat = 0,

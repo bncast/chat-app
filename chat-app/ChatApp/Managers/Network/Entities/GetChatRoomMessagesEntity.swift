@@ -46,5 +46,6 @@ struct MessageEntity: Codable {
     var content: String
     var createdAt: Date
     var updatedAt: Date
+    var isCurrentUser: Bool?
 }
 

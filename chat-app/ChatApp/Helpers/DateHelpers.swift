@@ -44,4 +44,11 @@ extension Date {
         return formatter
     }
 
+    func isSameDayWith(date: Date, calendar: Calendar = Calendar.getUTC()) -> Bool {
+        let selfComps = calendar.dateComponents([.year, .month, .day], from: self)
+        let targetComps = calendar.dateComponents([.year, .month, .day], from: date)
+        return selfComps.year == targetComps.year &&
+        selfComps.month == targetComps.month &&
+        selfComps.day == targetComps.day
+    }
 }
