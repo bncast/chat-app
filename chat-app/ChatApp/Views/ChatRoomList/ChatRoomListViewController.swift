@@ -74,20 +74,24 @@ class ChatRoomListViewController: BaseViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        Task { await viewModel.load() }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
 
         navigationBar?.showChatRoomListButtons = true
+
+        Task {
+            await IndicatorController.shared.show()
+            await viewModel.load()
+            await IndicatorController.shared.dismiss()
+        }
     }
 
     // MARK: - Setups
 
     override func setupNavigation() {
-        title = "Chatrooms"
+        title = "Chat Rooms"
 
         setNavigationBarDefaultStyle()
     }
