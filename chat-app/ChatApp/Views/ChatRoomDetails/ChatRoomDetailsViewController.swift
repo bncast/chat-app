@@ -198,6 +198,20 @@ extension ChatRoomDetailsViewController {
             
             return updatedChatroomName
         }
+        view.editNameInServerHandler = { [weak self] updatedTitle in
+            guard let self else { return "" }
+
+            do {
+                await IndicatorController.shared.show()
+                try await viewModel.updateChatRoomNameInServer(name: updatedTitle)
+                await IndicatorController.shared.dismiss()
+                return updatedTitle
+            } catch {
+                print("[ChatRoomDetailsViewController] Error! \(error as! NetworkError)")
+                await IndicatorController.shared.dismiss()
+                return ""
+            }
+        }
         return view
     }
 
