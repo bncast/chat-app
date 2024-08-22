@@ -58,7 +58,7 @@ final class ChatRoomListViewModel {
         items = [
             .myRooms: groupedItems[.myRooms]?.compactMap { room in
                 Item.room(ItemInfo(
-                    roomId: room.roomId, name: room.chatName, preview: room.preview, hasPassword: room.hasPassword
+                    roomId: room.roomId, name: room.chatName, preview: room.preview, hasPassword: false
                 ))
             } ?? [],
             .otherRooms: groupedItems[.otherRooms]?.compactMap { room in
