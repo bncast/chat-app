@@ -13,6 +13,10 @@ routes:
       - statusCode: 200
         delay: 500
         filename: stub_chatrooms_list.json
+    POST:
+      - statusCode: 200
+        delay: 500
+        filename: stub_chatroom_details.json
   /api/rooms/join:
     POST:
       - statusCode: 200
