@@ -86,10 +86,7 @@ class ProfileViewController: BaseViewController {
     }
 
     override func setupConstraints() {
-        visualEffectView.centerX == view.centerX
-        visualEffectView.centerY == view.centerY
-        visualEffectView.width == view.width
-        visualEffectView.height == view.height
+        visualEffectView.setLayoutEqualTo(view)
 
         containerView.width == AppConstant.shared.screen(.width) - 40
         containerView.centerX == view.centerX
