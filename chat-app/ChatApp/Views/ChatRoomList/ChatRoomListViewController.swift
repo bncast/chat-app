@@ -9,8 +9,6 @@ import UIKit
 import SuperEasyLayout
 
 class ChatRoomListViewController: BaseViewController {
-    let viewModel = ChatRoomListViewModel()
-
     private typealias Section = ChatRoomListViewModel.Section
     private typealias Item = ChatRoomListViewModel.Item
     private typealias ItemInfo = ChatRoomListViewModel.ItemInfo
@@ -46,6 +44,7 @@ class ChatRoomListViewController: BaseViewController {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundView = nil
         view.backgroundColor = .background(.main)
+        view.refreshControl = refreshControl
 
         NoDataCollectionViewCell.registerCell(to: view)
         ChatRoomListCollectionViewCell.registerCell(to: view)
@@ -69,19 +68,20 @@ class ChatRoomListViewController: BaseViewController {
         navigationController?.navigationBar as? ChatRoomListNavigationBar
     }
 
+    private let viewModel = ChatRoomListViewModel()
+    
     // MARK: - Life Cycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .main
-        print("[ChatroomListViewController]")
+        Task { await viewModel.load() }
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+        super.viewWillAppear(true)
 
-        Task { await viewModel.load() }
+        navigationBar?.showChatRoomListButtons = true
     }
 
     // MARK: - Setups
@@ -93,13 +93,13 @@ class ChatRoomListViewController: BaseViewController {
     }
 
     override func setupLayout() {
+        view.backgroundColor = .main
+
         addSubviews([
             searchBarView,
             collectionView,
             composeButton
         ])
-
-        collectionView.refreshControl = refreshControl
     }
 
     override func setupConstraints() {
@@ -129,18 +129,19 @@ class ChatRoomListViewController: BaseViewController {
     }
 
     override func setupActions() {
-        navigationBar?.invitationTapHandler = { [weak self] _ in
+        navigationBar?.invitationTapHandler = { _ in
             print("[ChatroomListViewController] navigationBar?.invitationTapHandler")
         }
         navigationBar?.profileTapHandler = { [weak self] _ in
             guard let self else { return }
+
             ProfileViewController.show(on: self)
         }
 
-        searchBarView.onChanged = { [weak self] _, text in
-            print("[ChatroomListViewController] searchBarView.onChanged \(text)")
+        searchBarView.onChanged = { _, text in
+            print("[ChatroomListViewController] searchBarView.onChanged \(text ?? "")")
         }
-        composeButton.tapHandlerAsync = { [weak self] _ in
+        composeButton.tapHandlerAsync = { _ in
             print("[ChatroomListViewController] composeButton.tapHandlerAsync")
         }
 
@@ -161,6 +162,16 @@ class ChatRoomListViewController: BaseViewController {
         )
         .addButton(title: "Ok")
         .register(in: viewController)
+    }
+
+    static func show(on parentViewController: UIViewController) {
+        let rootVC = ChatRoomListViewController()
+        let navController = UINavigationController(navigationBarClass: ChatRoomListNavigationBar.self, 
+                                                   toolbarClass: nil)
+        navController.viewControllers = [rootVC]
+        navController.modalPresentationStyle = .fullScreen
+
+        parentViewController.present(navController, animated: false)
     }
 }
 
@@ -201,7 +212,7 @@ extension ChatRoomListViewController {
         guard !items.isEmpty else { return }
 
         var snapshot = Snapshot()
-        snapshot.appendSections(items.keys.toArray)
+        snapshot.appendSections(items.keys.sorted())
 
         for (section, subitems) in items {
             snapshot.appendItems(subitems, toSection: section)
@@ -237,12 +248,12 @@ extension ChatRoomListViewController {
     private func getHeader(at indexPath: IndexPath) -> ChatRoomListHeaderCollectionReusableView {
         let view = ChatRoomListHeaderCollectionReusableView.dequeueView(from: collectionView, for: indexPath)
 
-        if case .myRooms = dataSource?.snapshot().sectionIdentifiers[indexPath.section] {
-            view.title = "MY ROOMS"
+        switch dataSource?.snapshot().sectionIdentifiers[indexPath.section] {
+        case .myRooms: view.title = "MY ROOMS"
+        case .otherRooms: view.title = "OTHER ROOMS"
+        default: break
         }
-        else if case .otherRooms = dataSource?.snapshot().sectionIdentifiers[indexPath.section] {
-            view.title = "OTHER ROOMS"
-        }
+
         return view
     }
 
@@ -253,22 +264,30 @@ extension ChatRoomListViewController {
         cell.tapHandlerAsync = { [weak self] _ in
             guard let self, let deviceId = AppConstant.shared.deviceId else { return }
 
-            var password: String?
-            if item.hasPassword {
-                password = await showChatRoomPasswordAlert(in: self)
+            if case .otherRooms = dataSource?.snapshot().sectionIdentifiers[indexPath.section] {
+
+                var password: String?
+                if item.hasPassword {
+                    password = await showChatRoomPasswordAlert(in: self)
+                }
+                do {
+                    await IndicatorController.shared.show()
+                    let _ = try await viewModel.joinChatRoom(
+                        roomId: item.roomId, deviceId: deviceId, password: password
+                    )
+                    await IndicatorController.shared.dismiss()
+                    print("[ChatRoomListViewController] Show Messages from Room (\(item.roomId))")
+                } catch {
+                    print("[ChatRoomListViewController] Error! \(error as! NetworkError)")
+                    await IndicatorController.shared.dismiss()
+                }
             }
-            do {
-                await IndicatorController.shared.show()
-                let _ = try await viewModel.joinChatRoom(
-                    roomId: item.roomId, deviceId: deviceId, password: password
-                )
-                await IndicatorController.shared.dismiss()
-                print("[ChatRoomListViewController] Show Messages from Room (\(item.roomId))")
-            } catch {
-                print("[ChatRoomListViewController] Error! \(error as! NetworkError)")
-                await IndicatorController.shared.dismiss()
-            }
+
+            guard let detail = viewModel.details(for: item) else { return }
+            
+            ChatRoomViewController.push(on: self, using: detail)
         }
+        
         if indexPath.row % 2 == 0 {
             cell.backgroundColor = .background(.mainLight)
         }

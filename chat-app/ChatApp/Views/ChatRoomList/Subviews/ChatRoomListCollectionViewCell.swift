@@ -9,8 +9,8 @@ import UIKit
 import SuperEasyLayout
 
 class ChatRoomListCollectionViewCell: BaseCollectionViewCell {
-    private lazy var backView: UIView = {
-        let view = UIView()
+    private lazy var backView: BaseView = {
+        let view = BaseView()
         view.backgroundColor = .clear
         view.clipsToBounds = true
         return view

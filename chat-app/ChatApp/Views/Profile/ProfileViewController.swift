@@ -20,8 +20,8 @@ class ProfileViewController: BaseViewController {
         return recognizer
     }()
 
-    private lazy var containerView: UIView = {
-        let view = UIView()
+    private lazy var containerView: BaseView = {
+        let view = BaseView()
         view.backgroundColor = .background(.main)
         view.layer.cornerRadius = 12
         return view
@@ -68,7 +68,7 @@ class ProfileViewController: BaseViewController {
         return view
     }()
 
-    let viewModel = ProfileViewModel()
+    private let viewModel = ProfileViewModel()
 
     override func setupLayout() {
         view.backgroundColor = .clear
