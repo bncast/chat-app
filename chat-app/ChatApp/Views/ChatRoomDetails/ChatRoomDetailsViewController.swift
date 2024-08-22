@@ -290,7 +290,7 @@ extension ChatRoomDetailsViewController {
                 await IndicatorController.shared.dismiss()
                 return updatedTitle
             } catch {
-                print("[ChatRoomDetailsViewController] Error! \(error as! NetworkError)")
+                print("[ChatRoomDetailsViewController] Error in ChatRoom change name! \(error as! NetworkError)")
                 await IndicatorController.shared.dismiss()
                 return ""
             }
@@ -300,9 +300,29 @@ extension ChatRoomDetailsViewController {
 
     private func getMemberCell(at indexPath: IndexPath, item: ItemInfo) -> MemberWithStatusCollectionViewCell {
         let cell = MemberWithStatusCollectionViewCell.dequeueCell(from: collectionView, for: indexPath)
+        cell.roomUserId = item.id
         cell.name = item.name
         cell.isAdmin = item.isAdmin
         cell.backgroundColor = indexPath.row % 2 == 0 ? .background(.mainLight) : .background(.main)
+        
+        cell.setIsAdminInServerHandler = { [weak self] isAdmin in
+            guard let self else { return !isAdmin }
+            do {
+                await IndicatorController.shared.show()
+                try await viewModel.setIsAdminInServer(isAdmin: isAdmin, roomUserId: item.id)
+                await IndicatorController.shared.dismiss()
+                viewModel.updateIsAdmin(isAdmin: isAdmin, roomUserId: item.id)
+                return isAdmin
+            } catch {
+                print("[ChatRoomDetailsViewController] Error in setting admin! \(error as! NetworkError)")
+                await IndicatorController.shared.dismiss()
+                return !isAdmin
+            }
+        }
+        if indexPath.row % 2 == 0 {
+            cell.backgroundColor = .background(.mainLight)
+        }
+
         return cell
     }
 }

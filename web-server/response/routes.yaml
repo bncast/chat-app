@@ -21,6 +21,11 @@ routes:
       - statusCode: 200
         delay: 500
         filename: stub_success.json
+  /api/rooms/detail:
+    PATCH:
+      - statusCode: 200
+        delay: 500
+        filename: stub_set_is_admin.json
   /api/rooms/join:
     POST:
       - statusCode: 200
