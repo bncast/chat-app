@@ -36,6 +36,7 @@ final class ChatRoomListViewModel {
 
     @Published var items: [Section: [Item]] = [:]
 
+    private var itemsDataSource: [Section: [Item]] = [:]
     private var chatInfos: [ChatInfo] = []
 
     func load() async {
@@ -66,6 +67,34 @@ final class ChatRoomListViewModel {
                     roomId: room.roomId, name: room.chatName, preview: room.preview, hasPassword: room.hasPassword
                 ))
             } ?? []
+        ]
+
+        itemsDataSource = items
+    }
+
+    func filterByName(searchKey: String) {
+        guard !searchKey.isEmpty
+        else {
+            items = itemsDataSource
+            return
+        }
+        guard let myRooms = itemsDataSource[.myRooms],
+              let otherRooms = itemsDataSource[.otherRooms]
+        else { return }
+
+        items = [
+            .myRooms: myRooms.filter({
+                if case .room(let itemInfo) = $0 {
+                    return itemInfo.name.lowercased().contains(searchKey.lowercased())
+                }
+                return false
+            }),
+            .otherRooms: otherRooms.filter({
+                if case .room(let itemInfo) = $0 {
+                    return itemInfo.name.lowercased().contains(searchKey.lowercased())
+                }
+                return false
+            })
         ]
     }
 

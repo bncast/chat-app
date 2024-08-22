@@ -7,6 +7,7 @@
 
 import UIKit
 import SuperEasyLayout
+import Combine
 
 class SearchBarView: BaseView {
     private lazy var stackView: UIStackView = {
@@ -74,9 +75,8 @@ class SearchBarView: BaseView {
         return view
     }()
 
-    var onChanged: ((BaseTextField, String?) -> Void)? {
-        get { searchTextField.onChanged }
-        set { searchTextField.onChanged = newValue }
+    var textPublisher: AnyPublisher<String?, Never> {
+        searchTextField.textPublisher
     }
 
     var needToShowError = false { didSet {
