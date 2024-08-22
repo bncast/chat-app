@@ -7,8 +7,8 @@
 
 import Foundation
 
-class GetChatroomListEntity: RequestableApiEntity {
-    typealias ResponseEntity = GetChatroomListRespondableEntity
+class GetChatRoomListEntity: RequestableApiEntity {
+    typealias ResponseEntity = GetChatRoomListRespondableEntity
 
     static var method: BaseNetworkOperation.Method { .get }
     var path: String { "rooms" }
@@ -21,10 +21,10 @@ struct GetChatroomRequestBody: RequestUrlEncodedBody {
 }
 
 // MARK: Defining response
-struct GetChatroomListRespondableEntity: RespondableApiEntity {
+struct GetChatRoomListRespondableEntity: RespondableApiEntity {
     var success: Int
     var error: ErrorMessage?
-    var chatrooms: [ChatRoomEntity]
+    var chatRooms: [ChatRoomEntity]
 }
 
 struct ChatRoomEntity: Codable {

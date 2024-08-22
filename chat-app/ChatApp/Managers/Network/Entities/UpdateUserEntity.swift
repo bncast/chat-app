@@ -47,7 +47,11 @@ struct UpdateUserRequestBody: RequestJsonBody {
 
 // MARK: Defining response
 struct UpdateUserRespondableEntity: RespondableApiEntity {
-    var encoder: JSONEncoder { JSONEncoder.snakeCaseEncoder() }
+    static var decoder: JSONDecoder {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }
 
     var success: Int
     var error: ErrorMessage?

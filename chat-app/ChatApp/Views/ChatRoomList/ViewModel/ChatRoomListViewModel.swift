@@ -34,13 +34,13 @@ final class ChatRoomListViewModel {
     @Published var items: [Section: [Item]] = [:]
 
     func load() async {
-        guard let chatrooms = try? await GetChatroomListEntity().run().chatrooms else {
+        guard let chatRooms = try? await GetChatRoomListEntity().run().chatRooms else {
             await loadEmptyRooms()
             return
         }
 
         let groupedItems = Dictionary(
-            grouping: chatrooms,
+            grouping: chatRooms,
             by: { $0.isJoined ? Section.myRooms : Section.otherRooms }
         )
 

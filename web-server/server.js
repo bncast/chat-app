@@ -1,4 +1,5 @@
 const express = require('express');
+const URL = require('url');
 const bodyParser = require('body-parser');
 const YAML = require('yamljs');
 const fs = require('fs');
@@ -29,13 +30,30 @@ const handleRequest = (req, res, routeConfig) => {
 
 let routes = config["routes"];
 Object.keys(routes).forEach(route => {
-    const methods = routes[route];
-    Object.keys(methods).forEach(method => {
-        app[method.toLowerCase()](route, (req, res) => {
-            handleRequest(req, res, methods[method]);
-          });
-    });
+  const methods = routes[route];
+  Object.keys(methods).forEach(method => {
+      app[method.toLowerCase()](route, (req, res) => {
+        const fullPath = fullUrl(req);
+        const methodString = req.method.toLowerCase();
+        const path = req.path.substr(1); // delete '/'
+        console.log('=================== Request  Start ===================');
+        console.log('Method -> ' + methodString);
+        console.log('Request -> ' + fullPath);
+        console.log('Path -> ' + path);
+        console.log('Header -> ' + JSON.stringify(req.headers, null, '  '));
+        console.log('=================== Request   End  ===================');
+        handleRequest(req, res, methods[method]);
+      });
+  });
 });
+
+function fullUrl(req) {
+  return URL.format({
+      protocol: req.protocol,
+      host: req.get('host'),
+      pathname: req.originalUrl
+  });
+}
 
 // Long Polling for Chat Room
 app.get('/api/listen', (req, res) => {

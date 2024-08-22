@@ -24,7 +24,8 @@ class MainViewController: BaseViewController {
 
         Task {
             do {
-                let request = try await AppVersionEntity().run()
+                let request = try await GetChatRoomMessagesEntity(deviceId: "TEMP", roomId: 10001).run()
+                print("NINOTEST", request)
             } catch {
                 var message = ""
                 message += "Error \(error.localizedDescription)"

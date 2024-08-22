@@ -14,3 +14,17 @@ routes:
       - statusCode: 200
         delay: 500
         filename: stub_chatroom_details.json
+  /api/users:
+    POST:
+      - statusCode: 200
+        delay: 500
+        filename: stub_update_user.json
+    PUT:
+      - statusCode: 200
+        delay: 500
+        filename: stub_update_user.json
+  /api/messages:
+    GET:
+      - statusCode: 200
+        delay: 500
+        filename: stub_messages.json

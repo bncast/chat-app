@@ -1,5 +1,5 @@
 {
-	"chatrooms" : [
+	"chat_rooms" : [
 		{
 			"room_id": 10001,
 			"author_id": 11001,
