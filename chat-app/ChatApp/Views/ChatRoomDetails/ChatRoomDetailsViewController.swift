@@ -19,16 +19,37 @@ class ChatRoomDetailsViewController: BaseViewController {
     private lazy var layout: UICollectionViewCompositionalLayout = {
         UICollectionViewCompositionalLayout { [weak self] index, _ in
             guard let self, let sections = dataSource?.snapshot().sectionIdentifiers else { fatalError() }
-
             return getSectionLayout()
         }
     }()
 
+    private lazy var layoutListConfiguration: UICollectionLayoutListConfiguration = {
+        var listConfig = UICollectionLayoutListConfiguration(appearance: .plain)
+
+        listConfig.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
+            guard let dataSource = dataSource else { fatalError() }
+
+            let actionHandler: UIContextualAction.Handler = { action, view, completion in
+                self.viewModel.items.remove(at: indexPath.row)
+                completion(true)
+            }
+
+            let action = UIContextualAction(style: .normal, title: nil, handler: actionHandler)
+            action.image = UIImage(systemName: "trash.fill")
+            action.backgroundColor = .systemRed
+
+            return UISwipeActionsConfiguration(actions: [action])
+        }
+        return listConfig
+    }()
+
     private lazy var collectionView: UICollectionView = {
-        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        let listLayout = UICollectionViewCompositionalLayout.list(using: layoutListConfiguration)
+
+        let view = UICollectionView(frame: .zero, collectionViewLayout: listLayout)
         view.backgroundView = nil
         view.backgroundColor = .background(.main)
-        
+
         MemberHeaderCollectionReusableView.registerView(to: view)
         MemberWithStatusCollectionViewCell.registerCell(to: view)
         return view
@@ -56,7 +77,7 @@ class ChatRoomDetailsViewController: BaseViewController {
 
     private typealias ItemInfo = ChatRoomDetailsViewModel.ItemInfo
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Int, ItemInfo>
-    private typealias DataSource = UICollectionViewDiffableDataSource<Int,ItemInfo>
+    private typealias DataSource = UICollectionViewDiffableDataSource<Int, ItemInfo>
     private var dataSource: DataSource?
 
     private let viewModel = ChatRoomDetailsViewModel()
