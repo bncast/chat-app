@@ -60,6 +60,7 @@ class ChatRoomDetailsViewController: BaseViewController {
     private var dataSource: DataSource?
 
     private let viewModel = ChatRoomDetailsViewModel()
+    private var continuation: CheckedContinuation<Bool, Never>?
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -113,6 +114,26 @@ class ChatRoomDetailsViewController: BaseViewController {
         closeButton.tapHandler = { [weak self] _ in
             self?.dismiss(animated: true)
         }
+
+        inviteButton.tapHandler = { _ in
+            print("[ChatRoomDetailsViewController] inviteButton.tapHandler")
+        }
+        deleteRoomButton.tapHandlerAsync = { [weak self] _ in
+            guard let self else { return }
+            guard let isDeleteChatRoom = await showChatRoomDeleteAlert(in: self), isDeleteChatRoom == true else { return }
+
+            await IndicatorController.shared.show()
+            do {
+                try await viewModel.removeChatRoom(roomUserId: 1234)
+                await IndicatorController.shared.dismiss()
+                dismiss(animated: true)
+                continuation?.resume(returning: isDeleteChatRoom)
+            } catch {
+                print("[ChatRoomDetailsViewController] Error! \(error as! NetworkError)")
+                await IndicatorController.shared.dismiss()
+                continuation?.resume(returning: false)
+            }
+        }
     }
 
     @MainActor
@@ -126,11 +147,25 @@ class ChatRoomDetailsViewController: BaseViewController {
         .register(in: viewController)
     }
 
-    static func show(on parentViewController: UIViewController) {
-        let chatRoomDetailsViewController = Self()
-        chatRoomDetailsViewController.modalPresentationStyle = .overFullScreen
-        chatRoomDetailsViewController.transitioningDelegate = chatRoomDetailsViewController.fadeInAnimator
-        parentViewController.present(chatRoomDetailsViewController, animated: true)
+    @MainActor
+    private func showChatRoomDeleteAlert(in viewController: UIViewController) async -> Bool? {
+        return await AsyncAlertController<Bool>(
+            title: "CHAT ROOM",
+            message: "Delete this chat room?"
+        )
+        .addButton(title: "Ok", returnValue: true)
+        .addButton(title: "Cancel", returnValue: false)
+        .register(in: viewController)
+    }
+
+    static func show(on parentViewController: UIViewController) async -> Bool {
+        return await withCheckedContinuation { continuation in
+            let chatRoomDetailsViewController = Self()
+            chatRoomDetailsViewController.continuation = continuation
+            chatRoomDetailsViewController.modalPresentationStyle = .overFullScreen
+            chatRoomDetailsViewController.transitioningDelegate = chatRoomDetailsViewController.fadeInAnimator
+            parentViewController.present(chatRoomDetailsViewController, animated: true)
+        }
     }
 }
 
