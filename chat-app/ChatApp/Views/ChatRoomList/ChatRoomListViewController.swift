@@ -130,6 +130,13 @@ class ChatRoomListViewController: BaseViewController {
                 self?.apply(items)
             }
             .store(in: &cancellables)
+
+        searchBarView.textPublisher
+            .sink { [weak self] text in
+                guard let text else { return }
+                self?.viewModel.filterByName(searchKey: text)
+            }
+            .store(in: &cancellables)
     }
 
     override func setupActions() {
@@ -142,9 +149,6 @@ class ChatRoomListViewController: BaseViewController {
             ProfileViewController.show(on: self)
         }
 
-        searchBarView.onChanged = { _, text in
-            print("[ChatroomListViewController] searchBarView.onChanged \(text ?? "")")
-        }
         composeButton.tapHandlerAsync = { [weak self] _ in
             guard let self else { return }
             CreateChatRoomViewController.show(on: self)
