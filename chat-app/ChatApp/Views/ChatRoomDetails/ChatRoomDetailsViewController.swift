@@ -60,6 +60,7 @@ class ChatRoomDetailsViewController: BaseViewController {
     private var dataSource: DataSource?
 
     private let viewModel = ChatRoomDetailsViewModel()
+    private var continuation: CheckedContinuation<Bool, Never>?
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -119,11 +120,13 @@ class ChatRoomDetailsViewController: BaseViewController {
         }
         deleteRoomButton.tapHandlerAsync = { [weak self] _ in
             guard let self else { return }
-            guard let password = await showChatRoomDeleteAlert(in: self), password == true else { return }
+            guard let isDeleteChatRoom = await showChatRoomDeleteAlert(in: self), isDeleteChatRoom == true else { return }
 
             await IndicatorController.shared.show()
             await IndicatorController.shared.dismiss()
             dismiss(animated: true)
+
+            continuation?.resume(returning: isDeleteChatRoom)
         }
     }
 
@@ -149,11 +152,14 @@ class ChatRoomDetailsViewController: BaseViewController {
         .register(in: viewController)
     }
 
-    static func show(on parentViewController: UIViewController) {
-        let chatRoomDetailsViewController = Self()
-        chatRoomDetailsViewController.modalPresentationStyle = .overFullScreen
-        chatRoomDetailsViewController.transitioningDelegate = chatRoomDetailsViewController.fadeInAnimator
-        parentViewController.present(chatRoomDetailsViewController, animated: true)
+    static func show(on parentViewController: UIViewController) async -> Bool {
+        return await withCheckedContinuation { continuation in
+            let chatRoomDetailsViewController = Self()
+            chatRoomDetailsViewController.continuation = continuation
+            chatRoomDetailsViewController.modalPresentationStyle = .overFullScreen
+            chatRoomDetailsViewController.transitioningDelegate = chatRoomDetailsViewController.fadeInAnimator
+            parentViewController.present(chatRoomDetailsViewController, animated: true)
+        }
     }
 }
 

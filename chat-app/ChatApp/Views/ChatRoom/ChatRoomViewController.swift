@@ -132,10 +132,13 @@ class ChatRoomViewController: BaseViewController {
             print("SEND TAP")
         }
 
-        navigationBar?.moreTapHandler = { [weak self] _ in
+        navigationBar?.moreTapHandlerAsync = { [weak self] _ in
             guard let self else { return }
 
-            ChatRoomDetailsViewController.show(on: self)
+            let isRemovedChatRoom = await ChatRoomDetailsViewController.show(on: self)
+            if isRemovedChatRoom {
+                navigationController?.popViewController(animated: true)
+            }
         }
 
         tapRecognizer.tapHandler = { [weak self] _ in
