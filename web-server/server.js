@@ -1,81 +1,85 @@
 const express = require('express');
-const URL = require('url');
 const bodyParser = require('body-parser');
-const YAML = require('yamljs');
-const fs = require('fs');
 const path = require('path');
 
+const Database = require('./config/database');
+const UserController = require('./controllers/userController');
+const RoomController = require('./controllers/roomController');
+const RoomUserController = require('./controllers/roomUserController');
+const MessageController = require('./controllers/messageController');
+
 const app = express();
+const db = new Database();
+const userController = new UserController(db);
+const roomController = new RoomController(db);
+const roomUserController = new RoomUserController(db);
+const messageController = new MessageController(db);
+
+app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-const config = YAML.load('response/routes.yaml');
+const WAITING_TIME_LIMIT = 60 * 1000;
+var waitingClients = []; // Store waiting client responses
 
-const messageQueue = []; // Store chat messages
-const waitingClients = []; // Store waiting client responses
-
-const handleRequest = (req, res, routeConfig) => {
-    const responseConfig = routeConfig.find(cfg => cfg.statusCode);
-    if (responseConfig.delay) {
-      setTimeout(() => {
-        const filePath = path.join(__dirname, "response", responseConfig.filename);
-        const responseBody = fs.readFileSync(filePath, 'utf8');
-        res.status(responseConfig.statusCode).send(JSON.parse(responseBody));
-      }, responseConfig.delay);
-    } else {
-        const filePath = path.join(__dirname, "response", responseConfig.filename);
-        const responseBody = fs.readFileSync(filePath, 'utf8');
-        res.status(responseConfig.statusCode).send(JSON.parse(responseBody));
-    }
-};
-
-let routes = config["routes"];
-Object.keys(routes).forEach(route => {
-  const methods = routes[route];
-  Object.keys(methods).forEach(method => {
-      app[method.toLowerCase()](route, (req, res) => {
-        const fullPath = fullUrl(req);
-        const methodString = req.method.toLowerCase();
-        const path = req.path.substr(1); // delete '/'
-        console.log('=================== Request  Start ===================');
-        console.log('Method -> ' + methodString);
-        console.log('Request -> ' + fullPath);
-        console.log('Path -> ' + path);
-        console.log('Header -> ' + JSON.stringify(req.headers, null, '  '));
-        console.log('=================== Request   End  ===================');
-        handleRequest(req, res, methods[method]);
-      });
-  });
-});
-
-function fullUrl(req) {
-  return URL.format({
-      protocol: req.protocol,
-      host: req.get('host'),
-      pathname: req.originalUrl
-  });
-}
-
-// Long Polling for Chat Room
 app.get('/api/listen', (req, res) => {
-  if (messageQueue.length > 0) {
-    res.status(200).json({ success: 1, messages: messageQueue });
-    messageQueue.length = 0; // Clear the message queue
-  } else {
-    waitingClients.push(res);
-  }
+  const { device_id, room_id } = req.query;
+  
+  waitingClients.push({ room_id, clientRes: res, timestamp: Date.now() });
 });
 
 app.post('/api/send', (req, res) => {
-  const message = req.body.message;
+  const currentTime = Date.now();
 
-  messageQueue.push(message);
-  res.status(200).json({ success: 1 });
+  // Remove clients who have been waiting for more than 1 minute
+  waitingClients = waitingClients.filter(client => {
+    return (currentTime - client.timestamp) <= WAITING_TIME_LIMIT;
+  });
 
-  while (waitingClients.length > 0) {
-    const client = waitingClients.pop();
-    client.status(200).json({ success: 1, messages: messageQueue });
+  messageController.createMessage(req, res, (target) => {
+    
+    // Filter clients who belong to the target room
+    const clientsToNotify = waitingClients.filter(client => client.room_id == target);
+
+    // Notify all matching clients
+    clientsToNotify.forEach(client => {
+      client.clientRes.status(200).json({ success: 1 });
+    });
+
+    // Remove notified clients from the waiting list
+    waitingClients = waitingClients.filter(client => client.room_id != target);
+  });
+});
+
+
+app.post('/api/users', (req, res) => userController.setUser(req, res));
+app.get('/api/users', (req, res) => userController.getUsers(req, res)); // need to retested during integration
+
+app.get('/api/rooms', (req, res) => roomUserController.getChatRooms(req, res));
+app.post('/api/rooms', (req, res) => roomController.create(req, res));
+app.put('/api/rooms', (req, res) => console.log("TODO for editing name"));
+app.delete('/api/rooms', (req, res) => console.log("TODO for deleting room"));
+
+app.post('/api/rooms/join', (req, res) => roomUserController.joinRoom(req, res));
+
+app.get('/api/messages', (req, res) => messageController.getMessagesByRoom(req, res));
+app.put('/api/messages', (req, res) => console.log("TODO for editing"));
+
+app.delete('/api/rooms/details', (req, res) => console.log("TODO for deleting members"));
+app.patch('/api/rooms/details', (req, res) => console.log("TODO for changing to member status admin"));
+
+app.get('/api/invites', (req, res) => console.log("TODO to get all invites for user"));
+app.post('/api/invites', (req, res) => console.log("TODO to send invite to user"));
+
+
+process.on('SIGINT', async () => {
+  try {
+      await db.close();
+      console.log('Database connection closed.');
+  } catch (err) {
+      console.error('Error closing the database connection:', err.stack);
+  } finally {
+      process.exit();
   }
-  messageQueue.length = 0; // Clear the message queue after sending
 });
 
 const PORT = process.env.PORT || 3000;

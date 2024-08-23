@@ -358,8 +358,6 @@ class AppConstant: NSObject {
     @KeychainReadAndWrite("displayName", default: nil)
     var displayName: String?
 
-    var forRegister = false
-
     let screen: (Size) -> CGFloat = { size in
         switch size {
         case .width: UIScreen.main.bounds.width

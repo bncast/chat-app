@@ -11,7 +11,7 @@ import Foundation
 class UpdateUserEntity: RequestableApiEntity {
     typealias ResponseEntity = UpdateUserRespondableEntity
 
-    static var method: BaseNetworkOperation.Method { AppConstant.shared.forRegister ? .post : .put }
+    static var method: BaseNetworkOperation.Method { .post }
     var path: String { "users" }
     var body: RequestBody? { UpdateUserRequestBody(name: name, deviceId: deviceId) }
 
@@ -32,7 +32,6 @@ class UpdateUserEntity: RequestableApiEntity {
             return "\(randomElement)"
         }.joined()
         self.deviceId = key
-        AppConstant.shared.forRegister = true
         AppConstant.shared.deviceId = key
     }
 }

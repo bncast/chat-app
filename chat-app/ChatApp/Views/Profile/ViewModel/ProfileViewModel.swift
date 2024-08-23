@@ -17,7 +17,6 @@ final class ProfileViewModel {
 
     func setDisplayName(name: String) {
         AppConstant.shared.displayName = name
-        AppConstant.shared.forRegister = false
     }
     func updateName(name: String) async throws {
         try await UpdateUserEntity(name: name).run()

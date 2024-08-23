@@ -11,17 +11,18 @@ class GetChatRoomListEntity: RequestableApiEntity {
     typealias ResponseEntity = GetChatRoomListRespondableEntity
 
     static var method: BaseNetworkOperation.Method { .get }
-    var path: String { "rooms" }
-    var body: RequestBody? { GetChatroomRequestBody() }
+    var path: String { "rooms?device_id=\(AppConstant.shared.deviceId ?? "")" }
 }
 
-// MARK: - Defining body
-struct GetChatroomRequestBody: RequestUrlEncodedBody {
-    var encoder: JSONEncoder { JSONEncoder.snakeCaseEncoder() }
-}
 
 // MARK: Defining response
 struct GetChatRoomListRespondableEntity: RespondableApiEntity {
+    static var decoder: JSONDecoder {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }
+
     var success: Int
     var error: ErrorMessage?
     var chatRooms: [ChatRoomEntity]
@@ -29,10 +30,11 @@ struct GetChatRoomListRespondableEntity: RespondableApiEntity {
 
 struct ChatRoomEntity: Codable {
     var roomId: Int
-    var authorId: Int
+    var authorId: String
     var authorName: String
     var preview: String
     var isJoined: Bool
+    var currentRoomUserId: Int?
     var hasPassword: Bool
     var chatName: String
     var chatImageUrl: String

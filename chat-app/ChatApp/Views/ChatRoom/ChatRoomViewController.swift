@@ -106,7 +106,7 @@ class ChatRoomViewController: BaseViewController {
     // MARK: - Setups
 
     override func setupNavigation() {
-        title = "Room Name"
+        title = viewModel.details?.name
 
         setNavigationBarDefaultStyle()
     }
@@ -182,8 +182,12 @@ class ChatRoomViewController: BaseViewController {
 
 
     override func setupActions() {
-        sendButton.tapHandler = { _ in
-            print("SEND TAP")
+        sendButton.tapHandlerAsync = { [weak self] _ in
+            guard let self, !textView.text.isEmpty else { return }
+
+            await viewModel.sendMessage(textView.text)
+
+            textView.text = ""
         }
 
         navigationBar?.moreTapHandlerAsync = { [weak self] _ in
@@ -219,6 +223,8 @@ class ChatRoomViewController: BaseViewController {
             navigationController.pushViewController(viewController, animated: true)
         }
     }
+
+    
 }
 
 extension ChatRoomViewController {
@@ -277,6 +283,9 @@ extension ChatRoomViewController {
                 dataSource?.apply(snapshot)
             }
         }
+
+        collectionView.scrollToBottom()
+
     }
 
     private func getHeader(at indexPath: IndexPath) -> ChatRoomMessageHeaderCollectionReusableView {
