@@ -50,11 +50,11 @@ final class ChatRoomDetailsViewModel {
     func updateChatRoomNameInServer(name: String) async throws {
         try await UpdateChatRoomNameEntity(name: name, roomUserId: 11106).run()
     }
-    
+
     func removeChatRoom(roomUserId: Int) async throws {
         try await RemoveChatRoomEntity(roomUserId: roomUserId).run()
     }
-    
+
     func setIsAdminInServer(isAdmin: Bool, roomUserId: Int) async throws {
         try await SetIsAdminEntity(isAdmin: isAdmin, roomUserId: roomUserId).run()
     }
@@ -62,5 +62,8 @@ final class ChatRoomDetailsViewModel {
     func updateIsAdmin(isAdmin: Bool, roomUserId: Int) {
         guard let index = items.firstIndex(where: { $0.id == roomUserId }) else { return }
         items[index] = ItemInfo(id: roomUserId, name: items[index].name, isAdmin: isAdmin)
+
+    func deleteFromChatRoom(roomUserId: Int, deviceId: String) async throws {
+        try await RemoveMemberFromChatRoomEntity(roomUserId: roomUserId, deviceId: deviceId).run()
     }
 }

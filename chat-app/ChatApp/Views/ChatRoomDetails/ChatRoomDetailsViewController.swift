@@ -30,6 +30,16 @@ class ChatRoomDetailsViewController: BaseViewController {
             guard let dataSource = dataSource else { fatalError() }
 
             let actionHandler: UIContextualAction.Handler = { action, view, completion in
+                Task {
+                    await IndicatorController.shared.show()
+                    do {
+                        try await self.viewModel.deleteFromChatRoom(roomUserId: 122, deviceId: "2222")
+                    } catch {
+                        print("[ChatRoomDetailsViewController] Error! \(error as! NetworkError)")
+                        await IndicatorController.shared.dismiss()
+                    }
+                    await IndicatorController.shared.dismiss()
+                }
                 self.viewModel.items.remove(at: indexPath.row)
                 self.reloadData()
                 completion(true)
