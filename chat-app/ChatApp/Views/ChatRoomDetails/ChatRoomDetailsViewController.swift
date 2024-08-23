@@ -39,10 +39,10 @@ class ChatRoomDetailsViewController: BaseViewController {
                         await IndicatorController.shared.dismiss()
                     }
                     await IndicatorController.shared.dismiss()
+                    self.viewModel.items.remove(at: indexPath.row)
+                    self.reloadData()
+                    completion(true)
                 }
-                self.viewModel.items.remove(at: indexPath.row)
-                self.reloadData()
-                completion(true)
             }
 
             let action = UIContextualAction(style: .normal, title: nil, handler: actionHandler)

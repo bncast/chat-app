@@ -62,7 +62,8 @@ final class ChatRoomDetailsViewModel {
     func updateIsAdmin(isAdmin: Bool, roomUserId: Int) {
         guard let index = items.firstIndex(where: { $0.id == roomUserId }) else { return }
         items[index] = ItemInfo(id: roomUserId, name: items[index].name, isAdmin: isAdmin)
-
+    }
+    
     func deleteFromChatRoom(roomUserId: Int, deviceId: String) async throws {
         try await RemoveMemberFromChatRoomEntity(roomUserId: roomUserId, deviceId: deviceId).run()
     }
