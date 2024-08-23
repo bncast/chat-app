@@ -36,6 +36,10 @@ class MemberWithStatusCollectionViewCell: BaseCollectionViewCell {
         adminButton.setTitle(isAdmin ? "ADMIN" : "NOT ADMIN", for: .normal)
     } }
 
+    var roomUserId: Int?
+
+    var setIsAdminInServerHandler: ((Bool) async -> Bool?)?
+
     override func setupLayout() {
         contentView.addSubviews([
             nameLabel,
@@ -53,5 +57,14 @@ class MemberWithStatusCollectionViewCell: BaseCollectionViewCell {
         adminButton.centerY == contentView.centerY
         adminButton.width == 140
         adminButton.height == 44
+    }
+
+    override func setupActions() {
+        adminButton.tapHandlerAsync = { [weak self] _ in
+            guard let self, let setIsAdminInServerHandler, let isAdmin,
+                  let updatedIsAdmin = await setIsAdminInServerHandler(!isAdmin) else { return }
+
+            self.isAdmin = updatedIsAdmin
+        }
     }
 }

@@ -13,7 +13,7 @@ class BaseNetworkOperation: Operation {
         case post
         case put
         case delete
-        case update
+        case patch
 
         var description: String {
             switch self {
@@ -21,7 +21,7 @@ class BaseNetworkOperation: Operation {
             case .post: "POST"
             case .put: "PUT"
             case .delete: "DELETE"
-            case .update: "UPDATE"
+            case .patch: "PATCH"
             }
         }
     }
