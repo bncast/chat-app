@@ -123,10 +123,16 @@ class ChatRoomDetailsViewController: BaseViewController {
             guard let isDeleteChatRoom = await showChatRoomDeleteAlert(in: self), isDeleteChatRoom == true else { return }
 
             await IndicatorController.shared.show()
-            await IndicatorController.shared.dismiss()
-            dismiss(animated: true)
-
-            continuation?.resume(returning: isDeleteChatRoom)
+            do {
+                try await viewModel.removeChatRoom(roomUserId: 1234)
+                await IndicatorController.shared.dismiss()
+                dismiss(animated: true)
+                continuation?.resume(returning: isDeleteChatRoom)
+            } catch {
+                print("[ChatRoomDetailsViewController] Error! \(error as! NetworkError)")
+                await IndicatorController.shared.dismiss()
+                continuation?.resume(returning: false)
+            }
         }
     }
 

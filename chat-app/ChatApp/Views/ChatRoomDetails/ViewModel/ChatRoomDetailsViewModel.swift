@@ -44,4 +44,8 @@ final class ChatRoomDetailsViewModel {
     func updateChatRoomNameInServer(name: String) async throws {
         try await UpdateChatRoomNameEntity(name: name, roomUserId: 11106).run()
     }
+
+    func removeChatRoom(roomUserId: Int) async throws {
+        try await RemoveChatRoomEntity(roomUserId: roomUserId).run()
+    }
 }
