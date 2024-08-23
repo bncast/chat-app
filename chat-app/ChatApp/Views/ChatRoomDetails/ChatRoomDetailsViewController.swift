@@ -114,13 +114,16 @@ class ChatRoomDetailsViewController: BaseViewController {
             self?.dismiss(animated: true)
         }
 
-        inviteButton.tapHandler = { [weak self] _ in
+        inviteButton.tapHandler = { _ in
             print("[ChatRoomDetailsViewController] inviteButton.tapHandler")
         }
         deleteRoomButton.tapHandlerAsync = { [weak self] _ in
+            guard let self else { return }
+            guard let password = await showChatRoomDeleteAlert(in: self), password == true else { return }
+
             await IndicatorController.shared.show()
             await IndicatorController.shared.dismiss()
-            self?.dismiss(animated: true)
+            dismiss(animated: true)
         }
     }
 
@@ -132,6 +135,17 @@ class ChatRoomDetailsViewController: BaseViewController {
             name: currentName
         )
         .addButton(title: "Ok")
+        .register(in: viewController)
+    }
+
+    @MainActor
+    private func showChatRoomDeleteAlert(in viewController: UIViewController) async -> Bool? {
+        return await AsyncAlertController<Bool>(
+            title: "CHAT ROOM",
+            message: "Delete this chat room?"
+        )
+        .addButton(title: "Ok", returnValue: true)
+        .addButton(title: "Cancel", returnValue: false)
         .register(in: viewController)
     }
 
