@@ -113,6 +113,15 @@ class ChatRoomDetailsViewController: BaseViewController {
         closeButton.tapHandler = { [weak self] _ in
             self?.dismiss(animated: true)
         }
+
+        inviteButton.tapHandler = { [weak self] _ in
+            print("[ChatRoomDetailsViewController] inviteButton.tapHandler")
+        }
+        deleteRoomButton.tapHandlerAsync = { [weak self] _ in
+            await IndicatorController.shared.show()
+            await IndicatorController.shared.dismiss()
+            self?.dismiss(animated: true)
+        }
     }
 
     @MainActor

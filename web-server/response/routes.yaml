@@ -17,6 +17,10 @@ routes:
       - statusCode: 200
         delay: 500
         filename: stub_chatroom_details.json
+    DELETE:
+      - statusCode: 200
+        delay: 500
+        filename: stub_success.json
   /api/rooms/join:
     POST:
       - statusCode: 200
