@@ -31,6 +31,7 @@ class ChatRoomDetailsViewController: BaseViewController {
 
             let actionHandler: UIContextualAction.Handler = { action, view, completion in
                 self.viewModel.items.remove(at: indexPath.row)
+                self.reloadData()
                 completion(true)
             }
 
@@ -245,6 +246,32 @@ extension ChatRoomDetailsViewController {
         }
     }
 
+    private func reloadData() {
+        var snapshot = Snapshot()
+        snapshot.appendSections([0])
+
+        snapshot.appendItems(viewModel.items)
+
+        dataSource = DataSource(
+            collectionView: collectionView,
+            cellProvider: { [weak self] collectionView, indexPath, info in
+                self?.getMemberCell(at: indexPath, item: info)
+            })
+        dataSource?.supplementaryViewProvider = { [weak self] in
+            switch $1 {
+            case MemberHeaderCollectionReusableView.viewOfKind:
+                self?.getHeader(at: $2)
+            default:
+                fatalError()
+            }
+        }
+        if #available(iOS 15.0, *) {
+            dataSource?.applySnapshotUsingReloadData(snapshot)
+        } else {
+            dataSource?.apply(snapshot)
+        }
+    }
+
     private func getHeader(at indexPath: IndexPath) -> MemberHeaderCollectionReusableView {
         let view = MemberHeaderCollectionReusableView.dequeueView(from: collectionView, for: indexPath)
 
@@ -275,10 +302,7 @@ extension ChatRoomDetailsViewController {
         let cell = MemberWithStatusCollectionViewCell.dequeueCell(from: collectionView, for: indexPath)
         cell.name = item.name
         cell.isAdmin = item.isAdmin
-        if indexPath.row % 2 == 0 {
-            cell.backgroundColor = .background(.mainLight)
-        }
-
+        cell.backgroundColor = indexPath.row % 2 == 0 ? .background(.mainLight) : .background(.main)
         return cell
     }
 }
