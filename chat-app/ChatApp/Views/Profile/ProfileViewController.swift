@@ -69,6 +69,7 @@ class ProfileViewController: BaseViewController {
     }()
 
     private let viewModel = ProfileViewModel()
+    private var continuation: CheckedContinuation<Void, Never>?
 
     override func setupLayout() {
         view.backgroundColor = .clear
@@ -83,6 +84,9 @@ class ProfileViewController: BaseViewController {
                 saveButton
             ])
         ])
+
+        guard AppConstant.shared.isNewUser else { return }
+        closeButton.alpha = 0
     }
 
     override func setupConstraints() {
@@ -129,22 +133,23 @@ class ProfileViewController: BaseViewController {
     }
 
     override func setupActions() {
-        closeButton.tapHandler = { [weak self] _ in
-            self?.dismiss(animated: true)
-        }
-        tapRecognizer.tapHandler = { [weak self] _ in
-            self?.dismiss(animated: true)
-        }
         saveButton.tapHandlerAsync = { [weak self] _ in
             do {
                 guard let text = self?.nameTextField.text, !text.isEmpty else { return }
+                let statusBeforeUpdate = AppConstant.shared.isNewUser
 
                 self?.nameTextField.resignFirstResponder()
                 await IndicatorController.shared.show()
                 try await self?.viewModel.updateName(name: text)
                 await IndicatorController.shared.dismiss()
-
                 self?.viewModel.setDisplayName(name: text)
+                await IndicatorController.shared.show(message: "\(statusBeforeUpdate ? "Registered" : "Updated") Successfully!", isDone: true)
+                await Task.sleep(seconds: 1)
+                await IndicatorController.shared.dismiss()
+                if statusBeforeUpdate {
+                    self?.dismiss(animated: true)
+                }
+
             } catch {
                 print("\(error as! NetworkError)")
                 await IndicatorController.shared.dismiss()
@@ -153,16 +158,33 @@ class ProfileViewController: BaseViewController {
 
         keyboardAppear = self
 
-        guard AppConstant.shared.isNewUser else { return }
-        nameTextField.becomeFirstResponder()
+        guard !AppConstant.shared.isNewUser else {
+            nameTextField.becomeFirstResponder()
+            return
+        }
+
+        closeButton.tapHandler = { [weak self] _ in
+            self?.dismiss(animated: true)
+        }
+        tapRecognizer.tapHandler = { [weak self] _ in
+            self?.dismiss(animated: true)
+        }
     }
 
-    static func show(on parentViewController: UIViewController) {
-        let profileViewController = Self()
-        profileViewController.modalPresentationStyle = .overFullScreen
-        profileViewController.transitioningDelegate = profileViewController.fadeInAnimator
-        profileViewController.viewModel.load()
-        parentViewController.present(profileViewController, animated: true)
+    static func show(on parentViewController: UIViewController) async {
+        await withCheckedContinuation { continuation in
+            let profileViewController = Self()
+            profileViewController.modalPresentationStyle = .overFullScreen
+            profileViewController.transitioningDelegate = profileViewController.fadeInAnimator
+            profileViewController.continuation = continuation
+            profileViewController.viewModel.load()
+            parentViewController.present(profileViewController, animated: true)
+        }
+    }
+
+    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        super.dismiss(animated: flag, completion: completion)
+        continuation?.resume()
     }
 }
 

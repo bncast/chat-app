@@ -82,9 +82,11 @@ class ChatRoomListViewController: BaseViewController {
         navigationBar?.showChatRoomListButtons = true
 
         Task {
-            await IndicatorController.shared.show()
-            await viewModel.load()
-            await IndicatorController.shared.dismiss()
+            if !AppConstant.shared.isNewUser {
+                await IndicatorController.shared.show()
+                await viewModel.load()
+                await IndicatorController.shared.dismiss()
+            }
         }
     }
 
@@ -104,6 +106,14 @@ class ChatRoomListViewController: BaseViewController {
             collectionView,
             composeButton
         ])
+
+        guard AppConstant.shared.isNewUser else { return }
+        Task {
+            await showProfile()
+            await IndicatorController.shared.show()
+            await viewModel.load()
+            await IndicatorController.shared.dismiss()
+        }
     }
 
     override func setupConstraints() {
@@ -143,10 +153,10 @@ class ChatRoomListViewController: BaseViewController {
         navigationBar?.invitationTapHandler = { _ in
             print("[ChatroomListViewController] navigationBar?.invitationTapHandler")
         }
-        navigationBar?.profileTapHandler = { [weak self] _ in
+        navigationBar?.profileTapHandlerAsync = { [weak self] _ in
             guard let self else { return }
 
-            ProfileViewController.show(on: self)
+            await showProfile()
         }
 
         composeButton.tapHandlerAsync = { [weak self] _ in
@@ -161,8 +171,14 @@ class ChatRoomListViewController: BaseViewController {
 
     @objc
     private func didPullToRefresh(_ sender: UIRefreshControl) {
-        Task { await viewModel.load() }
+        if !AppConstant.shared.isNewUser {
+            Task { await viewModel.load() }
+        }
         refreshControl.endRefreshing()
+    }
+
+    func showProfile() async {
+        await ProfileViewController.show(on: self)
     }
 
     @MainActor
