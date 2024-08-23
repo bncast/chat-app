@@ -14,22 +14,30 @@ class SendMessageEntity: RequestableApiEntity {
     var path: String { "send" }
     var isIgnoreAccessTokenError: Bool { ignoreError }
     var isIgnoreLogoutErrors: Bool { ignoreError }
-    var body: RequestBody? { SendMessageBody(message: message, sender: sender) }
+    var body: RequestBody? {
+        SendMessageBody(deviceId: deviceId, message: message, roomUserId: roomUserId, replyToId: replyToId)
+    }
     private var ignoreError: Bool { false }
+    private let deviceId: String
     private let message: String
-    private let sender: String
+    private let roomUserId: Int
+    private let replyToId: Int?
 
-    init(message: String, sender: String) {
+    init(deviceId: String, message: String, roomUserId: Int, replyToId: Int?) {
+        self.deviceId = deviceId
         self.message = message
-        self.sender = sender
+        self.roomUserId = roomUserId
+        self.replyToId = replyToId
     }
 }
 
-struct SendMessageBody : RequestUrlEncodedBody {
+struct SendMessageBody : RequestJsonBody {
     var encoder: JSONEncoder { JSONEncoder.snakeCaseEncoder() }
     
-    var message: String
-    var sender: String
+    let deviceId: String
+    let message: String
+    let roomUserId: Int
+    let replyToId: Int?
 }
 
 struct SendMessageRespondableEntity: RespondableApiEntity {

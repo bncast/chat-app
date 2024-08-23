@@ -161,8 +161,8 @@ class ChatRoomListViewController: BaseViewController {
 
     @objc
     private func didPullToRefresh(_ sender: UIRefreshControl) {
+        Task { await viewModel.load() }
         refreshControl.endRefreshing()
-        print("[ChatroomListViewController] didPullToRefresh")
     }
 
     @MainActor

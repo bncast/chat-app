@@ -39,7 +39,9 @@ class ChatRoomViewModel {
 
     func load() async {
         guard let deviceId = AppConstant.shared.deviceId,
-              var messages = try? await GetChatRoomMessagesEntity(deviceId: deviceId, roomId: 11101).run().messages
+              let roomId = details?.roomId,
+              let roomUserId = details?.currentRoomUserId,
+              var messages = try? await GetChatRoomMessagesEntity(deviceId: deviceId, roomId: roomId, roomUserId: roomUserId).run().messages
         else {
             //TODO: NO DATA
             return
@@ -70,6 +72,34 @@ class ChatRoomViewModel {
         }
 
         self.items = items
+
+        listenToMessages()
+    }
+
+    @discardableResult
+    func sendMessage(_ message: String) async -> Bool{
+        guard let details, let roomUserId = details.currentRoomUserId else { return false }
+        let deviceId = AppConstant.shared.deviceId ?? ""
+
+        let response = try? await SendMessageEntity(deviceId: deviceId, message: message, roomUserId: roomUserId, replyToId: nil).run()
+
+        return response?.success == 1
+    }
+
+    var request: GetMessageRespondableEntity?
+    private func listenToMessages() {
+        guard let details, let deviceId = AppConstant.shared.deviceId else { return }
+
+        Task { [weak self] in
+            guard let self else { return }
+
+            do {
+                request = try await GetMessageEntity(deviceId: deviceId, roomId: details.roomId).run()
+                await load()
+            } catch {
+                listenToMessages()
+            }
+        }
     }
 
 }

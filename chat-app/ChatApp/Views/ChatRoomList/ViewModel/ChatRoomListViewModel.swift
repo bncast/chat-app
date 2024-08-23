@@ -51,7 +51,7 @@ final class ChatRoomListViewModel {
         )
 
         chatInfos = chatRooms.map {
-            ChatInfo(name: $0.chatName, roomId: $0.roomId, memberDetails: $0.memberDetails.map({ detail in
+            ChatInfo(name: $0.chatName, roomId: $0.roomId, currentRoomUserId: $0.currentRoomUserId, memberDetails: $0.memberDetails.map({ detail in
                 MemberInfo(name: detail.name, isAdmin: detail.isAdmin, roomUserId: detail.roomUserId)
             }))
         }
@@ -120,6 +120,7 @@ final class ChatRoomListViewModel {
 struct ChatInfo {
     let name: String
     let roomId: Int
+    let currentRoomUserId: Int?
     let memberDetails: [MemberInfo]
 }
 

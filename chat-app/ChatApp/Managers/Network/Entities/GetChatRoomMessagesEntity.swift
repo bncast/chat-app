@@ -11,15 +11,22 @@ class GetChatRoomMessagesEntity: RequestableApiEntity {
     typealias ResponseEntity = GetChatRoomMessagesRespondableEntity
 
     static var method: BaseNetworkOperation.Method { .get }
-    var path: String { "messages?device_id=\(deviceId)&room_id=\(roomId)" }
+    var path: String {
+        """
+        messages?device_id=\(deviceId)&room_id=\(roomId)
+        &room_user_id=\(roomUserId)&lastMessageId=\(lastMessageId ?? "null")
+        """
+    }
 
     var deviceId: String
     var roomId: Int
+    var roomUserId: Int
     var lastMessageId: String?
 
-    init(deviceId: String, roomId: Int, lastMessageId: String? = nil) {
+    init(deviceId: String, roomId: Int, roomUserId: Int, lastMessageId: String? = nil) {
         self.deviceId = deviceId
         self.roomId = roomId
+        self.roomUserId = roomUserId
         self.lastMessageId = lastMessageId
     }
 }
@@ -30,7 +37,7 @@ struct GetChatRoomMessagesRespondableEntity: RespondableApiEntity {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let formatter = Date.utcDateFormatter
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         decoder.dateDecodingStrategy = .formatted(formatter)
         return decoder
     }

@@ -11,17 +11,28 @@ class GetMessageEntity: RequestableApiEntity {
 
     static var method: BaseNetworkOperation.Method { .get }
 
-    var path: String { "listen" }
+    var path: String { "listen?device_id=\(deviceId)&room_id=\(roomId)" }
     var isIgnoreAccessTokenError: Bool { ignoreError }
     var isIgnoreLogoutErrors: Bool { ignoreError }
     private var ignoreError: Bool { false }
 
+    var deviceId: String
+    var roomId: Int
+
+    init(deviceId: String, roomId: Int) {
+        self.deviceId = deviceId
+        self.roomId = roomId
+    }
 }
 
 struct GetMessageRespondableEntity: RespondableApiEntity {
     static var decoder: JSONDecoder {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let formatter = Date.utcDateFormatter
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        decoder.dateDecodingStrategy = .formatted(formatter)
+
         return decoder
     }
 

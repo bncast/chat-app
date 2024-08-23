@@ -53,6 +53,8 @@ final class ChatRoomDetailsViewModel {
     
     func removeChatRoom(roomUserId: Int) async throws {
         try await RemoveChatRoomEntity(roomUserId: roomUserId).run()
+    }
+    
     func setIsAdminInServer(isAdmin: Bool, roomUserId: Int) async throws {
         try await SetIsAdminEntity(isAdmin: isAdmin, roomUserId: roomUserId).run()
     }
