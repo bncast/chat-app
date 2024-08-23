@@ -37,6 +37,35 @@ class ChatRoomViewController: BaseViewController {
         return recognizer
     }()
 
+    private lazy var replyingToView: BaseView = {
+        let view = BaseView()
+        view.backgroundColor = .background(.main)
+        view.clipsToBounds = true
+        return view
+    }()
+    private weak var replyingToViewHeightConstraint: NSLayoutConstraint?
+
+    private lazy var replyingToLabel: UILabel = {
+        let view = UILabel()
+        view.font = .subhead
+        view.textColor = .text(.caption)
+        return view
+    }()
+
+    private lazy var messageReplyingToLabel: UILabel = {
+        let view = UILabel()
+        view.font = .callout
+        view.textColor = .text(.caption)
+        return view
+    }()
+
+    private lazy var closeReplyingToButton: BaseButton = {
+        let view = BaseButton()
+        view.setImage(UIImage(systemName: "xmark"),for: .normal)
+        view.tintColor = .text(.caption)
+        return view
+    }()
+
     private lazy var bottomView: BaseView = {
         let view = BaseView()
         view.layer.cornerRadius = 22
@@ -89,6 +118,11 @@ class ChatRoomViewController: BaseViewController {
 
         addSubviews([
             collectionView,
+            replyingToView.addSubviews([
+                replyingToLabel,
+                closeReplyingToButton,
+                messageReplyingToLabel
+            ]),
             bottomView.addSubviews([
                 textView,
                 sendButton
@@ -100,7 +134,27 @@ class ChatRoomViewController: BaseViewController {
         collectionView.left == view.left
         collectionView.right == view.right
         collectionView.top == view.top + 8
-        collectionView.bottom == bottomView.top - 8
+        collectionView.bottom == bottomView.top - 5
+
+        replyingToView.left == view.left
+        replyingToView.right == view.right
+        replyingToView.bottom == bottomView.top
+        replyingToViewHeightConstraint = replyingToView.height == 0
+
+        replyingToLabel.left == replyingToView.left + 20
+        replyingToLabel.right == closeReplyingToButton.left
+        replyingToLabel.top == replyingToView.top + 3
+        replyingToLabel.height == 22
+
+        messageReplyingToLabel.left == replyingToView.left + 20
+        messageReplyingToLabel.right == closeReplyingToButton.left
+        messageReplyingToLabel.bottom == replyingToView.bottom - 3
+        messageReplyingToLabel.height == 22
+
+        closeReplyingToButton.right == replyingToView.right
+        closeReplyingToButton.top == replyingToView.top
+        closeReplyingToButton.bottom == replyingToView.bottom
+        closeReplyingToButton.width == 44
 
         bottomView.left == view.left
         bottomView.right == view.right
@@ -143,6 +197,14 @@ class ChatRoomViewController: BaseViewController {
 
         tapRecognizer.tapHandler = { [weak self] _ in
             self?.textView.resignFirstResponder()
+        }
+
+        closeReplyingToButton.tapHandler = { [weak self] _ in
+            guard let self else { return }
+            replyingToViewHeightConstraint?.constant = 0
+            UIView.animate(withDuration: 0.2) {
+                self.view.layoutIfNeeded()
+            }
         }
 
         keyboardAppear = self
@@ -233,7 +295,37 @@ extension ChatRoomViewController {
         cell.name = item.name
         cell.time = item.time
         cell.isCurrentUser = item.isCurrentUser
+        cell.showOptionsHandler = { [weak self] content in
+            guard let self, let contentSnapshot = content.snapshotView(afterScreenUpdates: true)else { return }
+            switch await ChatRoomMessageOptionsViewController.show(
+                on: self.navigationController!,
+                with: contentSnapshot, and: item.isCurrentUser,
+                at: content.convert(content.bounds.origin, to: self.view)
+            ) {
+            case .reply: showReplyingTo(name: "Replying to \(item.isCurrentUser ? "Yourself" : item.name)", message: item.content)
+            case .edit: showEditingView(message: item.content)
+            case .delete: break
+            }
+        }
         return cell
+    }
+
+    private func showReplyingTo(name: String, message: String) {
+        replyingToLabel.text = name
+        messageReplyingToLabel.text = message
+        replyingToViewHeightConstraint?.constant = 44
+        UIView.animate(withDuration: 0.2) {
+            self.view.layoutIfNeeded()
+        }
+    }
+
+    private func showEditingView(message: String) {
+        replyingToLabel.text = "Editing"
+        messageReplyingToLabel.text = message
+        replyingToViewHeightConstraint?.constant = 44
+        UIView.animate(withDuration: 0.2) {
+            self.view.layoutIfNeeded()
+        }
     }
 }
 

@@ -42,6 +42,11 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
         return view
     }()
 
+    private lazy var longPressRecognizer: BaseLongPressGestureRecognizer = {
+        let recognizer = BaseLongPressGestureRecognizer(on: contentBackView)
+        return recognizer
+    }()
+
     private lazy var verticalStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
@@ -113,6 +118,8 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
         contentBackView.backgroundColor = .main
     } }
 
+    var showOptionsHandler: ((BaseView) async -> Void)?
+
     // MARK: - Setups
 
     override func setupLayout() {
@@ -158,6 +165,13 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
 
     override func setupActions() {
         selectionBackView = backView
+
+        longPressRecognizer.longPressHandler = { [weak self] _ in
+            Task {
+                guard let self, let showOptionsHandler = self.showOptionsHandler else { return }
+                await showOptionsHandler(self.contentBackView)
+            }
+        }
     }
 
 }
