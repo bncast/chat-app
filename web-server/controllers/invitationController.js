@@ -1,6 +1,10 @@
+const UserModel = require('../models/userModel');
+const InvitationModel = require('../models/invitationModel');
+
 class InvitationController {
-    constructor(invitationModel) {
-        this.invitationModel = invitationModel;
+    constructor(database) {
+        this.invitationModel = new InvitationModel(database);
+        this.userModel = new UserModel(database);
     }
 
     async getAll(req, res) {
@@ -13,21 +17,17 @@ class InvitationController {
             }
             const invitations = await this.invitationModel.getAll();
            
-           const formattedInvitations = invitations.map(invitation => ({
-            chat_name: invitation.room_name, // Room name as chat_name
-            chat_image_url: "", // Assuming chat_image_url is not available in the current schema, defaulting to empty
-            inviter_name: invitation.inviter_name, // Inviter's display name
-            room_id: invitation.room_id // Room ID
-        }));
+            const formattedInvitations = invitations.map(invitation => ({
+                chat_name: invitation.room_name, // Room name as chat_name
+                chat_image_url: "", // Assuming chat_image_url is not available in the current schema, defaulting to empty
+                inviter_name: invitation.inviter_name, // Inviter's display name
+                room_id: invitation.room_id // Room ID
+            }));
 
-        res.json({
-            success: 1,
-            invitations: formattedInvitations,
-            error: {
-                code: "000",
-                message: ""
-            }
-        });
+            res.json({
+                success: 1,
+                invitations: formattedInvitations
+            });
         } catch (err) {
             console.error("Error fetching invitations:", err);
             res.status(500).json({

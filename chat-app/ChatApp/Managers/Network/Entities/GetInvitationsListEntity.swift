@@ -15,7 +15,7 @@ class GetInvitationsListEntity: RequestableApiEntity {
 
     private let deviceId: String
 
-    init(roomUserId: Int) {
+    init() {
         self.deviceId = AppConstant.shared.deviceId ?? ""
     }
 }
