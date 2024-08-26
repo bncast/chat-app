@@ -31,8 +31,8 @@ class MessageController {
                 }
             });
 
-            let roomUserResult = await this.roomUserModel.getRoomForRoomUserId(room_user_id);
-            let room = await roomUserResult.pop();
+            let roomUserResult = await this.roomUserModel.getRoomUserForRoomUserId(room_user_id);
+            let room = await roomUserResult[0];
 
             completion(room.room_id);
         } catch (err) {
@@ -77,15 +77,37 @@ class MessageController {
     }
 
     // Update a message
-    async updateMessage(req, res) {
+    async updateMessage(req, res, completion) {
         try {
-            const message_id = req.params.message_id;
-            const { content } = req.body;
-            const result = await this.messageModel.updateMessage(message_id, content);
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: "Message not found or already deleted" });
+            const { device_id, message_id, message } = req.body
+
+            let userResult = await this.userModel.getUserById(device_id);
+            if (userResult.length <= 0) {
+                throw new Error("User not found.");
             }
-            res.json({ success: true });
+
+                // Retrieve the updated message details
+            const updateResult = await this.messageModel.updateMessage(message_id, message);
+            if (updateResult.length <= 0) {
+                return res.status(404).json({ error: "Message not found after update" });
+            }
+
+            const updatedMessageResult = await this.messageModel.getMessageById(message_id);
+            let updatedMessage = updatedMessageResult[0];
+
+            // Send the response
+            res.json({
+                success: 1,
+                error: {
+                    code: "000",
+                    message: ""
+                }
+            });
+
+            let roomUserResult = await this.roomUserModel.getRoomUserForRoomUserId(updatedMessage.room_user_id);
+            let room = await roomUserResult.pop();
+
+            completion(room.room_id);
         } catch (err) {
             console.error("Error updating message:", err);
             res.status(500).json({ error: "Failed to update message" });
@@ -93,14 +115,36 @@ class MessageController {
     }
 
     // Soft delete a message
-    async deleteMessage(req, res) {
+    async deleteMessage(req, res, completion) {
         try {
-            const message_id = req.params.message_id;
-            const result = await this.messageModel.deleteMessage(message_id);
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: "Message not found or already deleted" });
+            const { device_id, message_id } = req.body
+
+            let userResult = await this.userModel.getUserById(device_id);
+            if (userResult.length <= 0) {
+                throw new Error("User not found.");
             }
-            res.json({ success: true });
+
+            // Retrieve the updated message details
+            const updateResult = await this.messageModel.deleteMessage(message_id);
+            if (updateResult.length <= 0) {
+                return res.status(404).json({ error: "Message not found after update" });
+            }
+
+            const updatedMessageResult = await this.messageModel.getMessageById(message_id);
+            let updatedMessage = updatedMessageResult[0];
+
+            res.json({
+                success: 1,
+                error: {
+                    code: "000",
+                    message: ""
+                }
+            });
+            
+            let roomUserResult = await this.roomUserModel.getRoomUserForRoomUserId(updatedMessage.room_user_id);
+            let room = await roomUserResult.pop();
+
+            completion(room.room_id);
         } catch (err) {
             console.error("Error deleting message:", err);
             res.status(500).json({ error: "Failed to delete message" });

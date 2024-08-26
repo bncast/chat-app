@@ -12,7 +12,7 @@ class UserController {
 
             let user = await this.userModel.getUserById(device_id)
             let result;
-            console.log(user);
+            
             if (user.length > 0) {
                 result = await this.userModel.updateUserById(device_id, name);
                 if (!result) throw new Error("Failed to update user");

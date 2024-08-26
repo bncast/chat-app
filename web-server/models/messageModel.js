@@ -17,7 +17,7 @@ class MessageModel {
     async getMessageById(message_id) {
         const sql = `
             SELECT * FROM Message 
-            WHERE message_id = ? AND deleted_at IS NULL
+            WHERE message_id = ?
         `;
         const values = [message_id];
         return this.db.query(sql, values);
