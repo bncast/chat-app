@@ -50,7 +50,7 @@ class IndicatorController: NSObject {
         indicatorWindow.backgroundColor = UIColor.clear
     }
 
-    private func showIndicator(_ message: String? = nil, completionHandler: @escaping () -> Void) {
+    private func showIndicator(_ message: String? = nil, isDone: Bool = false, completionHandler: @escaping () -> Void) {
         if isShowing {
             completionHandler()
             return
@@ -60,7 +60,7 @@ class IndicatorController: NSObject {
             guard let self else { return }
             indicatorWindow?.isHidden = false
             indicatorViewController.view.alpha = 0.0
-            indicatorViewController.startAnimation()
+            indicatorViewController.startAnimation(forDone: isDone)
             indicatorViewController.message = message
             UIView.animate(withDuration: 0.5, animations: {
                 self.indicatorViewController.view.alpha = 1.0
@@ -70,9 +70,9 @@ class IndicatorController: NSObject {
         }
     }
 
-    func show(message: String? = nil) async {
+    func show(message: String? = nil, isDone: Bool = false) async {
         await withCheckedContinuation { continuation in
-            showIndicator(message) { continuation.resume() }
+            showIndicator(message, isDone: isDone) { continuation.resume() }
         }
     }
 
@@ -177,8 +177,8 @@ class IndicatorViewController: BaseViewController {
         progressLabel.height >= 53
     }
 
-    func startAnimation() {
-        let waitingAnimation = LottieAnimation.named("waitingAnimation")
+    func startAnimation(forDone: Bool = false) {
+        let waitingAnimation = LottieAnimation.named(forDone ? "checkingAnimation" : "waitingAnimation")
         indicatorView.animation = waitingAnimation
         indicatorView.loopMode = .repeat(.infinity)
         indicatorView.play()

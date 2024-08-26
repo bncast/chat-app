@@ -57,13 +57,14 @@ extension Int64: AppConstantConvertible {
     static var defaultValue: Any? { 0 }
 }
 
-extension Bool: AppConstantConvertible {
+extension Bool: AppConstantConvertible, AppConstantKeychainType {
     init?(storeValue: Any) {
         guard let value = storeValue as? Bool else { return nil }
         self = value
     }
 
     var storeValue: Any? { self }
+    static var type: String { "bool" }
     static var defaultValue: Any? { false }
 }
 
@@ -277,6 +278,12 @@ class AppConstant: NSObject {
                            let value = Value(storeValue: intValue) {
                             return value
                         }
+                    case "bool":
+                        if let object = AppConstant.keychain[string: key],
+                           let boolValue = Bool(object),
+                           let value = Value(storeValue: boolValue) {
+                            return value
+                        }
                     default:
                         return defaultValue
                     }
@@ -295,6 +302,9 @@ class AppConstant: NSObject {
                             AppConstant.keychain[string: key] = (value as? Date)?.toIso8601
                         case "int":
                             let storeValue: String? = if let intValue = value as? Int { String(intValue) } else { nil }
+                            AppConstant.keychain[string: key] = storeValue
+                        case "bool":
+                            let storeValue: String? = if let boolValue = value as? Int { String(boolValue) } else { nil }
                             AppConstant.keychain[string: key] = storeValue
                         default:
                             fatalError("You must set type.")
@@ -349,7 +359,7 @@ class AppConstant: NSObject {
 
     @UserDefaultsReadOnly("SERVER_TYPE", default: .manual)
     var serverType: ServerType
-    @UserDefaultsReadOnly("MANUAL_HOST", default: "localhost:3000")
+    @UserDefaultsReadOnly("MANUAL_HOST", default: "10.192.28.15:3000")
     var manualHost: String
     @KeychainReadAndWrite("keychainValue", default: nil)
     var keychainValue: String?
