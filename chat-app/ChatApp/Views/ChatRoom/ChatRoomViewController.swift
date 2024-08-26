@@ -204,16 +204,19 @@ class ChatRoomViewController: BaseViewController {
         }
 
         closeReplyingToButton.tapHandler = { [weak self] _ in
-            guard let self else { return }
-            replyingToViewHeightConstraint?.constant = 0
-            UIView.animate(withDuration: 0.2) {
-                self.view.layoutIfNeeded()
-            }
+            self?.removeReplyingOrEditingIndicator()
         }
 
         keyboardAppear = self
 
         Task { await viewModel.load() }
+    }
+
+    private func removeReplyingOrEditingIndicator() {
+        replyingToViewHeightConstraint?.constant = 0
+        UIView.animate(withDuration: 0.2) {
+            self.view.layoutIfNeeded()
+        }
     }
 
     static func push(on parentViewController: UIViewController, using details: ChatInfo) {
@@ -285,7 +288,7 @@ extension ChatRoomViewController {
         }
 
         collectionView.scrollToBottom()
-
+        removeReplyingOrEditingIndicator()
     }
 
     private func getHeader(at indexPath: IndexPath) -> ChatRoomMessageHeaderCollectionReusableView {
@@ -312,8 +315,9 @@ extension ChatRoomViewController {
                 at: content.convert(content.bounds.origin, to: self.view)
             ) {
             case .reply: showReplyingTo(name: "Replying to \(item.isCurrentUser ? "Yourself" : item.name)", message: item.content)
-            case .edit: showEditingView(message: item.content)
-            case .delete: break
+            case .edit: showEditingView(message: item.content, messageId: item.id)
+            case .delete: viewModel.deleteMessage(item.id)
+            case .none: break
             }
         }
         return cell
@@ -328,10 +332,13 @@ extension ChatRoomViewController {
         }
     }
 
-    private func showEditingView(message: String) {
+    private func showEditingView(message: String, messageId: Int) {
+        viewModel.isEditingMessageId = messageId
+
         replyingToLabel.text = "Edit message"
         textView.text = message
         textView.becomeFirstResponder()
+    
         replyingToViewHeightConstraint?.constant = 44
         UIView.animate(withDuration: 0.2) {
             self.view.layoutIfNeeded()

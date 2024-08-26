@@ -35,6 +35,7 @@ class ChatRoomViewModel {
 
     @Published var items: [Section: [Item]] = [:]
 
+    var isEditingMessageId: Int?
     var details: ChatInfo?
 
     func load() async {
@@ -50,24 +51,24 @@ class ChatRoomViewModel {
         var items: [Section: [Item]] = [:]
         var sections = [Date]()
 
-        messages.sort { $0.updatedAt < $1.updatedAt }
+        messages.sort { $0.createdAt < $1.createdAt }
 
         for (index, messageItem) in messages.enumerated() {
-            if !sections.contains(where: { $0.isSameDayWith(date: messageItem.updatedAt) }) {
+            if !sections.contains(where: { $0.isSameDayWith(date: messageItem.createdAt) }) {
 
-                let string = messageItem.updatedAt.toString(by: "MMMM, dd yyyy")
+                let string = messageItem.createdAt.toString(by: "MMMM, dd yyyy")
 
                 items[.main(string, index)] = messages
-                    .filter { $0.updatedAt.isSameDayWith(date: messageItem.updatedAt) }
+                    .filter { $0.createdAt.isSameDayWith(date: messageItem.createdAt) }
                     .map { item in .messageItem(
                         MessageInfo(id: item.messageId,
                                     content: item.content,
                                     name: details?.memberDetails.first(where: { $0.roomUserId == item.authorId})?.name ?? "No name",
-                                    time: item.updatedAt.toString(by: "hh:mm a"),
+                                    time: item.createdAt.toString(by: "hh:mm a"),
                                     isCurrentUser: item.isCurrentUser == true)
                     ) }
 
-                sections.append(messageItem.updatedAt)
+                sections.append(messageItem.createdAt)
             }
         }
 
@@ -81,9 +82,24 @@ class ChatRoomViewModel {
         guard let details, let roomUserId = details.currentRoomUserId else { return false }
         let deviceId = AppConstant.shared.deviceId ?? ""
 
-        let response = try? await SendMessageEntity(deviceId: deviceId, message: message, roomUserId: roomUserId, replyToId: nil).run()
+        let response: RespondableApiEntity?
+
+        if let isEditingMessageId {
+            response = try? await UpdateMessageEntity(deviceId: deviceId, message: message, messageId: isEditingMessageId).run()
+            self.isEditingMessageId = nil
+        } else {
+            response = try? await SendMessageEntity(deviceId: deviceId, message: message, roomUserId: roomUserId, replyToId: nil).run()
+        }
 
         return response?.success == 1
+    }
+
+    func deleteMessage(_ messageId: Int) {
+        guard let deviceId = AppConstant.shared.deviceId else { return }
+
+        Task {
+            let _ = try? await DeleteMessageEntity(deviceId: deviceId, messageId: messageId).run()
+        }
     }
 
     var request: GetMessageRespondableEntity?

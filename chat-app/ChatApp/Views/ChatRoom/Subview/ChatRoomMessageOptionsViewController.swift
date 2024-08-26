@@ -11,7 +11,7 @@ import SuperEasyLayout
 class ChatRoomMessageOptionsViewController: BaseViewController {
 
     enum ChatOptions {
-        case reply, edit, delete
+        case reply, edit, delete, none
     }
 
     private lazy var visualEffectView: UIVisualEffectView = {
@@ -117,7 +117,8 @@ class ChatRoomMessageOptionsViewController: BaseViewController {
 
     override func setupActions() {
         tapRecognizer.tapHandler = { [weak self] _ in
-            guard let self else { return }
+            guard let self, let continuation else { return }
+            continuation.resume(returning: .none)
             dismiss(animated: true)
         }
         replyButton.tapHandlerAsync = { [weak self] _ in
