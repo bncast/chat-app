@@ -12,7 +12,6 @@ final class UserListViewModel {
         static func < (lhs: Self, rhs: Self) -> Bool {
             lhs.rawValue < rhs.rawValue
         }
-
         case list
         case whole
     }
@@ -33,11 +32,11 @@ final class UserListViewModel {
 
     @Published var items: [Section: [Item]] = [:]
 
-    private var filteredItems: [Section: [Item]] = [:]
+    private var datasourceItems: [Section: [Item]] = [:]
     var roomId: Int?
 
     func load() async {
-        guard let deviceId = AppConstant.shared.deviceId,
+        guard let _ = AppConstant.shared.deviceId,
               let roomId,
               let list = try? await GetUsersEntity(roomId: roomId).run().users else {
             await loadEmptyRooms()
@@ -50,7 +49,7 @@ final class UserListViewModel {
             })
         ]
 
-        filteredItems = items
+        datasourceItems = items
     }
 
     func loadEmptyRooms() async {
@@ -62,10 +61,10 @@ final class UserListViewModel {
     func filterByName(searchKey: String) {
         guard !searchKey.isEmpty
         else {
-            items = filteredItems
+            items = datasourceItems
             return
         }
-        guard let listItems = filteredItems[.list] else { return }
+        guard let listItems = datasourceItems[.list] else { return }
 
         items = [
             .list: listItems.filter({
@@ -77,18 +76,38 @@ final class UserListViewModel {
         ]
     }
 
-    func inviteUser(deviceId: String) async {
-        guard let searchIndex = items[.list]?.firstIndex(where: {
+    func inviteUser(deviceId: String) async throws {
+        guard let inviteeDeviceId = AppConstant.shared.deviceId,
+              let roomId,
+              let searchIndex = items[.list]?.firstIndex(where: {
                   if case .user(let itemInfo) = $0 {
                       return itemInfo.deviceId.contains(deviceId)
                   }
                   return false
-              })
+              }),
+              let searchItem = items[.list]?[searchIndex] as? Item
         else { return }
-        guard let searchItem = items[.list]?[searchIndex] as? Item else { return }
 
         if case .user(let itemInfo) = searchItem {
+            try await SendInvitationEntity(
+                deviceId: inviteeDeviceId, inviteeDeviceId: itemInfo.deviceId, roomId: roomId
+            ).run()
+
+            // update filtered item
             items[.list]?[searchIndex] = .user(
+                ItemInfo(name: itemInfo.name, deviceId: itemInfo.deviceId, isInvited: true)
+            )
+
+            // update datasource
+            guard let datasourceSearchIndex = datasourceItems[.list]?.firstIndex(where: {
+                if case .user(let itemInfo) = $0 {
+                    return itemInfo.deviceId.contains(deviceId)
+                }
+                return false
+            })
+            else { return }
+
+            datasourceItems[.list]?[datasourceSearchIndex] = .user(
                 ItemInfo(name: itemInfo.name, deviceId: itemInfo.deviceId, isInvited: true)
             )
         }

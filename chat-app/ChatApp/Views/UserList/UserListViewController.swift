@@ -200,9 +200,15 @@ extension UserListViewController {
         cell.inviteHandlerAsync = { [weak self] _ in
             guard let self, !(cell.isInvited ?? false) else { return }
 
-            await IndicatorController.shared.show()
-            await viewModel.inviteUser(deviceId: item.deviceId)
-            await IndicatorController.shared.dismiss()
+            do {
+                await IndicatorController.shared.show()
+                try await viewModel.inviteUser(deviceId: item.deviceId)
+                await IndicatorController.shared.dismiss()
+            } catch {
+                print("[UserListViewController] Error! \(error as! NetworkError)")
+                await IndicatorController.shared.dismiss()
+            }
+
         }
         return cell
     }
