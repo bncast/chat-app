@@ -60,6 +60,9 @@
 		6F7969712C75B9AB0010B427 /* MemberHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7969702C75B9AB0010B427 /* MemberHeaderCollectionReusableView.swift */; };
 		6F7969782C75CD690010B427 /* ChatRoomDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7969772C75CD690010B427 /* ChatRoomDetailsViewModel.swift */; };
 		6F84CF6F2C7616F300F5C112 /* UpdateChatRoomNameEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F84CF6E2C7616F300F5C112 /* UpdateChatRoomNameEntity.swift */; };
+		6F9544972C7C1FA3006E8035 /* InvitationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9544962C7C1FA3006E8035 /* InvitationListViewController.swift */; };
+		6F9544992C7C20BF006E8035 /* InvitationListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9544982C7C20BF006E8035 /* InvitationListViewModel.swift */; };
+		6F95449C2C7C2BE7006E8035 /* InvitationCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F95449B2C7C2BE7006E8035 /* InvitationCollectionViewCell.swift */; };
 		6F9894E82C733E9D00F20D1E /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9894E72C733E9D00F20D1E /* NetworkManager.swift */; };
 		6F9D59BF2C78F6E9003E8959 /* SwipeCellKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6F9D59BE2C78F6E9003E8959 /* SwipeCellKit */; };
 		6F9D59C12C78F70D003E8959 /* BaseSwipeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9D59C02C78F70D003E8959 /* BaseSwipeCollectionViewCell.swift */; };
@@ -158,6 +161,9 @@
 		6F7969702C75B9AB0010B427 /* MemberHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
 		6F7969772C75CD690010B427 /* ChatRoomDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomDetailsViewModel.swift; sourceTree = "<group>"; };
 		6F84CF6E2C7616F300F5C112 /* UpdateChatRoomNameEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateChatRoomNameEntity.swift; sourceTree = "<group>"; };
+		6F9544962C7C1FA3006E8035 /* InvitationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationListViewController.swift; sourceTree = "<group>"; };
+		6F9544982C7C20BF006E8035 /* InvitationListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationListViewModel.swift; sourceTree = "<group>"; };
+		6F95449B2C7C2BE7006E8035 /* InvitationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationCollectionViewCell.swift; sourceTree = "<group>"; };
 		6F9894E72C733E9D00F20D1E /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		6F9D59C02C78F70D003E8959 /* BaseSwipeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSwipeCollectionViewCell.swift; sourceTree = "<group>"; };
 		6FA430C52C74F4810086B62C /* BaseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
@@ -283,9 +289,11 @@
 				A7FB9C512C7C06C8008DE3F3 /* UserList */,
 				A7FB9C3B2C75FEEB008DE3F3 /* CreateChatRoom */,
 				6F07ACEB2C73064B0010E21A /* Components */,
+				A7FB9C3B2C75FEEB008DE3F3 /* CreateChatRoom */,
 				1D1293472C75E8090079C48C /* ChatRoom */,
 				6F4CDE7C2C74237400F310A1 /* Profile */,
 				A700BF3D2C73156400B38530 /* ChatRoomList */,
+				6F9544942C7C1F72006E8035 /* InvitationList */,
 				6F7969692C75B8EA0010B427 /* ChatRoomDetails */,
 			);
 			path = Views;
@@ -460,6 +468,32 @@
 			children = (
 				6F79696E2C75B99A0010B427 /* MemberWithStatusCollectionViewCell.swift */,
 				6F7969702C75B9AB0010B427 /* MemberHeaderCollectionReusableView.swift */,
+			);
+			path = Subviews;
+			sourceTree = "<group>";
+		};
+		6F9544942C7C1F72006E8035 /* InvitationList */ = {
+			isa = PBXGroup;
+			children = (
+				6F9544962C7C1FA3006E8035 /* InvitationListViewController.swift */,
+				6F95449A2C7C2BCF006E8035 /* Subviews */,
+				6F9544952C7C1F8F006E8035 /* ViewModel */,
+			);
+			path = InvitationList;
+			sourceTree = "<group>";
+		};
+		6F9544952C7C1F8F006E8035 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				6F9544982C7C20BF006E8035 /* InvitationListViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		6F95449A2C7C2BCF006E8035 /* Subviews */ = {
+			isa = PBXGroup;
+			children = (
+				6F95449B2C7C2BE7006E8035 /* InvitationCollectionViewCell.swift */,
 			);
 			path = Subviews;
 			sourceTree = "<group>";
@@ -698,8 +732,10 @@
 				A700BF532C736CB700B38530 /* BaseCollectionReusableView.swift in Sources */,
 				A7FB9C542C7C06F1008DE3F3 /* UserListViewController.swift in Sources */,
 				6F163A472C7570230034EF27 /* BaseTapGestureRecognizer.swift in Sources */,
+				6F9544992C7C20BF006E8035 /* InvitationListViewModel.swift in Sources */,
 				A700BF4F2C7327D300B38530 /* UIViewHelpers.swift in Sources */,
 				A700BF552C736D5A00B38530 /* ChatRoomListHeaderCollectionReusableView.swift in Sources */,
+				6F9544972C7C1FA3006E8035 /* InvitationListViewController.swift in Sources */,
 				6F07ACEE2C7306730010E21A /* BaseViewController.swift in Sources */,
 				6F4CDE912C7465F100F310A1 /* PaddingLabel.swift in Sources */,
 				6F0B7E6E2C73249C00BFC370 /* DataHelpers.swift in Sources */,
@@ -740,6 +776,7 @@
 				6F0B7E792C73268100BFC370 /* RequestableApiEntity.swift in Sources */,
 				6FD767792C77310E00DAA989 /* ChatRoomMessageOptionsViewController.swift in Sources */,
 				1D12934C2C7615CA0079C48C /* ChatRoomViewModel.swift in Sources */,
+				6F95449C2C7C2BE7006E8035 /* InvitationCollectionViewCell.swift in Sources */,
 				A700BF5D2C73A66800B38530 /* BaseNavigationBar.swift in Sources */,
 				1D3DC67A2C7C445500D64B24 /* GetInvitationsListEntity.swift in Sources */,
 				1D3DC6732C7C15C200D64B24 /* UpdateMessageEntity.swift in Sources */,

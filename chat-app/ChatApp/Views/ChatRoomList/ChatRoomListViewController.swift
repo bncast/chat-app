@@ -150,8 +150,10 @@ class ChatRoomListViewController: BaseViewController {
     }
 
     override func setupActions() {
-        navigationBar?.invitationTapHandler = { _ in
-            print("[ChatroomListViewController] navigationBar?.invitationTapHandler")
+        navigationBar?.invitationTapHandler = { [weak self] _ in
+            guard let self else { return }
+
+            InvitationListViewController.show(on: self)
         }
         navigationBar?.profileTapHandlerAsync = { [weak self] _ in
             guard let self else { return }

@@ -41,17 +41,30 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         return view
     }()
 
+    private(set) lazy var closeButton: BaseButton = {
+        let configuration = UIImage.SymbolConfiguration(pointSize: 30)
+        let image = UIImage(systemName: "xmark", withConfiguration: configuration)?
+            .withRenderingMode(.alwaysTemplate)
+        let view = BaseButton()
+        view.setImage(image, for: .normal)
+        view.tintColor = .text(.title)
+        return view
+    }()
+
     var showChatRoomListButtons: Bool = true { didSet {
         invitationButton.isHidden = false
         profileImageView.isHidden = false
         moreButton.isHidden = false
+        closeButton.isHidden = false
 
         UIView.animate(withDuration: 0.2) { [weak self] in
             self?.invitationButton.alpha = 1
             self?.profileImageView.alpha = 1
             self?.moreButton.alpha = 0
+            self?.closeButton.alpha = 0
         } completion: { [weak self] _ in
             self?.moreButton.isHidden = true
+            self?.closeButton.isHidden = true
         }
     } }
 
@@ -59,14 +72,35 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         invitationButton.isHidden = false
         profileImageView.isHidden = false
         moreButton.isHidden = false
+        closeButton.isHidden = false
 
         UIView.animate(withDuration: 0.2) { [weak self] in
             self?.invitationButton.alpha = 0
             self?.profileImageView.alpha = 0
+            self?.closeButton.alpha = 0
             self?.moreButton.alpha = 1
         } completion: { [weak self] _ in
             self?.invitationButton.isHidden = true
             self?.profileImageView.isHidden = true
+            self?.closeButton.isHidden = true
+        }
+    } }
+
+    var showInvitaionListButtons: Bool = true { didSet {
+        invitationButton.isHidden = false
+        profileImageView.isHidden = false
+        moreButton.isHidden = false
+        closeButton.isHidden = false
+
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            self?.invitationButton.alpha = 0
+            self?.profileImageView.alpha = 0
+            self?.moreButton.alpha = 0
+            self?.closeButton.alpha = 1
+        } completion: { [weak self] _ in
+            self?.invitationButton.isHidden = true
+            self?.profileImageView.isHidden = true
+            self?.moreButton.isHidden = true
         }
     } }
 
@@ -80,11 +114,14 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
     var moreTapHandler: ((BaseButton) -> Void)?
     var moreTapHandlerAsync: ((BaseButton) async -> Void)?
 
+    var closeTapHandler: ((BaseButton) -> Void)?
+
     override func setupLayout() {
         addSubviews([
             profileImageView,
             invitationButton,
-            moreButton
+            moreButton,
+            closeButton
         ])
     }
 
@@ -103,6 +140,11 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         moreButton.width == 44
         moreButton.centerY == centerY
         moreButton.height == 44
+
+        closeButton.right == right - 18
+        closeButton.width == 44
+        closeButton.centerY == centerY
+        closeButton.height == 44
     }
 
     override func setupActions() {
@@ -136,6 +178,11 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
             } else {
                 moreTapHandler?(moreButton)
             }
+        }
+
+        closeButton.tapHandler = { [weak self] _ in
+            guard let self else { return }
+            closeTapHandler?(closeButton)
         }
 
     }
