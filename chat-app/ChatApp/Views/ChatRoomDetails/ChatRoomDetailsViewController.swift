@@ -304,9 +304,6 @@ extension ChatRoomDetailsViewController {
                 return !isAdmin
             }
         }
-        if indexPath.row % 2 == 0 {
-            cell.backgroundColor = .background(.mainLight)
-        }
 
         return cell
     }
