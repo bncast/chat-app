@@ -46,8 +46,22 @@ class UserController {
     async getUsers(req, res) {
         try {
             let result = await this.userModel.getAllUsers()
+
+            const formattedResponse = members.map(member => ({
+                name: member.name,  
+                user_image_url: "",  
+                device_id: member.device_id
+            }));
+
             if (result) {
-                res.json(result);
+                res.json({
+                    users: formattedResponse,
+                    success: 1,
+                    error: {
+                        code: "000",
+                        message: ""
+                    }
+                });
             } else {
                 throw new Error("No result.")
             }
