@@ -7,6 +7,7 @@
 
 import UIKit
 import SuperEasyLayout
+import SwipeCellKit
 
 class ChatRoomDetailsViewController: BaseViewController {
     private lazy var closeButton: BaseButton = {
@@ -23,41 +24,8 @@ class ChatRoomDetailsViewController: BaseViewController {
         }
     }()
 
-    private lazy var layoutListConfiguration: UICollectionLayoutListConfiguration = {
-        var listConfig = UICollectionLayoutListConfiguration(appearance: .plain)
-
-        listConfig.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
-            guard let dataSource = dataSource else { fatalError() }
-
-            let actionHandler: UIContextualAction.Handler = { action, view, completion in
-                Task {
-                    await IndicatorController.shared.show()
-                    do {
-                        try await self.viewModel.deleteFromChatRoom(roomUserId: 122, deviceId: "2222")
-                    } catch {
-                        print("[ChatRoomDetailsViewController] Error! \(error as! NetworkError)")
-                        await IndicatorController.shared.dismiss()
-                    }
-                    await IndicatorController.shared.dismiss()
-                    self.viewModel.items.remove(at: indexPath.row)
-                    self.reloadData()
-                    completion(true)
-                }
-            }
-
-            let action = UIContextualAction(style: .normal, title: nil, handler: actionHandler)
-            action.image = UIImage(systemName: "trash.fill")
-            action.backgroundColor = .systemRed
-
-            return UISwipeActionsConfiguration(actions: [action])
-        }
-        return listConfig
-    }()
-
     private lazy var collectionView: UICollectionView = {
-        let listLayout = UICollectionViewCompositionalLayout.list(using: layoutListConfiguration)
-
-        let view = UICollectionView(frame: .zero, collectionViewLayout: listLayout)
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundView = nil
         view.backgroundColor = .background(.main)
 
@@ -310,6 +278,7 @@ extension ChatRoomDetailsViewController {
 
     private func getMemberCell(at indexPath: IndexPath, item: ItemInfo) -> MemberWithStatusCollectionViewCell {
         let cell = MemberWithStatusCollectionViewCell.dequeueCell(from: collectionView, for: indexPath)
+        cell.delegate = self
         cell.roomUserId = item.id
         cell.name = item.name
         cell.isAdmin = item.isAdmin
@@ -334,5 +303,32 @@ extension ChatRoomDetailsViewController {
         }
 
         return cell
+    }
+}
+
+extension ChatRoomDetailsViewController: SwipeCollectionViewCellDelegate {
+    func collectionView(
+        _ collectionView: UICollectionView, editActionsForItemAt indexPath: IndexPath,
+        for orientation: SwipeCellKit.SwipeActionsOrientation) -> [SwipeCellKit.SwipeAction]? {
+        guard orientation == .right else { return nil }
+        let deleteAction = SwipeAction(
+            style: .destructive, title: "Delete"
+        ) { [weak self] _, indexPath in
+            self?.viewModel.items.remove(at: indexPath.row)
+        }
+        deleteAction.image = UIImage(systemName: "trash.fill")
+        deleteAction.font = .caption
+        deleteAction.backgroundColor = .systemRed
+        return [deleteAction]
+    }
+
+    func collectionView(
+        _: UICollectionView, editActionsOptionsForItemAt indexPath: IndexPath, for: SwipeActionsOrientation
+    ) -> SwipeOptions {
+        var options = SwipeOptions()
+        options.expansionStyle = .destructive(automaticallyDelete: false)
+        options.transitionStyle = .border
+        options.buttonSpacing = 4
+        return options
     }
 }

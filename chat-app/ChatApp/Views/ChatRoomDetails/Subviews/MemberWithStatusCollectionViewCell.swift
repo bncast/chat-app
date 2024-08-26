@@ -8,7 +8,7 @@
 import UIKit
 import SuperEasyLayout
 
-class MemberWithStatusCollectionViewCell: BaseCollectionViewCell {
+class MemberWithStatusCollectionViewCell: BaseSwipeCollectionViewCell {
     private lazy var nameLabel: UILabel = {
         let view = UILabel()
         view.font = .title2
