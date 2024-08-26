@@ -33,11 +33,13 @@ final class UserListViewModel {
 
     @Published var items: [Section: [Item]] = [:]
 
-    private var itemsDataSource: [Section: [Item]] = [:]
+    private var filteredItems: [Section: [Item]] = [:]
+    var roomId: Int?
 
     func load() async {
         guard let deviceId = AppConstant.shared.deviceId,
-              let list = try? await GetUsersEntity(deviceId: deviceId).run().users else {
+              let roomId,
+              let list = try? await GetUsersEntity(roomId: roomId).run().users else {
             await loadEmptyRooms()
             return
         }
@@ -48,7 +50,7 @@ final class UserListViewModel {
             })
         ]
 
-        itemsDataSource = items
+        filteredItems = items
     }
 
     func loadEmptyRooms() async {
@@ -60,10 +62,10 @@ final class UserListViewModel {
     func filterByName(searchKey: String) {
         guard !searchKey.isEmpty
         else {
-            items = itemsDataSource
+            items = filteredItems
             return
         }
-        guard let listItems = itemsDataSource[.list] else { return }
+        guard let listItems = filteredItems[.list] else { return }
 
         items = [
             .list: listItems.filter({
@@ -76,8 +78,7 @@ final class UserListViewModel {
     }
 
     func inviteUser(deviceId: String) async {
-        guard let inviteeDeviceId = AppConstant.shared.deviceId,
-              let searchIndex = items[.list]?.firstIndex(where: {
+        guard let searchIndex = items[.list]?.firstIndex(where: {
                   if case .user(let itemInfo) = $0 {
                       return itemInfo.deviceId.contains(deviceId)
                   }
