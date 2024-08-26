@@ -307,6 +307,85 @@ class RoomUserController {
             });
         }
     }
+
+    async updateAdminStatus(req, res) {
+        try {
+            const { device_id, room_user_id, is_admin } = req.body;
+            
+            let userResult = await this.userModel.getUserById(device_id);
+            if (userResult.length <= 0) {
+                throw new Error("User not found.");
+            }
+    
+            const result = await this.roomUserModel.updateAdminStatus(room_user_id, is_admin);
+            
+            if (result.affectedRows > 0) {
+                res.json({
+                    success: 1,
+                    error: {
+                        code: "000",
+                        message: ""
+                    }
+                });
+            } else {
+                res.status(404).json({
+                    success: 0,
+                    error: {
+                        code: "404",
+                        message: "Room user not found or already deleted"
+                    }
+                });
+            }
+        } catch (err) {
+            console.error("Error setting user as admin:", err);
+            res.status(500).json({
+                success: 0,
+                error: {
+                    code: "500",
+                    message: err.message
+                }
+            });
+        }
+    }
+
+    async deleteRoomUser(req, res) {
+        try {
+            const { device_id, room_user_id } = req.body;
+
+            let userResult = await this.userModel.getUserById(device_id);
+            if (userResult.length <= 0) {
+                throw new Error("User not found.");
+            }
+    
+            const result = await this.roomUserModel.removeUserFromRoom(room_user_id);
+            if (result.affectedRows > 0) {
+                res.json({
+                    success: 1,
+                    error: {
+                        code: "000",
+                        message: ""
+                    }
+                });
+            } else {
+                res.status(404).json({
+                    success: 0,
+                    error: {
+                        code: "404",
+                        message: "Room user not found or already deleted"
+                    }
+                });
+            }
+        } catch (err) {
+            console.error("Error soft deleting room user:", err);
+            res.status(500).json({
+                success: 0,
+                error: {
+                    code: "500",
+                    message: err.message
+                }
+            });
+        }
+    }
 }
 
 module.exports = RoomUserController;

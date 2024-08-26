@@ -50,27 +50,25 @@ class RoomUserModel {
         return this.db.query(sql, values);
     }
 
-    // // Update user status in a room
-    // async updateUserStatus(room_id, user_id, is_admin, is_muted) {
-    //     const sql = `
-    //         UPDATE RoomUsers
-    //         SET is_admin = ?, is_muted = ?
-    //         WHERE room_id = ? AND user_id = ? AND is_deleted = 0
-    //     `;
-    //     const values = [is_admin, is_muted, room_id, user_id];
-    //     return this.db.query(sql, values);
-    // }
+    async updateAdminStatus(room_user_id, is_admin) {
+        const sql = `
+            UPDATE RoomUser
+            SET is_admin = ?
+            WHERE room_user_id = ? AND is_deleted = 0
+        `;
+        const values = [is_admin, room_user_id];
+        return this.db.query(sql, values);
+    }
 
-    // // Remove a user from a room (soft delete)
-    // async removeUserFromRoom(room_id, user_id) {
-    //     const sql = `
-    //         UPDATE RoomUsers
-    //         SET is_deleted = 1
-    //         WHERE room_id = ? AND user_id = ?
-    //     `;
-    //     const values = [room_id, user_id];
-    //     return this.db.query(sql, values);
-    // }
+    async removeUserFromRoom(room_user_id) {
+        const sql = `
+            UPDATE RoomUser
+            SET is_deleted = 1
+            WHERE room_user_id = ?
+        `;
+        const values = [room_user_id];
+        return this.db.query(sql, values);
+    }
 }
 
 module.exports = RoomUserModel;

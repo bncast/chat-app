@@ -81,8 +81,8 @@ app.post('/api/send', (req, res) => {
   });
 });
 
-app.delete('/api/rooms/details', (req, res) => console.log("TODO for deleting members"));
-app.patch('/api/rooms/details', (req, res) => console.log("TODO for changing to member status admin"));
+app.delete('/api/rooms/detail', (req, res) => roomUserController.deleteRoomUser(req, res));
+app.patch('/api/rooms/detail', (req, res) => roomUserController.updateAdminStatus(req, res));
 
 app.get('/api/invites', (req, res) => console.log("TODO to get all invites for user"));
 app.post('/api/invites', (req, res) => console.log("TODO to send invite to user"));

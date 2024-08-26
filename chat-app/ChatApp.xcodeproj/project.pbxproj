@@ -107,7 +107,6 @@
 		1D3DA0142C7875C400D4C980 /* UICollectionViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionViewHelper.swift; sourceTree = "<group>"; };
 		1D3DC6722C7C15C200D64B24 /* UpdateMessageEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateMessageEntity.swift; sourceTree = "<group>"; };
 		1D3DC6742C7C217A00D64B24 /* DeleteMessageEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteMessageEntity.swift; sourceTree = "<group>"; };
-		1D7235B82C72CE37003B419B /* ChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D7235BB2C72CE37003B419B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1D7235BD2C72CE37003B419B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		1D7235C22C72CE38003B419B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };

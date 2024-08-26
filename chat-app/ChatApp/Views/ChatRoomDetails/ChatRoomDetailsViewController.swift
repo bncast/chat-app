@@ -315,10 +315,18 @@ extension ChatRoomDetailsViewController: SwipeCollectionViewCellDelegate {
         _ collectionView: UICollectionView, editActionsForItemAt indexPath: IndexPath,
         for orientation: SwipeCellKit.SwipeActionsOrientation) -> [SwipeCellKit.SwipeAction]? {
         guard orientation == .right else { return nil }
+
+        let item = viewModel.items[indexPath.row]
         let deleteAction = SwipeAction(
             style: .destructive, title: "Delete"
         ) { [weak self] _, indexPath in
-            self?.viewModel.items.remove(at: indexPath.row)
+            Task {
+                await IndicatorController.shared.show()
+                if await self?.viewModel.removeUserFromChatRoom(roomUserId: item.id) == true {
+                    self?.viewModel.items.remove(at: indexPath.row)
+                }
+                await IndicatorController.shared.dismiss()
+            }
         }
         deleteAction.image = UIImage(systemName: "trash.fill")
         deleteAction.font = .caption

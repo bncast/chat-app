@@ -11,13 +11,15 @@ class RemoveMemberFromChatRoomEntity: RequestableApiEntity {
     typealias ResponseEntity = RemoveMemberFromChatRoomRespondableEntity
 
     static var method: BaseNetworkOperation.Method { .delete }
-    var path: String { "rooms/users" }
+    var path: String { "rooms/detail" }
     var body: RequestBody? { RemoveMemberFromChatRoomRequestBody(roomUserId: roomUserId, deviceId: deviceId) }
 
     private let roomUserId: Int
     private let deviceId: String
 
-    init(roomUserId: Int, deviceId: String) {
+    init(roomUserId: Int) {
+        guard let deviceId = AppConstant.shared.deviceId else { fatalError() }
+
         self.roomUserId = roomUserId
         self.deviceId = deviceId
     }
