@@ -8,7 +8,7 @@
 import Foundation
 
 class GetInvitationsListEntity: RequestableApiEntity {
-    typealias ResponseEntity = DeleteRoomUserRespondableEntity
+    typealias ResponseEntity = GetInvitationsListRespondableEntity
 
     static var method: BaseNetworkOperation.Method { .get }
     var path: String { "invites?device_id=\(AppConstant.shared.deviceId ?? "")" }
