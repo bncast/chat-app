@@ -329,8 +329,9 @@ extension ChatRoomViewController {
     }
 
     private func showEditingView(message: String) {
-        replyingToLabel.text = "Editing"
-        messageReplyingToLabel.text = message
+        replyingToLabel.text = "Edit message"
+        textView.text = message
+        textView.becomeFirstResponder()
         replyingToViewHeightConstraint?.constant = 44
         UIView.animate(withDuration: 0.2) {
             self.view.layoutIfNeeded()
