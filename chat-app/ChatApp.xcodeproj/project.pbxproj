@@ -92,8 +92,8 @@
 		A7FB9C3C2C75FEEB008DE3F3 /* CreateChatRoomViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C382C75FEEB008DE3F3 /* CreateChatRoomViewModel.swift */; };
 		A7FB9C3D2C75FEEB008DE3F3 /* CreateChatRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C3A2C75FEEB008DE3F3 /* CreateChatRoomViewController.swift */; };
 		A7FB9C432C76D1CA008DE3F3 /* CreateChatRoomEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C422C76D1CA008DE3F3 /* CreateChatRoomEntity.swift */; };
-		A7FB9C472C782B8F008DE3F3 /* RemoveFromChatRoomEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C462C782B8F008DE3F3 /* RemoveFromChatRoomEntity.swift */; };
 		A7FB9C452C781A9B008DE3F3 /* RemoveMemberFromChatRoomEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C442C781A9B008DE3F3 /* RemoveMemberFromChatRoomEntity.swift */; };
+		A7FB9C472C782B8F008DE3F3 /* RemoveFromChatRoomEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C462C782B8F008DE3F3 /* RemoveFromChatRoomEntity.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -186,8 +186,8 @@
 		A7FB9C382C75FEEB008DE3F3 /* CreateChatRoomViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateChatRoomViewModel.swift; sourceTree = "<group>"; };
 		A7FB9C3A2C75FEEB008DE3F3 /* CreateChatRoomViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateChatRoomViewController.swift; sourceTree = "<group>"; };
 		A7FB9C422C76D1CA008DE3F3 /* CreateChatRoomEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChatRoomEntity.swift; sourceTree = "<group>"; };
-		A7FB9C462C782B8F008DE3F3 /* RemoveFromChatRoomEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveFromChatRoomEntity.swift; sourceTree = "<group>"; };
 		A7FB9C442C781A9B008DE3F3 /* RemoveMemberFromChatRoomEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveMemberFromChatRoomEntity.swift; sourceTree = "<group>"; };
+		A7FB9C462C782B8F008DE3F3 /* RemoveFromChatRoomEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveFromChatRoomEntity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
