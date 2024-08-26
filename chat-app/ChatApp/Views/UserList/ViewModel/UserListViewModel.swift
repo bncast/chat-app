@@ -36,16 +36,16 @@ final class UserListViewModel {
     private var itemsDataSource: [Section: [Item]] = [:]
 
     func load() async {
+        guard let deviceId = AppConstant.shared.deviceId,
+              let list = try? await GetUsersEntity(deviceId: deviceId).run().users else {
+            await loadEmptyRooms()
+            return
+        }
+
         items = [
-            .list: [
-                .user(ItemInfo(name: "Lorem", deviceId: "111", isInvited: false)),
-                .user(ItemInfo(name: "Ipsum", deviceId: "222", isInvited: true)),
-                .user(ItemInfo(name: "Dolor", deviceId: "333", isInvited: false)),
-                .user(ItemInfo(name: "Duis", deviceId: "444", isInvited: true)),
-                .user(ItemInfo(name: "Autre", deviceId: "555", isInvited: false)),
-                .user(ItemInfo(name: "Proident", deviceId: "666", isInvited: true)),
-                .user(ItemInfo(name: "Culpa", deviceId: "777", isInvited: false))
-            ]
+            .list: list.compactMap({ item in
+                .user(ItemInfo(name: item.name, deviceId: item.deviceId))
+            })
         ]
 
         itemsDataSource = items
