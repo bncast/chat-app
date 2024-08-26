@@ -115,8 +115,9 @@ class ChatRoomDetailsViewController: BaseViewController {
             self?.dismiss(animated: true)
         }
 
-        inviteButton.tapHandler = { _ in
-            print("[ChatRoomDetailsViewController] inviteButton.tapHandler")
+        inviteButton.tapHandler = { [weak self] _ in
+            guard let self else { return }
+            UserListViewController.show(on: self)
         }
         deleteRoomButton.tapHandlerAsync = { [weak self] _ in
             guard let self,
