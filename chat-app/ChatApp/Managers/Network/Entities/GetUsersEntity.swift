@@ -11,12 +11,16 @@ class GetUsersEntity: RequestableApiEntity {
     typealias ResponseEntity = GetUsersRespondableEntity
 
     static var method: BaseNetworkOperation.Method { .get }
-    var path: String { "users" }
+    var path: String { "users?device_id=\(deviceId)&room_id=\(roomId)" }
 
     var deviceId: String
+    var roomId: Int
 
-    init(deviceId: String) {
+    init(roomId: Int) {
+        guard let deviceId = AppConstant.shared.deviceId else { fatalError() }
+
         self.deviceId = deviceId
+        self.roomId = roomId
     }
 }
 

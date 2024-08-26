@@ -129,8 +129,10 @@ extension UserListViewController {
 // MARK: - Navigation
 
 extension UserListViewController {
-    static func show(on parentViewController: UIViewController) {
+    static func show(on parentViewController: UIViewController, roomId: Int) {
         let viewController = UserListViewController()
+        viewController.viewModel.roomId = roomId
+        
         let navigationController = UINavigationController(rootViewController: viewController)
         viewController.modalPresentationStyle = .overFullScreen
         parentViewController.present(navigationController, animated: true)

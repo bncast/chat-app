@@ -45,8 +45,15 @@ class UserController {
 
     async getUsers(req, res) {
         try {
-            let result = await this.userModel.getAllUsers();
+            const { device_id, room_id } = req.query;
             
+            let userResult = await this.userModel.getUserById(device_id);
+            if (userResult.length <= 0) {
+                throw new Error("User not found.");
+            }
+
+            let result = await this.userModel.getUsersNotInRoom(room_id);
+
             const formattedResponse = result.map(member => ({
                 name: member.display_name,  
                 user_image_url: "",  
