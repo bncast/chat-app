@@ -26,18 +26,14 @@ final class ChatRoomDetailsViewModel {
 
     @Published var items: [ItemInfo] = [ItemInfo]()
 
-    var itemsToLoad = [ItemInfo(id: 11101, name: "Echo", isAdmin: true),
-                       ItemInfo(id: 11102, name: "Zenith", isAdmin: false),
-                       ItemInfo(id: 11103, name: "Frost", isAdmin: true),
-                       ItemInfo(id: 11104, name: "Vortex", isAdmin: false),
-                       ItemInfo(id: 11105, name: "Nebula", isAdmin: false),
-                       ItemInfo(id: 11106, name: "Pulse", isAdmin: false),
-                       ItemInfo(id: 11107, name: "Orchid", isAdmin: false),
-                       ItemInfo(id: 11108, name: "Quasar", isAdmin: false),
-                       ItemInfo(id: 11109, name: "Blaze", isAdmin: true),
-                       ItemInfo(id: 11110, name: "Jade", isAdmin: true)]
+    var details: ChatInfo?
+    var itemsToLoad: [ItemInfo] = []
 
     func load() {
+        guard let details else { fatalError() }
+        
+        itemsToLoad = details.memberDetails.map { ItemInfo(id: $0.roomUserId, name: $0.name, isAdmin: $0.isAdmin)}
+
         let sortedItems = itemsToLoad.sorted { (item1, item2) -> Bool in
             if item1.isAdmin != item2.isAdmin {
                 return item1.isAdmin && !item2.isAdmin
@@ -52,7 +48,9 @@ final class ChatRoomDetailsViewModel {
     }
 
     func removeChatRoom(roomUserId: Int) async throws {
-        try await RemoveChatRoomEntity(roomUserId: roomUserId).run()
+        guard let deviceId = AppConstant.shared.deviceId else { fatalError() }
+        
+        try await RemoveChatRoomEntity(deviceId: deviceId, roomUserId: roomUserId).run()
     }
     
     func setIsAdminInServer(isAdmin: Bool, roomUserId: Int) async throws {

@@ -191,9 +191,9 @@ class ChatRoomViewController: BaseViewController {
         }
 
         navigationBar?.moreTapHandlerAsync = { [weak self] _ in
-            guard let self else { return }
+            guard let self, let details = viewModel.details else { return }
 
-            let isRemovedChatRoom = await ChatRoomDetailsViewController.show(on: self)
+            let isRemovedChatRoom = await ChatRoomDetailsViewController.show(on: self, using: details)
             if isRemovedChatRoom {
                 navigationController?.popViewController(animated: true)
             }

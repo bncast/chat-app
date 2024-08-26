@@ -4,7 +4,7 @@ class RoomUserModel {
     }
 
     // Add a user to a room
-    async create(room_id, user_id, is_admin = 0) {
+    async createRoomUser(room_id, user_id, is_admin = 0) {
         const sql = `
             INSERT INTO RoomUser (room_id, user_id, is_admin, is_deleted, is_muted)
             VALUES (?, ?, ?, ?, ?)
@@ -38,14 +38,13 @@ class RoomUserModel {
         return this.db.query(sql, values);
     }
 
-    // Get all rooms a user is in
     async getRoomsForUser(user_id) {
         const sql = 'SELECT * FROM RoomUser WHERE user_id = ? AND is_deleted = 0';
         const values = [user_id];
         return this.db.query(sql, values);
     }
 
-    async getRoomForRoomUserId(room_user_id) {
+    async getRoomUserForRoomUserId(room_user_id) {
         const sql = 'SELECT * FROM RoomUser WHERE room_user_id = ? AND is_deleted = 0';
         const values = [room_user_id];
         return this.db.query(sql, values);

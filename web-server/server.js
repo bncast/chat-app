@@ -4,14 +4,12 @@ const path = require('path');
 
 const Database = require('./config/database');
 const UserController = require('./controllers/userController');
-const RoomController = require('./controllers/roomController');
 const RoomUserController = require('./controllers/roomUserController');
 const MessageController = require('./controllers/messageController');
 
 const app = express();
 const db = new Database();
 const userController = new UserController(db);
-const roomController = new RoomController(db);
 const roomUserController = new RoomUserController(db);
 const messageController = new MessageController(db);
 
@@ -55,9 +53,9 @@ app.post('/api/users', (req, res) => userController.setUser(req, res));
 app.get('/api/users', (req, res) => userController.getUsers(req, res)); // need to retested during integration
 
 app.get('/api/rooms', (req, res) => roomUserController.getChatRooms(req, res));
-app.post('/api/rooms', (req, res) => roomController.create(req, res));
-app.put('/api/rooms', (req, res) => console.log("TODO for editing name"));
-app.delete('/api/rooms', (req, res) => console.log("TODO for deleting room"));
+app.post('/api/rooms', (req, res) => roomUserController.createChatRoom(req, res));
+app.put('/api/rooms', (req, res) => roomUserController.updateChatRoom(req, res));
+app.delete('/api/rooms', (req, res) => roomUserController.deleteChatRoom(req, res));
 
 app.post('/api/rooms/join', (req, res) => roomUserController.joinRoom(req, res));
 
