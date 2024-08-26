@@ -45,12 +45,12 @@ class UserController {
 
     async getUsers(req, res) {
         try {
-            let result = await this.userModel.getAllUsers()
-
-            const formattedResponse = members.map(member => ({
-                name: member.name,  
+            let result = await this.userModel.getAllUsers();
+            
+            const formattedResponse = result.map(member => ({
+                name: member.display_name,  
                 user_image_url: "",  
-                device_id: member.device_id
+                device_id: member.user_id
             }));
 
             if (result) {

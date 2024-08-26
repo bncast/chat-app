@@ -6,12 +6,14 @@ const Database = require('./config/database');
 const UserController = require('./controllers/userController');
 const RoomUserController = require('./controllers/roomUserController');
 const MessageController = require('./controllers/messageController');
+const InvitationController = require('./controllers/invitationController');
 
 const app = express();
 const db = new Database();
 const userController = new UserController(db);
 const roomUserController = new RoomUserController(db);
 const messageController = new MessageController(db);
+const invitationController = new InvitationController(db);
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -84,8 +86,8 @@ app.post('/api/send', (req, res) => {
 app.delete('/api/rooms/detail', (req, res) => roomUserController.deleteRoomUser(req, res));
 app.patch('/api/rooms/detail', (req, res) => roomUserController.updateAdminStatus(req, res));
 
-app.get('/api/invites', (req, res) => console.log("TODO to get all invites for user"));
-app.post('/api/invites', (req, res) => console.log("TODO to send invite to user"));
+app.get('/api/invites', (req, res) => invitationController.getAll(req, res));
+app.post('/api/invites', (req, res) => invitationController.sendInvitation(req, res));
 
 
 process.on('SIGINT', async () => {
