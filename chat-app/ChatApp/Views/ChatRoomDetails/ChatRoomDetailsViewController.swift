@@ -119,12 +119,15 @@ class ChatRoomDetailsViewController: BaseViewController {
             print("[ChatRoomDetailsViewController] inviteButton.tapHandler")
         }
         deleteRoomButton.tapHandlerAsync = { [weak self] _ in
-            guard let self else { return }
-            guard let isDeleteChatRoom = await showChatRoomDeleteAlert(in: self), isDeleteChatRoom == true else { return }
+            guard let self,
+                  let isDeleteChatRoom = await showChatRoomDeleteAlert(in: self),
+                  let roomUserId = viewModel.details?.currentRoomUserId,
+                  isDeleteChatRoom
+            else { return }
 
             await IndicatorController.shared.show()
             do {
-                try await viewModel.removeChatRoom(roomUserId: 1234)
+                try await viewModel.removeChatRoom(roomUserId: roomUserId)
                 await IndicatorController.shared.dismiss()
                 dismiss(animated: true)
                 continuation?.resume(returning: isDeleteChatRoom)
@@ -158,9 +161,10 @@ class ChatRoomDetailsViewController: BaseViewController {
         .register(in: viewController)
     }
 
-    static func show(on parentViewController: UIViewController) async -> Bool {
+    static func show(on parentViewController: UIViewController, using details: ChatInfo) async -> Bool {
         return await withCheckedContinuation { continuation in
             let chatRoomDetailsViewController = Self()
+            chatRoomDetailsViewController.viewModel.details = details
             chatRoomDetailsViewController.continuation = continuation
             chatRoomDetailsViewController.modalPresentationStyle = .overFullScreen
             chatRoomDetailsViewController.transitioningDelegate = chatRoomDetailsViewController.fadeInAnimator

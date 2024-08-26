@@ -62,13 +62,13 @@ class RoomModel {
         return this.db.query(sql, values);
     }
 
-    async updateCreatorById(room_id, creator_id) {
+    async updateNameById(room_name, user_id, room_id) {
         const sql = `
             UPDATE Room
-            SET creator_id = ?, updated_by = ?, updated_at = ?
+            SET room_name = ?, updated_by = ?, updated_at = ?
             WHERE room_id = ? AND is_deleted = 0
         `;
-        const values = [creator_id, creator_id, new Date(), room_id];
+        const values = [room_name, user_id, new Date(), room_id];
         return this.db.query(sql, values);
     }
 
