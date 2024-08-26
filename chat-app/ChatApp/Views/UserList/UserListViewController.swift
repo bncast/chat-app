@@ -48,15 +48,23 @@ class UserListViewController: BaseViewController {
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, Item>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Item>
     private var dataSource: DataSource?
-    
+
     let viewModel = UserListViewModel()
 
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
 
-        Task { await viewModel.load() }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        Task {
+            await IndicatorController.shared.show()
+            await viewModel.load()
+            await IndicatorController.shared.dismiss()
+        }
     }
 
     // MARK: - Setups
@@ -119,6 +127,7 @@ extension UserListViewController {
 }
 
 // MARK: - Navigation
+
 extension UserListViewController {
     static func show(on parentViewController: UIViewController) {
         let viewController = UserListViewController()

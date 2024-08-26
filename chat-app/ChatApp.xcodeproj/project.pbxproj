@@ -101,6 +101,7 @@
 		A7FB9C542C7C06F1008DE3F3 /* UserListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C532C7C06F1008DE3F3 /* UserListViewController.swift */; };
 		A7FB9C562C7C0701008DE3F3 /* UserListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C552C7C0701008DE3F3 /* UserListViewModel.swift */; };
 		A7FB9C592C7C15AC008DE3F3 /* UserCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C582C7C15AC008DE3F3 /* UserCollectionViewCell.swift */; };
+		A7FB9C5C2C7C5D27008DE3F3 /* GetUsersEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C5B2C7C5D27008DE3F3 /* GetUsersEntity.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -201,6 +202,7 @@
 		A7FB9C532C7C06F1008DE3F3 /* UserListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewController.swift; sourceTree = "<group>"; };
 		A7FB9C552C7C0701008DE3F3 /* UserListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewModel.swift; sourceTree = "<group>"; };
 		A7FB9C582C7C15AC008DE3F3 /* UserCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCollectionViewCell.swift; sourceTree = "<group>"; };
+		A7FB9C5B2C7C5D27008DE3F3 /* GetUsersEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetUsersEntity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -367,6 +369,7 @@
 				1D3DC6742C7C217A00D64B24 /* DeleteMessageEntity.swift */,
 				1D3DC6792C7C445500D64B24 /* GetInvitationsListEntity.swift */,
 				1D3DC67B2C7C452600D64B24 /* SendInvitationEntity.swift */,
+				A7FB9C5B2C7C5D27008DE3F3 /* GetUsersEntity.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -768,6 +771,7 @@
 				A7FB9C3C2C75FEEB008DE3F3 /* CreateChatRoomViewModel.swift in Sources */,
 				A700BF432C73176500B38530 /* ChatRoomListViewModel.swift in Sources */,
 				6FB326552C749D9E00F1B2E4 /* FadeInAnimator.swift in Sources */,
+				A7FB9C5C2C7C5D27008DE3F3 /* GetUsersEntity.swift in Sources */,
 				6F9D59C12C78F70D003E8959 /* BaseSwipeCollectionViewCell.swift in Sources */,
 				A7FB9C592C7C15AC008DE3F3 /* UserCollectionViewCell.swift in Sources */,
 				6F7969782C75CD690010B427 /* ChatRoomDetailsViewModel.swift in Sources */,
