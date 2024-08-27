@@ -87,7 +87,8 @@ app.delete('/api/rooms/detail', (req, res) => roomUserController.deleteRoomUser(
 app.patch('/api/rooms/detail', (req, res) => roomUserController.updateAdminStatus(req, res));
 
 app.get('/api/invites', (req, res) => invitationController.getAll(req, res));
-app.post('/api/invites', (req, res) => invitationController.sendInvitation(req, res));
+app.post('/api/invites', (req, res) => invitationController.send(req, res));
+app.post('/api/invites/accept', (req, res) => invitationController.accept(req, res));
 
 
 process.on('SIGINT', async () => {

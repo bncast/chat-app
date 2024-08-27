@@ -39,7 +39,7 @@ class RoomModel {
     }
 
     // Get a room by ID
-    async getById(room_id) {
+    async getById(room_id, password) {
         const sql = `
             SELECT 
                 Room.room_id,
@@ -56,11 +56,38 @@ class RoomModel {
             JOIN 
                 User ON Room.creator_id = User.user_id  -- Join with Users table
             WHERE 
-                Room.room_id = ? AND Room.is_deleted = 0
+                Room.room_id = ? 
+                AND Room.is_deleted = 0
+                AND (Room.password IS NULL OR Room.password = ?)
         `;
-        const values = [room_id];
+        const values = [room_id, password];
         return this.db.query(sql, values);
     }
+
+        // Get a room by ID
+        async getByIdByPassed(room_id) {
+            const sql = `
+                SELECT 
+                    Room.room_id,
+                    Room.room_name,
+                    Room.creator_id,
+                    Room.password,
+                    Room.image_url,
+                    Room.is_deleted,
+                    Room.updated_by,
+                    Room.updated_at,
+                    User.display_name AS creator_name  -- Get the display_name from Users table
+                FROM 
+                    Room
+                JOIN 
+                    User ON Room.creator_id = User.user_id  -- Join with Users table
+                WHERE 
+                    Room.room_id = ? 
+                    AND Room.is_deleted = 0
+            `;
+            const values = [room_id];
+            return this.db.query(sql, values);
+        }
 
     async updateNameById(room_name, user_id, room_id) {
         const sql = `

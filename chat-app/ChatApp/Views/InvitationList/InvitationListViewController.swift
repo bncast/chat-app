@@ -143,8 +143,12 @@ extension InvitationListViewController {
         cell.chatRoomName = item.chatRoomName
         cell.isInvited = item.isInvited
         cell.backgroundColor = indexPath.row % 2 == 0 ? .background(.mainLight) : .background(.main)
+        
+        cell.joinTapHandlerAsync = { [weak self] _ in
+            guard let chatInfo = await self?.viewModel.join(roomId: item.id) else { return }
 
-
+            self?.dismiss(animated: true) //TODO: Redirect to chat room
+        }
 
         return cell
     }
