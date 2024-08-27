@@ -58,3 +58,37 @@ enum ButtonColor {
     case inactive
     case ongoing
 }
+
+
+enum ColorStyle: Hashable {
+    case active
+    case inactive
+
+    var backgroundColor: UIColor {
+        switch self {
+        case .active: .button(.active)
+        case .inactive: .button(.inactive)
+        }
+    }
+
+    var textColor: UIColor {
+        switch self {
+        case .active: .white
+        case .inactive: .subtext
+        }
+    }
+
+    var disabledBackgroundColor: UIColor {
+        switch self {
+        case .active: .subtext
+        case .inactive: .subtext
+        }
+    }
+
+    var disabledTextColor: UIColor {
+        switch self {
+        case .active: .textLight
+        case .inactive: .textLight
+        }
+    }
+}

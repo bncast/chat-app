@@ -10,6 +10,19 @@ import SuperEasyLayout
 import Combine
 
 class CreateChatRoomViewController: BaseViewController {
+    private lazy var visualEffectView: UIVisualEffectView = {
+        let view = UIVisualEffectView()
+        view.effect = UIBlurEffect(style: .regular)
+        return view
+    }()
+
+    private lazy var containerView: BaseView = {
+        let view = BaseView()
+        view.backgroundColor = .background(.mainLight)
+        view.layer.cornerRadius = 12
+        return view
+    }()
+
     private lazy var closeButton: BaseButton = {
         let view = BaseButton()
         view.setImage(UIImage(systemName: "xmark"),for: .normal)
@@ -29,8 +42,8 @@ class CreateChatRoomViewController: BaseViewController {
     private lazy var titleTextLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
-        view.font = .title.bold()
-        view.textColor = .black
+        view.font = .title
+        view.textColor = .textColor(.title)
         view.lineBreakMode = .byCharWrapping
         view.text = "New Chat Room"
         return view
@@ -40,7 +53,7 @@ class CreateChatRoomViewController: BaseViewController {
         let view = UILabel()
         view.textAlignment = .left
         view.font = .body
-        view.textColor = .black
+        view.textColor = .textColor(.title)
         view.lineBreakMode = .byCharWrapping
         view.text = "Room Name"
         return view
@@ -56,7 +69,7 @@ class CreateChatRoomViewController: BaseViewController {
         let view = UILabel()
         view.textAlignment = .left
         view.font = .body
-        view.textColor = .black
+        view.textColor = .textColor(.title)
         view.lineBreakMode = .byCharWrapping
         view.text = "Password (optional)"
         return view
@@ -71,20 +84,17 @@ class CreateChatRoomViewController: BaseViewController {
 
     private lazy var createButton: BaseButton = {
         let view = BaseButton()
-        view.backgroundColor = .button(.inactive)
-        view.setTitle("CREATE", for: .normal)
-        view.titleLabel?.textColor = .textColor(.caption)
-        view.titleLabel?.font = .title
+        view.text = "CREATE"
+        view.colorStyle = .active
+        view.isEnabled = false
         view.layer.cornerRadius = 8
         return view
     }()
 
     private lazy var cancelButton: BaseButton = {
         let view = BaseButton()
-        view.backgroundColor = .button(.active)
-        view.setTitle("CANCEL", for: .normal)
-        view.titleLabel?.textColor = .textColor(.caption)
-        view.titleLabel?.font = .title
+        view.text = "CANCEL"
+        view.colorStyle = .active
         view.layer.cornerRadius = 8
         return view
     }()
@@ -95,22 +105,25 @@ class CreateChatRoomViewController: BaseViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        view.backgroundColor = .white
     }
 
     // MARK: - Setups
 
     override func setupLayout() {
+        view.backgroundColor = .clear
+
         addSubviews([
-            verticalStackView.addArrangedSubviews([
-                titleTextLabel,
-                roomTextLabel,
-                roomTextField,
-                passwordTextLabel,
-                passwordTextField,
-                createButton,
-                cancelButton
+            visualEffectView,
+            containerView.addSubviews([
+                verticalStackView.addArrangedSubviews([
+                    titleTextLabel,
+                    roomTextLabel,
+                    roomTextField,
+                    passwordTextLabel,
+                    passwordTextField,
+                    createButton,
+                    cancelButton
+                ])
             ])
         ])
 
@@ -121,22 +134,34 @@ class CreateChatRoomViewController: BaseViewController {
     }
 
     override func setupConstraints() {
-        verticalStackView.width == 300
-        verticalStackView.centerX == view.centerX
-        containerViewCenterYConstraint = verticalStackView.centerY == view.centerY
+        visualEffectView.setLayoutEqualTo(view)
 
-        titleTextLabel.width == 300
+        containerView.width == AppConstant.shared.screen(.width) - 40
+        containerView.centerX == view.centerX
+        containerViewCenterYConstraint = containerView.centerY == view.centerY
 
-        roomTextField.width == 300
+        verticalStackView.left == containerView.left + 20
+        verticalStackView.right == containerView.right - 20
+        verticalStackView.top == containerView.top + 20
+        verticalStackView.bottom == containerView.bottom - 20
+
+        titleTextLabel.left == verticalStackView.left
+        titleTextLabel.right == verticalStackView.right
+
+        roomTextField.left == verticalStackView.left
+        roomTextField.right == verticalStackView.right
         roomTextField.height == 44
 
-        passwordTextField.width == 300
+        passwordTextField.left == verticalStackView.left
+        passwordTextField.right == verticalStackView.right
         passwordTextField.height == 44
 
-        createButton.width == 300
+        createButton.left == verticalStackView.left
+        createButton.right == verticalStackView.right
         createButton.height == 44
 
-        cancelButton.width == 300
+        cancelButton.left == verticalStackView.left
+        cancelButton.right == verticalStackView.right
         cancelButton.height == 44
     }
 
@@ -145,7 +170,6 @@ class CreateChatRoomViewController: BaseViewController {
             .sink { [weak self] text in
                 guard let text else { return }
                 self?.createButton.isEnabled = !text.isEmpty
-                self?.createButton.backgroundColor = text.isEmpty ? .button(.inactive) : .button(.active)
             }
             .store(in: &cancellables)
     }
@@ -188,7 +212,8 @@ extension CreateChatRoomViewController {
     static func show(on parentViewController: UIViewController) {
         let viewController = CreateChatRoomViewController()
         let navigationController = UINavigationController(rootViewController: viewController)
-        navigationController.modalPresentationStyle = .fullScreen
+        navigationController.modalPresentationStyle = .overFullScreen
+        navigationController.transitioningDelegate = viewController.fadeInAnimator
 
         parentViewController.present(navigationController, animated: true)
     }
