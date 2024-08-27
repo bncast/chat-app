@@ -131,8 +131,8 @@ class IndicatorViewController: BaseViewController {
         let view = PaddingLabel()
         view.backgroundColor = .white
         view.padding = .init(top: 16, left: 16, bottom: 16, right: 16)
-        view.font = .body2
-        view.textColor = .text(.caption)
+        view.font = .body
+        view.textColor = .subtext
         view.textAlignment = .center
         view.numberOfLines = 0
         view.lineBreakMode = .byCharWrapping

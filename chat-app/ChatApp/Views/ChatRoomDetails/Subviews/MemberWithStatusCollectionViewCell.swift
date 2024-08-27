@@ -11,7 +11,7 @@ import SuperEasyLayout
 class MemberWithStatusCollectionViewCell: BaseSwipeCollectionViewCell {
     private lazy var nameLabel: UILabel = {
         let view = UILabel()
-        view.font = .title2
+        view.font = .body
         view.textColor = .black
         view.lineBreakMode = .byCharWrapping
         return view
@@ -19,8 +19,8 @@ class MemberWithStatusCollectionViewCell: BaseSwipeCollectionViewCell {
 
     private lazy var adminButton: BaseButton = {
         let view = BaseButton()
-        view.titleLabel?.textColor = .text(.caption)
-        view.titleLabel?.font = .title3
+        view.titleLabel?.textColor = .text
+        view.titleLabel?.font = .body
         view.layer.cornerRadius = 8
         return view
     }()

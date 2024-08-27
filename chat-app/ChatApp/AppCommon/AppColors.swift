@@ -19,9 +19,9 @@ extension UIColor {
         }
     }
 
-    static let text: (TextColor) -> UIColor = { color in
+    static let textColor: (TextColor) -> UIColor = { color in
         switch color {
-        case .title: .text1
+        case .title: .text
         case .caption: .subtext
         case .date: .textLight
         case .time: .textLight

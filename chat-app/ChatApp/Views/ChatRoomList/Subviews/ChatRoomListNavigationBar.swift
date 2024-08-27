@@ -126,7 +126,7 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         ])
 
         titleTextAttributes = [NSAttributedString.Key.backgroundColor: UIColor.background(.mainLight),
-                               NSAttributedString.Key.font: UIFont.title1]
+                               NSAttributedString.Key.font: UIFont.body]
     }
 
     override func setupConstraints() {

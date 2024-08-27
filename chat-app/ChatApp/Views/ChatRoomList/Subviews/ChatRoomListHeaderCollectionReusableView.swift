@@ -17,7 +17,7 @@ class ChatRoomListHeaderCollectionReusableView: BaseCollectionReusableView {
 
     private lazy var titleLabel: UILabel = {
         let view = UILabel()
-        view.font = .callout
+        view.font = .body
         view.textColor = .background(.accent)
         return view
     }()

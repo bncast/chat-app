@@ -22,7 +22,7 @@ class NoDataCollectionViewCell: BaseCollectionViewCell {
 
     private lazy var messageLabel: UILabel = {
         let view = UILabel()
-        view.font = .callout
+        view.font = .body
         view.textAlignment = .center
         view.numberOfLines = 0
         view.lineBreakMode = .byCharWrapping
