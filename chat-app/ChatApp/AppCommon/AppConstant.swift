@@ -356,10 +356,10 @@ class AppConstant: NSObject {
         }
         return host
     }
-
+         
     @UserDefaultsReadOnly("SERVER_TYPE", default: .manual)
     var serverType: ServerType
-    @UserDefaultsReadOnly("MANUAL_HOST", default: "10.192.28.15:3000")
+    @UserDefaultsReadOnly("MANUAL_HOST", default: "localhost:3000")
     var manualHost: String
     @KeychainReadAndWrite("keychainValue", default: nil)
     var keychainValue: String?

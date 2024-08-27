@@ -113,6 +113,13 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         }
     } }
 
+    var showCloseButtonOnly: Bool = true { didSet {
+        profileImageView.isHidden = true
+        closeButton.isHidden = false
+        moreButton.isHidden = true
+        invitationButton.isHidden = true
+    } }
+
     var title: String = "" { didSet {
         titleLabel.text = title
     } }
