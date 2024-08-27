@@ -19,7 +19,7 @@ class InvitationListViewController: BaseViewController {
     private lazy var collectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundView = nil
-        view.backgroundColor = .background(.main)
+        view.backgroundColor = .white
 
         InvitationCollectionViewCell.registerCell(to: view)
         return view
@@ -36,6 +36,8 @@ class InvitationListViewController: BaseViewController {
 
     private let viewModel = InvitationListViewModel()
 
+    // MARK: - View Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -46,13 +48,15 @@ class InvitationListViewController: BaseViewController {
                 await IndicatorController.shared.dismiss()
             } catch {
                 await IndicatorController.shared.dismiss()
-                print("Error: \(error)")
+                print("[InvitationListViewController] Error: \(error)")
             }
         }
     }
 
+    // MARK: - Setups
+    
     override func setupLayout() {
-        view.backgroundColor = .background(.main)
+        view.backgroundColor = .main
 
         addSubviews([
             collectionView
@@ -60,17 +64,17 @@ class InvitationListViewController: BaseViewController {
     }
 
     override func setupNavigation() {
-        title = "Invitations"
-
         setNavigationBarDefaultStyle()
-        navigationBar?.showInvitaionListButtons = true
+
+        navigationBar?.title = "Invitations"
+        navigationBar?.showInvitationListButtons = true
     }
 
     override func setupConstraints() {
         collectionView.left == view.left
         collectionView.right == view.right
         collectionView.top == view.topMargin
-        collectionView.bottom == view.bottomMargin
+        collectionView.bottom == view.bottom
     }
 
     override func setupBindings() {
@@ -87,15 +91,20 @@ class InvitationListViewController: BaseViewController {
             self?.dismiss(animated: true)
         }
     }
+}
 
+// MARK: - Navigation
+
+extension InvitationListViewController {
     static func show(on parentViewController: UIViewController) {
-        let invitationListViewController = Self()
+        let viewController = Self()
 
         let navController = UINavigationController(navigationBarClass: ChatRoomListNavigationBar.self,
                                                    toolbarClass: nil)
-        navController.viewControllers = [invitationListViewController]
+        navController.viewControllers = [viewController]
         navController.modalPresentationStyle = .overFullScreen
-        navController.transitioningDelegate = invitationListViewController.fadeInAnimator
+        navController.transitioningDelegate = viewController.fadeInAnimator
+
         parentViewController.present(navController, animated: true)
     }
 }
@@ -142,12 +151,16 @@ extension InvitationListViewController {
         let cell = InvitationCollectionViewCell.dequeueCell(from: collectionView, for: indexPath)
         cell.chatRoomName = item.chatRoomName
         cell.isInvited = item.isInvited
-        cell.backgroundColor = indexPath.row % 2 == 0 ? .background(.mainLight) : .background(.main)
-        
         cell.joinTapHandlerAsync = { [weak self] _ in
-            guard let chatInfo = await self?.viewModel.join(roomId: item.id) else { return }
-
-            self?.dismiss(animated: true) //TODO: Redirect to chat room
+            do {
+                await IndicatorController.shared.show()
+                let chatInfo = await self?.viewModel.join(roomId: item.id)
+                await IndicatorController.shared.dismiss()
+                self?.dismiss(animated: true) //TODO: Redirect to chat room
+            } catch {
+                print("[UserListViewController] Error! \(error as! NetworkError)")
+                await IndicatorController.shared.dismiss()
+            }
         }
 
         return cell

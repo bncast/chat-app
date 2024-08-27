@@ -13,6 +13,7 @@ class InvitationModel {
                 UserInvitation.created_at,
                 UserInvitation.updated_at,
                 Room.room_name,
+                Room.image_url,
                 Inviter.display_name AS inviter_name
             FROM UserInvitation
             JOIN Room ON UserInvitation.room_id = Room.room_id
