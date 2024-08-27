@@ -37,13 +37,6 @@ class ProfileViewController: BaseViewController {
         return view
     }()
 
-    private lazy var closeButton: BaseButton = {
-        let view = BaseButton(image: UIImage(systemName: "xmark"))
-        view.setBackgroundColor(.clear, for: .normal)
-        view.tintColor = .textColor(.title)
-        return view
-    }()
-
     private lazy var profileImage: UIImageView = {
         let view = UIImageView()
         view.backgroundColor = .background(.profileImage)
@@ -71,6 +64,14 @@ class ProfileViewController: BaseViewController {
         return view
     }()
 
+    private lazy var cancelButton: BaseButton = {
+        let view = BaseButton()
+        view.text = "CANCEL"
+        view.colorStyle = .active
+        view.layer.cornerRadius = 8
+        return view
+    }()
+
     private let viewModel = ProfileViewModel()
     private var continuation: CheckedContinuation<Void, Never>?
 
@@ -83,15 +84,14 @@ class ProfileViewController: BaseViewController {
             visualEffectView,
             containerView.addSubviews([
                 titleLabel,
-                closeButton,
                 profileImage,
                 nameTextField,
-                saveButton
+                saveButton,
+                cancelButton
             ])
         ])
 
         guard AppConstant.shared.isNewUser else { return }
-        closeButton.alpha = 0
     }
 
     override func setupConstraints() {
@@ -105,11 +105,6 @@ class ProfileViewController: BaseViewController {
         titleLabel.right == containerView.right - 20
         titleLabel.top == containerView.top + 20
         titleLabel.height == 40
-
-        closeButton.right == containerView.right
-        closeButton.top == containerView.top
-        closeButton.width == 44
-        closeButton.height == 44
 
         profileImage.centerX == containerView.centerX
         profileImage.top == titleLabel.bottom + 20
@@ -125,7 +120,12 @@ class ProfileViewController: BaseViewController {
         saveButton.right == containerView.right - 20
         saveButton.top == nameTextField.bottom + 20
         saveButton.height == 44
-        saveButton.bottom == containerView.bottom - 20
+
+        cancelButton.left == containerView.left + 20
+        cancelButton.right == containerView.right - 20
+        cancelButton.top == saveButton.bottom + 10
+        cancelButton.bottom == containerView.bottom - 20
+        cancelButton.height == 44
     }
 
     override func setupBindings() {
@@ -133,6 +133,13 @@ class ProfileViewController: BaseViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] displayName in
                 self?.nameTextField.text = displayName
+            }
+            .store(in: &cancellables)
+
+        nameTextField.textPublisher
+            .sink { [weak self] text in
+                guard let text else { return }
+                self?.saveButton.isEnabled = !text.isEmpty
             }
             .store(in: &cancellables)
     }
@@ -153,7 +160,7 @@ class ProfileViewController: BaseViewController {
             return
         }
 
-        closeButton.tapHandler = { [weak self] _ in
+        cancelButton.tapHandler = { [weak self] _ in
             self?.dismiss(animated: true)
         }
         tapRecognizer.tapHandler = { [weak self] _ in
