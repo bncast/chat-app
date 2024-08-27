@@ -42,7 +42,7 @@ class CreateChatRoomViewController: BaseViewController {
     private lazy var titleTextLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
-        view.font = .title.bold()
+        view.font = .title
         view.textColor = .textColor(.title)
         view.lineBreakMode = .byCharWrapping
         view.text = "New Chat Room"
