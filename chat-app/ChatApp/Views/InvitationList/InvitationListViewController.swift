@@ -19,7 +19,7 @@ class InvitationListViewController: BaseViewController {
     private lazy var collectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundView = nil
-        view.backgroundColor = .background(.main)
+        view.backgroundColor = .white
 
         InvitationCollectionViewCell.registerCell(to: view)
         return view
@@ -48,7 +48,7 @@ class InvitationListViewController: BaseViewController {
                 await IndicatorController.shared.dismiss()
             } catch {
                 await IndicatorController.shared.dismiss()
-                print("Error: \(error)")
+                print("[InvitationListViewController] Error: \(error)")
             }
         }
     }
@@ -56,7 +56,7 @@ class InvitationListViewController: BaseViewController {
     // MARK: - Setups
     
     override func setupLayout() {
-        view.backgroundColor = .background(.main)
+        view.backgroundColor = .main
 
         addSubviews([
             collectionView
@@ -74,7 +74,7 @@ class InvitationListViewController: BaseViewController {
         collectionView.left == view.left
         collectionView.right == view.right
         collectionView.top == view.topMargin
-        collectionView.bottom == view.bottomMargin
+        collectionView.bottom == view.bottom
     }
 
     override func setupBindings() {
