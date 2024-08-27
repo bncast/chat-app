@@ -20,7 +20,7 @@ class ChatRoomDetailsViewController: BaseViewController {
     private lazy var collectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundView = nil
-        view.backgroundColor = .background(.main)
+        view.backgroundColor = .white
 
         MemberHeaderCollectionReusableView.registerView(to: view)
         MemberWithStatusCollectionViewCell.registerCell(to: view)
@@ -29,20 +29,16 @@ class ChatRoomDetailsViewController: BaseViewController {
 
     private lazy var inviteButton: BaseButton = {
         let view = BaseButton()
-        view.backgroundColor = .button(.active)
-        view.setTitle("INVITE", for: .normal)
-        view.titleLabel?.textColor = .textColor(.caption)
-        view.titleLabel?.font = .title
+        view.text = "INVITE"
+        view.colorStyle = .active
         view.layer.cornerRadius = 8
         return view
     }()
 
     private lazy var deleteRoomButton: BaseButton = {
         let view = BaseButton()
-        view.backgroundColor = .button(.active)
-        view.setTitle("DELETE ROOM", for: .normal)
-        view.titleLabel?.textColor = .textColor(.caption)
-        view.titleLabel?.font = .title
+        view.text = "DELETE ROOM"
+        view.colorStyle = .active
         view.layer.cornerRadius = 8
         return view
     }()
@@ -69,8 +65,13 @@ class ChatRoomDetailsViewController: BaseViewController {
 
     // MARK: - Setups
 
+    override func setupNavigation() {
+        setNavigationBarDefaultStyle()
+        navigationBar?.title = "Members"
+    }
+
     override func setupLayout() {
-        view.backgroundColor = .background(.main)
+        view.backgroundColor = .background(.mainLight)
 
         addSubviews([
             collectionView,
@@ -156,7 +157,11 @@ class ChatRoomDetailsViewController: BaseViewController {
         .addButton(title: "Cancel", returnValue: false)
         .register(in: viewController)
     }
+}
 
+// MARK: - Navigation
+
+extension ChatRoomDetailsViewController {
     static func show(on parentViewController: UIViewController, using details: ChatInfo) async -> Bool {
         return await withCheckedContinuation { continuation in
             let viewController = Self()
@@ -185,7 +190,7 @@ extension ChatRoomDetailsViewController {
         let section = NSCollectionLayoutSection(group: group)
         section.boundarySupplementaryItems = [
             NSCollectionLayoutBoundarySupplementaryItem(
-                layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(228)),
+                layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(180)),
                 elementKind: MemberHeaderCollectionReusableView.viewOfKind,
                 alignment: .top
             )
@@ -288,8 +293,6 @@ extension ChatRoomDetailsViewController {
         cell.roomUserId = item.id
         cell.name = item.name
         cell.isAdmin = item.isAdmin
-        cell.backgroundColor = indexPath.row % 2 == 0 ? .background(.mainLight) : .background(.main)
-        
         cell.setIsAdminInServerHandler = { [weak self] isAdmin in
             guard let self else { return !isAdmin }
             do {
