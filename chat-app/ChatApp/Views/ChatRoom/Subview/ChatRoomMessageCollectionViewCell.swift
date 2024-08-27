@@ -38,7 +38,7 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
 
     private lazy var contentBackView: BaseView = {
         let view = BaseView()
-        view.backgroundColor = .mainBackground
+        view.backgroundColor = .accentSecondary
         view.clipsToBounds = true
         view.layer.cornerRadius = 12
         return view
@@ -61,8 +61,8 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
     private lazy var contentLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .left
-        view.font = .body
-        view.textColor = .black
+        view.font = .section
+        view.textColor = .text
         view.lineBreakMode = .byCharWrapping
         return view
     }()
@@ -76,12 +76,11 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
         return view
     }()
 
-
     private lazy var nameLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .left
-        view.font = .caption
-        view.textColor = .textColor(.title)
+        view.font = .caption.semibold()
+        view.textColor = .subtext
         view.lineBreakMode = .byTruncatingTail
         return view
     }()
@@ -90,7 +89,7 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
         let view = UILabel()
         view.textAlignment = .left
         view.font = .caption
-        view.textColor = .lightGray
+        view.textColor = .subtext
         view.lineBreakMode = .byTruncatingTail
         return view
     }()
@@ -122,7 +121,11 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
         rightConstraint?.isActive = true
         leftConstraint?.isActive = false
 
-        contentBackView.backgroundColor = .main
+        contentBackView.backgroundColor = .accent
+        contentLabel.textColor = .textLight
+        timeLabel.textColor = .subtextLight
+
+        nameLabel.isHidden = true
     } }
 
     var showOptionsHandler: ((BaseView) async -> Void)?
