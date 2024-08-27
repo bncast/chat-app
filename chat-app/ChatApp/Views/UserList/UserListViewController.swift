@@ -15,12 +15,6 @@ class UserListViewController: BaseViewController {
         return view
     }()
 
-    private lazy var dismissButton: UIBarButtonItem = {
-        let view = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: nil, action: nil)
-        view.tintColor = .black
-        return view
-    }()
-
     private lazy var layout: UICollectionViewCompositionalLayout = {
         UICollectionViewCompositionalLayout { [weak self] index, _ in
             guard let self, let sections = dataSource?.snapshot().sectionIdentifiers else { fatalError() }
@@ -35,13 +29,17 @@ class UserListViewController: BaseViewController {
     private lazy var collectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundView = nil
-        view.backgroundColor = .background(.main)
+        view.backgroundColor = .white
 
         NoDataCollectionViewCell.registerCell(to: view)
         UserCollectionViewCell.registerCell(to: view)
         return view
     }()
 
+    private var navigationBar: ChatRoomListNavigationBar? {
+        navigationController?.navigationBar as? ChatRoomListNavigationBar
+    }
+    
     private typealias Section = UserListViewModel.Section
     private typealias Item = UserListViewModel.Item
     private typealias ItemInfo = UserListViewModel.ItemInfo
@@ -67,13 +65,16 @@ class UserListViewController: BaseViewController {
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationBar?.showCloseButtonOnly = true
+    }
+    
     // MARK: - Setups
 
     override func setupNavigation() {
         setNavigationBarDefaultStyle()
-
-        title = "Invite Users"
-        navigationItem.leftBarButtonItem = dismissButton
+        navigationBar?.title = "Invite Users"
     }
 
     override func setupLayout() {
@@ -104,25 +105,16 @@ class UserListViewController: BaseViewController {
             }
             .store(in: &cancellables)
 
+        navigationBar?.closeTapHandler = { [weak self] _ in
+            self?.dismiss(animated: true)
+        }
+
         searchBarView.textPublisher
             .sink { [weak self] text in
                 guard let text else { return }
                 self?.viewModel.filterByName(searchKey: text)
             }
             .store(in: &cancellables)
-    }
-
-    override func setupActions() {
-        dismissButton.target = self
-        dismissButton.action = #selector(dismissController)
-    }
-}
-
-// MARK: - Handlers
-
-extension UserListViewController {
-    @objc private func dismissController() {
-        dismiss(animated: true)
     }
 }
 
@@ -132,9 +124,13 @@ extension UserListViewController {
     static func show(on parentViewController: UIViewController, roomId: Int) {
         let viewController = UserListViewController()
         viewController.viewModel.roomId = roomId
-        
-        let navigationController = UINavigationController(rootViewController: viewController)
-        viewController.modalPresentationStyle = .overFullScreen
+
+        let navigationController = UINavigationController(navigationBarClass: ChatRoomListNavigationBar.self,
+                                                          toolbarClass: nil)
+        navigationController.modalPresentationStyle = .overFullScreen
+        navigationController.transitioningDelegate = viewController.fadeInAnimator
+        navigationController.viewControllers = [viewController]
+
         parentViewController.present(navigationController, animated: true)
     }
 }
@@ -195,7 +191,6 @@ extension UserListViewController {
     private func getUserCell(at indexPath: IndexPath, item: ItemInfo) -> UserCollectionViewCell {
         let cell = UserCollectionViewCell.dequeueCell(from: collectionView, for: indexPath)
         cell.name = item.name
-        cell.backgroundColor = indexPath.row % 2 == 0 ? .background(.mainLight) : .white
         cell.isInvited = item.isInvited
         cell.inviteHandlerAsync = { [weak self] _ in
             guard let self, !(cell.isInvited ?? false) else { return }

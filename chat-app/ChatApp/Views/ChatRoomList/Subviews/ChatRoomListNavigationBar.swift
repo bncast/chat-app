@@ -11,6 +11,14 @@ import SuperEasyLayout
 class ChatRoomListNavigationBar: BaseNavigationBar {
     private(set) lazy var backView = BaseView()
 
+    private lazy var titleLabel: UILabel = {
+        let view = UILabel()
+        view.font = .title
+        view.textColor = UIColor.white
+        view.textAlignment = .center
+        return view
+    }()
+
     private lazy var profileImageView: UIImageView = {
         let view = UIImageView(image: UIImage(systemName: "person.crop.circle.fill")?
             .withRenderingMode(.alwaysTemplate))
@@ -110,6 +118,16 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         }
     } }
 
+    var showCloseButtonOnly: Bool = true { didSet {
+        profileImageView.isHidden = true
+        closeButton.isHidden = false
+        moreButton.isHidden = true
+        invitationButton.isHidden = true
+    } }
+
+    var title: String = "" { didSet {
+        titleLabel.text = title
+    } }
 
     var invitationTapHandler: ((BaseButton) -> Void)?
     var invitationTapHandlerAsync: ((BaseButton) async -> Void)?
@@ -122,8 +140,11 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
 
     var closeTapHandler: ((BaseButton) -> Void)?
 
+    // MARK: - Setups
+
     override func setupLayout() {
         addSubviews([
+            titleLabel,
             profileImageView,
             invitationButton,
             moreButton,
@@ -131,10 +152,16 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         ])
 
         titleTextAttributes = [NSAttributedString.Key.backgroundColor: UIColor.background(.mainLight),
+                               NSAttributedString.Key.foregroundColor: UIColor.white,
                                NSAttributedString.Key.font: UIFont.body]
     }
 
     override func setupConstraints() {
+        titleLabel.left == left + 74
+        titleLabel.right == right - 74
+        titleLabel.centerY == centerY
+        titleLabel.height == 50
+
         profileImageView.left == left + 22
         profileImageView.width == 44
         profileImageView.centerY == centerY

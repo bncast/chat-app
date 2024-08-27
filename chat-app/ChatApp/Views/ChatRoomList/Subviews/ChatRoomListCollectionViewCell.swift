@@ -30,7 +30,7 @@ class ChatRoomListCollectionViewCell: BaseCollectionViewCell {
     private lazy var horizontalStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .horizontal
-        view.spacing = 10
+        view.spacing = 15
         view.distribution = .fill
         view.alignment = .leading
         return view
@@ -49,7 +49,7 @@ class ChatRoomListCollectionViewCell: BaseCollectionViewCell {
         let view = UILabel()
         view.textAlignment = .left
         view.font = .body
-        view.textColor = .black
+        view.textColor = .textColor(.title)
         view.lineBreakMode = .byCharWrapping
         return view
     }()
@@ -58,13 +58,14 @@ class ChatRoomListCollectionViewCell: BaseCollectionViewCell {
         let view = UILabel()
         view.textAlignment = .left
         view.font = .caption
-        view.textColor = .darkGray
+        view.textColor = .textColor(.caption)
         view.lineBreakMode = .byTruncatingTail
         return view
     }()
 
     private lazy var detailImageView: UIImageView = {
-        let view = UIImageView(image: UIImage(systemName: "chevron.right")?.withRenderingMode(.alwaysTemplate))
+        let image = UIImage(systemName: "chevron.right")?.withRenderingMode(.alwaysTemplate)
+        let view = UIImageView(image: image)
         view.contentMode = .center
         view.tintColor = .background(.accent)
         return view
@@ -95,8 +96,7 @@ class ChatRoomListCollectionViewCell: BaseCollectionViewCell {
                     verticalStackView.addArrangedSubviews([
                         nameTextLabel,
                         previewTextLabel
-                    ]),
-                    detailImageView
+                    ])
                 ])
             ])
         ])
@@ -105,10 +105,10 @@ class ChatRoomListCollectionViewCell: BaseCollectionViewCell {
     override func setupConstraints() {
         backView.setLayoutEqualTo(contentView)
 
-        horizontalStackView.left == backView.left + 10
-        horizontalStackView.right == backView.right - 10
+        horizontalStackView.left == backView.left + 20
+        horizontalStackView.right == backView.right - 20
         horizontalStackView.top == backView.top + 10
-        horizontalStackView.right == backView.right - 10
+        horizontalStackView.bottom == backView.bottom - 10
 
         nameTextLabel.compressionRegistanceVerticalPriority = .required
         previewTextLabel.compressionRegistanceVerticalPriority = .required
@@ -117,9 +117,6 @@ class ChatRoomListCollectionViewCell: BaseCollectionViewCell {
 
         imageView.width == 50
         imageView.height == 50
-
-        detailImageView.width == 44
-        detailImageView.height == 44
     }
 
     override func setupActions() {

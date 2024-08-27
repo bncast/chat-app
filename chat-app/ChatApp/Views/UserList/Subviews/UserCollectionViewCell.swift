@@ -24,11 +24,10 @@ class UserCollectionViewCell: BaseCollectionViewCell {
         view.lineBreakMode = .byCharWrapping
         return view
     }()
-    
+
     private lazy var actionButton: BaseButton = {
         let view = BaseButton()
-        view.titleLabel?.textColor = .textColor(.caption)
-        view.titleLabel?.font = .title
+        view.colorStyle = .active
         view.layer.cornerRadius = 8
         return view
     }()
@@ -42,7 +41,8 @@ class UserCollectionViewCell: BaseCollectionViewCell {
         guard let isInvited else { return }
 
         actionButton.backgroundColor = isInvited ? .button(.inactive) : .button(.active)
-        actionButton.setTitle(isInvited ? "INVITED" : "ADD", for: .normal)
+        actionButton.text = isInvited ? "INVITED" : "ADD"
+        actionButton.colorStyle = isInvited ? .inactive : .active
     } }
 
     var inviteHandlerAsync: ((BaseButton) async -> Void)?

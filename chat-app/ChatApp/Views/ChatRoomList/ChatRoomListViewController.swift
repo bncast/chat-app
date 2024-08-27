@@ -56,11 +56,9 @@ class ChatRoomListViewController: BaseViewController {
         let configuration = UIImage.SymbolConfiguration(pointSize: 30)
         let image = UIImage(systemName: "plus", withConfiguration: configuration)
 
-        let view = BaseButton(type: .custom)
-        view.tintColor = .background(.mainLight)
-        view.backgroundColor = .background(.main)
-        view.setImage(image, for: .normal)
-        view.layer.cornerRadius = 12
+        let view = BaseButton(image: image)
+        view.layer.cornerRadius = 25
+        view.addShadowOval(alpha: 0.5, blur: 8.0)
         return view
     }()
 
@@ -93,8 +91,7 @@ class ChatRoomListViewController: BaseViewController {
     // MARK: - Setups
 
     override func setupNavigation() {
-        title = "Chat Rooms"
-
+        navigationBar?.title = "Chat Rooms"
         setNavigationBarDefaultStyle()
     }
 
@@ -130,7 +127,6 @@ class ChatRoomListViewController: BaseViewController {
         composeButton.bottom == view.bottomMargin - 25
         composeButton.width == 50
         composeButton.height == 50
-        composeButton.layer.cornerRadius = 25
     }
 
     override func setupBindings() {

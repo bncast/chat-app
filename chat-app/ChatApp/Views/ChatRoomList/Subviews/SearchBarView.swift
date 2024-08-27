@@ -19,9 +19,9 @@ class SearchBarView: BaseView {
     }()
 
     private lazy var searchLeftView: BaseView = {
-        let image = UIImage(systemName: "magnifyingglass.circle")?.withRenderingMode(.alwaysTemplate)
+        let image = UIImage(systemName: "magnifyingglass")?.withRenderingMode(.alwaysTemplate)
         let imageView = UIImageView(image: image)
-        imageView.tintColor = .accent
+        imageView.tintColor = .textColor(.title)
 
         let view = BaseView()
         view.addSubviews([imageView])
@@ -35,8 +35,8 @@ class SearchBarView: BaseView {
     private lazy var searchTextField: BaseTextField = {
         let view = BaseTextField()
 
-        view.placeholderFont = .caption
-        view.placeholderColor = .black
+        view.placeholderFont = .body
+        view.placeholderColor = .textColor(.title)
         view.placeholder = "Search by name"
 
         view.backgroundColor = .white
