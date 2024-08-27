@@ -22,6 +22,8 @@ class ChatRoomListCollectionViewCell: BaseCollectionViewCell {
         view.tintColor = .red
         view.backgroundColor = .background(.profileImage)
         view.layer.cornerRadius = 25
+        view.clipsToBounds = true
+        view.contentMode = .scaleAspectFill
         return view
     }()
 
@@ -77,6 +79,11 @@ class ChatRoomListCollectionViewCell: BaseCollectionViewCell {
         get { previewTextLabel.text }
         set { previewTextLabel.text = newValue }
     }
+
+    var imageUrlString: String? { didSet {
+        guard let imageUrlString else { return }
+        imageView.setImage(from: imageUrlString)
+    } }
 
     // MARK: - Setups
 
