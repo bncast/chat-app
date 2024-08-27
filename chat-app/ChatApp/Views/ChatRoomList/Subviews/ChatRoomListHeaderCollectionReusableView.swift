@@ -9,22 +9,10 @@ import UIKit
 import SuperEasyLayout
 
 class ChatRoomListHeaderCollectionReusableView: BaseCollectionReusableView {
-    private lazy var leftSeparatorView: BaseView = {
-        let view = BaseView()
-        view.backgroundColor = .background(.accent)
-        return view
-    }()
-
     private lazy var titleLabel: UILabel = {
         let view = UILabel()
         view.font = .body
-        view.textColor = .background(.accent)
-        return view
-    }()
-
-    private lazy var rightSeparatorView: BaseView = {
-        let view = BaseView()
-        view.backgroundColor = .background(.accent)
+        view.textColor = .textColor(.title)
         return view
     }()
 
@@ -35,24 +23,13 @@ class ChatRoomListHeaderCollectionReusableView: BaseCollectionReusableView {
 
     override func setupLayout() {
         addSubviews([
-            leftSeparatorView,
-            titleLabel,
-            rightSeparatorView
+            titleLabel
         ])
     }
 
     override func setupConstraints() {
-        leftSeparatorView.left == left + 24.5
-        leftSeparatorView.right == titleLabel.left - 8
-        leftSeparatorView.centerY == centerY
-        leftSeparatorView.height == 1
-
-        titleLabel.centerX == centerX
+        titleLabel.left == left + 20
+        titleLabel.right == right - 20
         titleLabel.centerY == centerY
-
-        rightSeparatorView.left == titleLabel.right + 8
-        rightSeparatorView.right == right - 24.5
-        rightSeparatorView.centerY == centerY
-        rightSeparatorView.height == 1
     }
 }

@@ -41,4 +41,22 @@ extension UIView {
         right == view.right - rightMargin
         bottom == view.bottom - bottomMargin
     }
+
+    func addShadowOval(color: UIColor? = .black,
+                   alpha: CGFloat = 1,
+                   offset: CGSize = .zero,
+                   blur: CGFloat = 0,
+                   spread: CGFloat = 0) {
+        layer.shadowColor = color?.cgColor
+        layer.shadowOpacity = Float(alpha)
+        layer.shadowOffset = offset
+        layer.shadowRadius = blur / 2
+        if spread == 0 {
+            layer.shadowPath = nil
+        } else {
+            let dx = -spread
+            let rect = bounds.insetBy(dx: dx, dy: dx)
+            layer.shadowPath = UIBezierPath(ovalIn: rect).cgPath
+        }
+    }
 }

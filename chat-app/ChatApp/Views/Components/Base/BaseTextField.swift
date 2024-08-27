@@ -15,10 +15,16 @@ import SuperEasyLayout
 
 class BaseTextField: UITextField {
     lazy var clearButton: BaseButton = {
-        let view = BaseButton(frame: CGRect(origin: .zero, size: CGSize(width: 44, height: 44)))
-        view.setImage(UIImage(systemName: "x.circle.fill")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        let configuration = UIImage.SymbolConfiguration(pointSize: 25)
+        let image = UIImage(
+            systemName: "x.circle.fill", withConfiguration: configuration
+        )?.withRenderingMode(.alwaysTemplate)
+
+        let view = BaseButton(image: image)
+        view.setBackgroundColor(.clear, for: .normal)
         view.width == 44
         view.height == 44
+        view.tintColor = .textColor(.title)
         return view
     }()
 
@@ -123,7 +129,7 @@ class BaseTextField: UITextField {
 
     var isBorderHidden: Bool {
         get { layer.borderColor == UIColor.clear.cgColor }
-        set { layer.borderColor = newValue ? UIColor.clear.cgColor : UIColor.black.cgColor }
+        set { layer.borderColor = newValue ? UIColor.clear.cgColor : UIColor.main.cgColor }
     }
 
     override init(frame: CGRect) {
