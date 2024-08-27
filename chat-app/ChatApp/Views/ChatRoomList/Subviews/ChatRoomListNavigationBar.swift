@@ -18,6 +18,11 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         view.tintColor = .white
         view.backgroundColor = .background(.mainLight)
         view.layer.cornerRadius = 22
+        if let urlString = AppConstant.shared.currentUserImageUrlString {
+            view.setImage(from: urlString)
+        }
+        view.contentMode = .scaleAspectFill
+        view.clipsToBounds = true
         return view
     }()
 

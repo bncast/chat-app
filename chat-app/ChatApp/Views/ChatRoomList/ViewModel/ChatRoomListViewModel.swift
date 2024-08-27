@@ -32,6 +32,7 @@ final class ChatRoomListViewModel {
         var name: String
         var preview: String
         var hasPassword: Bool
+        var imageUrlString: String
     }
 
     @Published var items: [Section: [Item]] = [:]
@@ -51,7 +52,7 @@ final class ChatRoomListViewModel {
         )
 
         chatInfos = chatRooms.map {
-            ChatInfo(name: $0.chatName, roomId: $0.roomId, currentRoomUserId: $0.currentRoomUserId, memberDetails: $0.memberDetails.map({ detail in
+            ChatInfo(name: $0.chatName, roomId: $0.roomId, currentRoomUserId: $0.currentRoomUserId, imageUrlString: $0.chatImageUrl, memberDetails: $0.memberDetails.map({ detail in
                 MemberInfo(name: detail.name, isAdmin: detail.isAdmin, roomUserId: detail.roomUserId)
             }))
         }
@@ -59,12 +60,12 @@ final class ChatRoomListViewModel {
         items = [
             .myRooms: groupedItems[.myRooms]?.compactMap { room in
                 Item.room(ItemInfo(
-                    roomId: room.roomId, name: room.chatName, preview: room.preview, hasPassword: false
+                    roomId: room.roomId, name: room.chatName, preview: room.preview, hasPassword: false, imageUrlString: room.chatImageUrl
                 ))
             } ?? [],
             .otherRooms: groupedItems[.otherRooms]?.compactMap { room in
                 Item.room(ItemInfo(
-                    roomId: room.roomId, name: room.chatName, preview: room.preview, hasPassword: room.hasPassword
+                    roomId: room.roomId, name: room.chatName, preview: room.preview, hasPassword: room.hasPassword, imageUrlString: room.chatImageUrl
                 ))
             } ?? []
         ]
@@ -121,6 +122,7 @@ struct ChatInfo {
     let name: String
     let roomId: Int
     let currentRoomUserId: Int?
+    var imageUrlString: String
     let memberDetails: [MemberInfo]
 }
 

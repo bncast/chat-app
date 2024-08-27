@@ -260,6 +260,7 @@ extension ChatRoomDetailsViewController {
         let view = MemberHeaderCollectionReusableView.dequeueView(from: collectionView, for: indexPath)
 
         view.title = "Chat Room"
+        view.imageUrlString = viewModel.getRoomImageUrlString()
         view.editHandler = { [weak self] currentName in
             guard let self, let updatedChatroomName = await self.showChatRoomEditNameAlert(in: self, currentName: currentName) else { return "" }
             

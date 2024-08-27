@@ -367,6 +367,8 @@ class AppConstant: NSObject {
     var deviceId: String?
     @KeychainReadAndWrite("displayName", default: nil)
     var displayName: String?
+    @KeychainReadAndWrite("currentUserImageUrlString", default: nil)
+    var currentUserImageUrlString: String?
 
     let screen: (Size) -> CGFloat = { size in
         switch size {

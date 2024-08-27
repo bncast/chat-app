@@ -13,6 +13,8 @@ class MemberHeaderCollectionReusableView: BaseCollectionReusableView {
         let view = UIImageView()
         view.backgroundColor = .background(.profileImage)
         view.layer.cornerRadius = 40
+        view.clipsToBounds = true
+        view.contentMode = .scaleAspectFill
         return view
     }()
 
@@ -57,6 +59,11 @@ class MemberHeaderCollectionReusableView: BaseCollectionReusableView {
         view.textAlignment = .center
         return view
     }()
+
+    var imageUrlString: String? { didSet{
+        guard let imageUrlString else { return }
+        profileImage.setImage(from: imageUrlString)
+    } }
 
     var title: String? {
         get { titleLabel.text }

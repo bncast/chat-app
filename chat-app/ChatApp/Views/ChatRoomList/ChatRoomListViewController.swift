@@ -290,6 +290,7 @@ extension ChatRoomListViewController {
         let cell = ChatRoomListCollectionViewCell.dequeueCell(from: collectionView, for: indexPath)
         cell.name = item.name
         cell.preview = item.hasPassword ? "[Private Chat - Password Protected]" : item.preview
+        cell.imageUrlString = item.imageUrlString
         cell.tapHandlerAsync = { [weak self] _ in
             guard let self, let deviceId = AppConstant.shared.deviceId else { return }
 

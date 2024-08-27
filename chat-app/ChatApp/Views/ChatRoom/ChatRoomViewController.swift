@@ -307,6 +307,7 @@ extension ChatRoomViewController {
         cell.name = item.name
         cell.time = item.time
         cell.isCurrentUser = item.isCurrentUser
+        cell.imageUrlString = item.imageUrlString
         cell.showOptionsHandler = { [weak self] content in
             guard let self, let contentSnapshot = content.snapshotView(afterScreenUpdates: true)else { return }
             switch await ChatRoomMessageOptionsViewController.show(

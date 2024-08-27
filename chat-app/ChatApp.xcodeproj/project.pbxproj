@@ -48,6 +48,8 @@
 		6F0B7E892C732CAD00BFC370 /* JSONEncoderHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B7E882C732CAD00BFC370 /* JSONEncoderHelpers.swift */; };
 		6F163A472C7570230034EF27 /* BaseTapGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F163A462C7570230034EF27 /* BaseTapGestureRecognizer.swift */; };
 		6F3634FB2C72DDB9009BA755 /* SuperEasyLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 6F3634FA2C72DDB9009BA755 /* SuperEasyLayout */; };
+		6F3BEB212C7D886300B5051E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6F3BEB202C7D886300B5051E /* Kingfisher */; };
+		6F3BEB232C7D890000B5051E /* UIImageViewHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3BEB222C7D890000B5051E /* UIImageViewHelpers.swift */; };
 		6F4CDE7F2C74253A00F310A1 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4CDE7E2C74253A00F310A1 /* ProfileViewController.swift */; };
 		6F4CDE872C74598700F310A1 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4CDE862C74598700F310A1 /* ProfileViewModel.swift */; };
 		6F4CDE892C745A1500F310A1 /* UpdateUserEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4CDE882C745A1500F310A1 /* UpdateUserEntity.swift */; };
@@ -149,6 +151,7 @@
 		6F0B7E862C732B0F00BFC370 /* URLHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLHelpers.swift; sourceTree = "<group>"; };
 		6F0B7E882C732CAD00BFC370 /* JSONEncoderHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONEncoderHelpers.swift; sourceTree = "<group>"; };
 		6F163A462C7570230034EF27 /* BaseTapGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTapGestureRecognizer.swift; sourceTree = "<group>"; };
+		6F3BEB222C7D890000B5051E /* UIImageViewHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewHelpers.swift; sourceTree = "<group>"; };
 		6F4CDE7E2C74253A00F310A1 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		6F4CDE802C742B6B00F310A1 /* UIViewControllerHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerHelpers.swift; sourceTree = "<group>"; };
 		6F4CDE822C742BA100F310A1 /* UIViewHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewHelpers.swift; sourceTree = "<group>"; };
@@ -222,6 +225,7 @@
 				6F0B7E7E2C7327EC00BFC370 /* KeychainAccess in Frameworks */,
 				6F3634FB2C72DDB9009BA755 /* SuperEasyLayout in Frameworks */,
 				6F4CDE8F2C74658400F310A1 /* Lottie in Frameworks */,
+				6F3BEB212C7D886300B5051E /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -417,6 +421,7 @@
 				6F4CDE822C742BA100F310A1 /* UIViewHelpers.swift */,
 				6F4CDE922C7466A000F310A1 /* UIStackViewHelpers.swift */,
 				1D3DA0142C7875C400D4C980 /* UICollectionViewHelper.swift */,
+				6F3BEB222C7D890000B5051E /* UIImageViewHelpers.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -661,6 +666,7 @@
 				6F0B7E7D2C7327EC00BFC370 /* KeychainAccess */,
 				6F4CDE8E2C74658400F310A1 /* Lottie */,
 				6F9D59BE2C78F6E9003E8959 /* SwipeCellKit */,
+				6F3BEB202C7D886300B5051E /* Kingfisher */,
 			);
 			productName = "chat-app";
 			productReference = 6FD7677E2C782EE500DAA989 /* ChatApp.app */;
@@ -695,6 +701,7 @@
 				6F0B7E7C2C7327EC00BFC370 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 				6F4CDE8D2C74658400F310A1 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 				6F9D59BD2C78F6E9003E8959 /* XCRemoteSwiftPackageReference "SwipeCellKit" */,
+				6F3BEB1F2C7D886300B5051E /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = 1D7235AF2C72CE37003B419B;
 			projectDirPath = "";
@@ -806,6 +813,7 @@
 				1D1293492C75E8210079C48C /* ChatRoomViewController.swift in Sources */,
 				A700BF632C7416DD00B38530 /* BaseTextField.swift in Sources */,
 				A7FB9C2C2C756A81008DE3F3 /* AsyncAlertController.swift in Sources */,
+				6F3BEB232C7D890000B5051E /* UIImageViewHelpers.swift in Sources */,
 				A700BF3F2C73166B00B38530 /* ChatRoomListViewController.swift in Sources */,
 				A700BF5F2C73AD2200B38530 /* ChatRoomListNavigationBar.swift in Sources */,
 				A7FB9C3C2C75FEEB008DE3F3 /* CreateChatRoomViewModel.swift in Sources */,
@@ -1055,6 +1063,14 @@
 				minimumVersion = 0.3.0;
 			};
 		};
+		6F3BEB1F2C7D886300B5051E /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.12.0;
+			};
+		};
 		6F4CDE8D2C74658400F310A1 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
@@ -1083,6 +1099,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6F3634F92C72DDB9009BA755 /* XCRemoteSwiftPackageReference "SuperEasyLayout" */;
 			productName = SuperEasyLayout;
+		};
+		6F3BEB202C7D886300B5051E /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6F3BEB1F2C7D886300B5051E /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 		6F4CDE8E2C74658400F310A1 /* Lottie */ = {
 			isa = XCSwiftPackageProductDependency;

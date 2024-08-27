@@ -47,6 +47,11 @@ class ProfileViewController: BaseViewController {
     private lazy var profileImage: UIImageView = {
         let view = UIImageView()
         view.backgroundColor = .background(.profileImage)
+        if let urlString = AppConstant.shared.currentUserImageUrlString {
+            view.setImage(from: urlString)
+        }
+        view.contentMode = .scaleAspectFill
+        view.clipsToBounds = true
         view.layer.cornerRadius = 40
         return view
     }()
@@ -172,7 +177,7 @@ class ProfileViewController: BaseViewController {
 
             nameTextField.resignFirstResponder()
             await IndicatorController.shared.show()
-            try await viewModel.updateName(name: text)
+            setNewImage(urlString: try await viewModel.updateName(name: text))
             await IndicatorController.shared.dismiss()
             viewModel.setDisplayName(name: text)
             await IndicatorController.shared.show(
@@ -185,6 +190,11 @@ class ProfileViewController: BaseViewController {
             print("[ProfileViewController] \(error as! NetworkError)")
             await IndicatorController.shared.dismiss()
         }
+    }
+
+    func setNewImage(urlString: String) {
+        profileImage.setImage(from: urlString)
+        AppConstant.shared.currentUserImageUrlString = urlString
     }
 }
 

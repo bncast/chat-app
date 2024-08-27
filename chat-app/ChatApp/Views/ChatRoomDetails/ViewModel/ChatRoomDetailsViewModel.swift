@@ -67,4 +67,9 @@ final class ChatRoomDetailsViewModel {
 
         return result?.success == 1
     }
+
+    func getRoomImageUrlString() -> String {
+        guard let details else { return ""}
+        return details.imageUrlString
+    }
 }

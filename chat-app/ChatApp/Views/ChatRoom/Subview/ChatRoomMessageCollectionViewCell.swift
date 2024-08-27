@@ -22,6 +22,8 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
         view.tintColor = .red
         view.backgroundColor = .background(.profileImage)
         view.layer.cornerRadius = 25
+        view.clipsToBounds = true
+        view.contentMode = .scaleAspectFill
         return view
     }()
 
@@ -108,6 +110,11 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
         set { timeLabel.text = newValue }
     }
 
+    var imageUrlString: String? { didSet {
+        guard let imageUrlString else { return }
+        imageView.setImage(from: imageUrlString)
+    } }
+
     var isCurrentUser: Bool = false { didSet {
         guard isCurrentUser else { return }
 
@@ -168,6 +175,9 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
 
         longPressRecognizer.longPressHandler = { [weak self] _ in
             Task {
+                let generator = UIImpactFeedbackGenerator(style: .medium)
+                generator.prepare()
+                generator.impactOccurred()
                 guard let self, let showOptionsHandler = self.showOptionsHandler else { return }
                 await showOptionsHandler(self.contentBackView)
             }

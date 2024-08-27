@@ -31,6 +31,7 @@ class ChatRoomViewModel {
         var name: String
         var time: String
         var isCurrentUser: Bool
+        var imageUrlString: String
     }
 
     @Published var items: [Section: [Item]] = [:]
@@ -63,9 +64,11 @@ class ChatRoomViewModel {
                     .map { item in .messageItem(
                         MessageInfo(id: item.messageId,
                                     content: item.content,
-                                    name: details?.memberDetails.first(where: { $0.roomUserId == item.authorId})?.name ?? "No name",
+                                    name: details?.memberDetails.first(
+                                        where: { $0.roomUserId == item.authorId}
+                                    )?.name ?? "No name",
                                     time: item.createdAt.toString(by: "hh:mm a"),
-                                    isCurrentUser: item.isCurrentUser == true)
+                                    isCurrentUser: item.isCurrentUser == true, imageUrlString: item.authorImageUrl)
                     ) }
 
                 sections.append(messageItem.createdAt)
@@ -117,5 +120,4 @@ class ChatRoomViewModel {
             }
         }
     }
-
 }
