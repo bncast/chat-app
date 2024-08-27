@@ -59,9 +59,10 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         let configuration = UIImage.SymbolConfiguration(pointSize: 30)
         let image = UIImage(systemName: "xmark", withConfiguration: configuration)?
             .withRenderingMode(.alwaysTemplate)
-        let view = BaseButton()
-        view.setImage(image, for: .normal)
+
+        let view = BaseButton(image: image)
         view.tintColor = .background(.mainLight)
+        view.setBackgroundColor(.clear, for: .normal)
         return view
     }()
 

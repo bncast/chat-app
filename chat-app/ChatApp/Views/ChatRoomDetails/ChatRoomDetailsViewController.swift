@@ -10,13 +10,6 @@ import SuperEasyLayout
 import SwipeCellKit
 
 class ChatRoomDetailsViewController: BaseViewController {
-    private lazy var closeButton: BaseButton = {
-        let view = BaseButton()
-        view.setImage(UIImage(systemName: "xmark"),for: .normal)
-        view.tintColor = .textColor(.caption)
-        return view
-    }()
-
     private lazy var layout: UICollectionViewCompositionalLayout = {
         UICollectionViewCompositionalLayout { [weak self] index, _ in
             guard let self, let sections = dataSource?.snapshot().sectionIdentifiers else { fatalError() }
@@ -80,7 +73,6 @@ class ChatRoomDetailsViewController: BaseViewController {
         view.backgroundColor = .background(.main)
 
         addSubviews([
-            closeButton,
             collectionView,
             inviteButton,
             deleteRoomButton
@@ -88,14 +80,9 @@ class ChatRoomDetailsViewController: BaseViewController {
     }
 
     override func setupConstraints() {
-        closeButton.right == view.right - 20
-        closeButton.top == view.topMargin
-        closeButton.width == 44
-        closeButton.height == 44
-
         collectionView.left == view.left
         collectionView.right == view.right
-        collectionView.top == closeButton.bottom + 20
+        collectionView.top == view.top + 20
         collectionView.bottom == inviteButton.top - 20
 
         inviteButton.left == view.left + 20
@@ -119,10 +106,9 @@ class ChatRoomDetailsViewController: BaseViewController {
     }
 
     override func setupActions() {
-        closeButton.tapHandler = { [weak self] _ in
+        navigationBar?.closeTapHandler = { [weak self] _ in
             self?.dismiss(animated: true)
         }
-
         inviteButton.tapHandlerAsync = { [weak self] _ in
             guard let self, let roomId = viewModel.details?.roomId else { return }
             
@@ -173,12 +159,17 @@ class ChatRoomDetailsViewController: BaseViewController {
 
     static func show(on parentViewController: UIViewController, using details: ChatInfo) async -> Bool {
         return await withCheckedContinuation { continuation in
-            let chatRoomDetailsViewController = Self()
-            chatRoomDetailsViewController.viewModel.details = details
-            chatRoomDetailsViewController.continuation = continuation
-            chatRoomDetailsViewController.modalPresentationStyle = .overFullScreen
-            chatRoomDetailsViewController.transitioningDelegate = chatRoomDetailsViewController.fadeInAnimator
-            parentViewController.present(chatRoomDetailsViewController, animated: true)
+            let viewController = Self()
+            viewController.viewModel.details = details
+            viewController.continuation = continuation
+
+            let navigationController = UINavigationController(navigationBarClass: ChatRoomListNavigationBar.self,
+                                                              toolbarClass: nil)
+            navigationController.modalPresentationStyle = .overFullScreen
+            navigationController.transitioningDelegate = viewController.fadeInAnimator
+            navigationController.viewControllers = [viewController]
+
+            parentViewController.present(navigationController, animated: true)
         }
     }
 }
