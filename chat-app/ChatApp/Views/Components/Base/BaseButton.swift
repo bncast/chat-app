@@ -9,16 +9,14 @@ import UIKit
 import Combine
 
 class BaseButton: UIButton {
-    private let isProcessingLock = NSLock()
-    var isProcessing = false {
-        willSet { isProcessingLock.lock() }
-        didSet { isProcessingLock.unlock() }
-    }
-
-    private var oldIsEnabled = false
     override var isEnabled: Bool {
         didSet {
-            if isProcessing { oldIsEnabled = isEnabled }
+            if let color = backgroundColors[isEnabled ? .normal : .disabled] {
+                backgroundColor = color
+            }
+            if let color = titleColors[isEnabled ? .normal : .disabled] {
+                tintColor = color
+            }
         }
     }
 
@@ -39,11 +37,36 @@ class BaseButton: UIButton {
 
     var backgroundColors: [UIControl.State: UIColor?] = [
         UIControl.State.normal: .clear,
-        UIControl.State.disabled: .clear
+        UIControl.State.disabled: .clear,
     ] {
         didSet {
             if let color = backgroundColors[state] {
                 backgroundColor = color
+            }
+        }
+    }
+
+    var colorStyle: ColorStyle = .active { didSet {
+        backgroundColors = [
+            .normal: colorStyle.backgroundColor,
+            .disabled: colorStyle.disabledBackgroundColor
+        ]
+        titleColors = [
+            .normal: colorStyle.textColor,
+            .disabled: colorStyle.disabledTextColor
+        ]
+    } }
+
+    var font: UIFont = .preferredFont(forTextStyle: .body) { didSet {
+        self.text = text
+    } }
+
+    var text: String {
+        get { titleLabel?.attributedText?.string ?? "" }
+        set {
+            titleColors.forEach { state, color in
+                let attributedString = newValue.getAttributedString(with: font, color: color)
+                setAttributedTitle(attributedString, for: state)
             }
         }
     }
@@ -72,11 +95,18 @@ class BaseButton: UIButton {
     }
 
     func setup() {
+        colorStyle = .active
+        font = .body
+
         addTarget(self, action: #selector(touchUpInsideButton(_:)), for: .touchUpInside)
         addTarget(self, action: #selector(touchDownButton(_:)), for: .touchDown)
 
         isEnabled = true
         isExclusiveTouch = true
+    }
+
+    func setBackgroundColor(_ color: UIColor?, for state: UIControl.State) {
+        backgroundColors[state] = color
     }
 }
 

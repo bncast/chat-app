@@ -38,8 +38,8 @@ class ProfileViewController: BaseViewController {
     }()
 
     private lazy var closeButton: BaseButton = {
-        let view = BaseButton()
-        view.setImage(UIImage(systemName: "xmark"), for: .normal)
+        let view = BaseButton(image: UIImage(systemName: "xmark"))
+        view.setBackgroundColor(.clear, for: .normal)
         view.tintColor = .textColor(.title)
         return view
     }()
@@ -60,10 +60,8 @@ class ProfileViewController: BaseViewController {
 
     private lazy var saveButton: BaseButton = {
         let view = BaseButton()
-        view.backgroundColor = .button(.active)
-        view.setTitle("SAVE", for: .normal)
-        view.titleLabel?.textColor = .textColor(.caption)
-        view.titleLabel?.font = .title
+        view.text = "SAVE"
+        view.colorStyle = .active
         view.layer.cornerRadius = 8
         return view
     }()

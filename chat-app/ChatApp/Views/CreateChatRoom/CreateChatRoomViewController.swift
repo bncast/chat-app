@@ -30,7 +30,7 @@ class CreateChatRoomViewController: BaseViewController {
         let view = UILabel()
         view.textAlignment = .center
         view.font = .title.bold()
-        view.textColor = .black
+        view.textColor = .textColor(.title)
         view.lineBreakMode = .byCharWrapping
         view.text = "New Chat Room"
         return view
@@ -40,7 +40,7 @@ class CreateChatRoomViewController: BaseViewController {
         let view = UILabel()
         view.textAlignment = .left
         view.font = .body
-        view.textColor = .black
+        view.textColor = .textColor(.title)
         view.lineBreakMode = .byCharWrapping
         view.text = "Room Name"
         return view
@@ -56,7 +56,7 @@ class CreateChatRoomViewController: BaseViewController {
         let view = UILabel()
         view.textAlignment = .left
         view.font = .body
-        view.textColor = .black
+        view.textColor = .textColor(.title)
         view.lineBreakMode = .byCharWrapping
         view.text = "Password (optional)"
         return view
@@ -71,20 +71,17 @@ class CreateChatRoomViewController: BaseViewController {
 
     private lazy var createButton: BaseButton = {
         let view = BaseButton()
-        view.backgroundColor = .button(.inactive)
-        view.setTitle("CREATE", for: .normal)
-        view.titleLabel?.textColor = .textColor(.caption)
-        view.titleLabel?.font = .title
+        view.text = "CREATE"
+        view.colorStyle = .active
+        view.isEnabled = false
         view.layer.cornerRadius = 8
         return view
     }()
 
     private lazy var cancelButton: BaseButton = {
         let view = BaseButton()
-        view.backgroundColor = .button(.active)
-        view.setTitle("CANCEL", for: .normal)
-        view.titleLabel?.textColor = .textColor(.caption)
-        view.titleLabel?.font = .title
+        view.text = "CANCEL"
+        view.colorStyle = .active
         view.layer.cornerRadius = 8
         return view
     }()
@@ -145,7 +142,6 @@ class CreateChatRoomViewController: BaseViewController {
             .sink { [weak self] text in
                 guard let text else { return }
                 self?.createButton.isEnabled = !text.isEmpty
-                self?.createButton.backgroundColor = text.isEmpty ? .button(.inactive) : .button(.active)
             }
             .store(in: &cancellables)
     }
