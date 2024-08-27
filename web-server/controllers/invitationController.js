@@ -36,7 +36,6 @@ class InvitationController {
                 invitations: formattedInvitations
             });
         } catch (err) {
-            console.error("Error fetching invitations:", err);
             res.status(500).json({
                 success: 0,
                 error: {
@@ -88,7 +87,6 @@ class InvitationController {
                 });
             }
         } catch (err) {
-            console.error("Error sending invitation:", err);
             res.status(500).json({
                 success: 0,
                 error: {
@@ -187,7 +185,6 @@ class InvitationController {
                 });
             }
         } catch (err) {
-            console.error("Error invalidating invitation:", err);
             return res.status(500).json({
                 success: 0,
                 error: {

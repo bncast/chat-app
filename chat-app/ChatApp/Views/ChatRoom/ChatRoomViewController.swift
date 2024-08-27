@@ -210,6 +210,9 @@ class ChatRoomViewController: BaseViewController {
         }
 
         closeReplyingToButton.tapHandler = { [weak self] _ in
+            self?.viewModel.isEditingMessageId = nil
+            self?.viewModel.isReplyingMessageId = nil
+
             self?.removeReplyingOrEditingIndicator()
         }
 
@@ -321,7 +324,7 @@ extension ChatRoomViewController {
                 with: contentSnapshot, and: item.isCurrentUser,
                 at: content.convert(content.bounds.origin, to: self.view)
             ) {
-            case .reply: showReplyingTo(name: "Replying to \(item.isCurrentUser ? "Yourself" : item.name)", message: item.content)
+            case .reply: showReplyingTo(name: "Replying to \(item.isCurrentUser ? "Yourself" : item.name)", message: item.content, messageId: item.id)
             case .edit: showEditingView(message: item.content, messageId: item.id)
             case .delete: viewModel.deleteMessage(item.id)
             case .none: break
@@ -330,9 +333,13 @@ extension ChatRoomViewController {
         return cell
     }
 
-    private func showReplyingTo(name: String, message: String) {
+    private func showReplyingTo(name: String, message: String, messageId: Int) {
+        viewModel.isReplyingMessageId = messageId
+
         replyingToLabel.text = name
         messageReplyingToLabel.text = message
+        textView.becomeFirstResponder()
+
         replyingToViewHeightConstraint?.constant = 44
         UIView.animate(withDuration: 0.2) {
             self.view.layoutIfNeeded()

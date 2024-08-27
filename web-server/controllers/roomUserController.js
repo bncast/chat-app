@@ -65,7 +65,6 @@ class RoomUserController {
                 }
             }
 
-            // console.log(response);
             res.json(response);
         } catch (err) {
             res.status(500).json({
@@ -148,7 +147,6 @@ class RoomUserController {
                 }
             }
 
-            // console.log(response);
             res.json(response);
         } catch (err) {
             res.status(500).json({
@@ -187,7 +185,6 @@ class RoomUserController {
                 }
             }
 
-            // console.log(response);
             res.json(response);
         } catch (err) {
             res.status(500).json({
@@ -262,10 +259,8 @@ class RoomUserController {
                 }
             }
 
-            // console.log(response);
             res.json(response);
         } catch (err) {
-            console.error('Error getting chat rooms:', err);
             res.status(500).json({
                 error: {
                     code: '002',
@@ -333,10 +328,8 @@ class RoomUserController {
                 }
             }
 
-            // console.log(response);
             res.json(response);
         } catch (err) {
-            console.error('Error getting chat rooms:', err);
             res.status(500).json({
                 error: {
                     code: '002',
@@ -375,7 +368,6 @@ class RoomUserController {
                 });
             }
         } catch (err) {
-            console.error("Error setting user as admin:", err);
             res.status(500).json({
                 success: 0,
                 error: {
@@ -414,7 +406,6 @@ class RoomUserController {
                 });
             }
         } catch (err) {
-            console.error("Error soft deleting room user:", err);
             res.status(500).json({
                 success: 0,
                 error: {
