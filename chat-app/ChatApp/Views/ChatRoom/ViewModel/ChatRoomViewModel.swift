@@ -37,6 +37,7 @@ class ChatRoomViewModel {
     @Published var items: [Section: [Item]] = [:]
 
     var isEditingMessageId: Int?
+    var isReplyingMessageId: Int?
     var details: ChatInfo?
 
     func load() async {
@@ -91,7 +92,9 @@ class ChatRoomViewModel {
             response = try? await UpdateMessageEntity(deviceId: deviceId, message: message, messageId: isEditingMessageId).run()
             self.isEditingMessageId = nil
         } else {
-            response = try? await SendMessageEntity(deviceId: deviceId, message: message, roomUserId: roomUserId, replyToId: nil).run()
+            response = try? await SendMessageEntity(deviceId: deviceId, message: message, roomUserId: roomUserId, replyToId: isReplyingMessageId).run()
+
+            self.isReplyingMessageId = nil
         }
 
         return response?.success == 1

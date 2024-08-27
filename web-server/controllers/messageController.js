@@ -36,7 +36,6 @@ class MessageController {
 
             completion(room.room_id);
         } catch (err) {
-            console.error("Error creating message:", err);
             res.status(500).json({ error: "Failed to create message" });
         }
     }
@@ -60,19 +59,22 @@ class MessageController {
                 content: msg.content,
                 created_at: msg.created_at,
                 updated_at: msg.updated_at,
-                is_current_user: msg.is_current_user == 1
+                is_current_user: msg.is_current_user == 1,
+                is_replying_to: msg.reply_to_user,
+                is_replying_to_content: msg.reply_to_content
             }));
-    
-            res.json({
+            
+            let response = {
                 messages: formattedMessages,
                 success: 1,
                 error: {
                     code: "000",
                     message: ""
                 }
-            });
+            };
+
+            res.json(response);
         } catch (err) {
-            console.error("Error fetching messages:", err);
             res.status(500).json({ error: "Failed to fetch messages" });
         }
     }
@@ -110,7 +112,6 @@ class MessageController {
 
             completion(room.room_id);
         } catch (err) {
-            console.error("Error updating message:", err);
             res.status(500).json({ error: "Failed to update message" });
         }
     }
@@ -147,7 +148,6 @@ class MessageController {
 
             completion(room.room_id);
         } catch (err) {
-            console.error("Error deleting message:", err);
             res.status(500).json({ error: "Failed to delete message" });
         }
     }

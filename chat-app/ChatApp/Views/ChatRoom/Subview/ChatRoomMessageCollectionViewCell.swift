@@ -54,7 +54,7 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
         view.axis = .vertical
         view.spacing = 4
         view.alignment = .leading
-        view.distribution = .fillProportionally
+        view.distribution = .equalSpacing
         return view
     }()
 
@@ -63,6 +63,7 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
         view.textAlignment = .left
         view.font = .section
         view.textColor = .text
+        view.numberOfLines = 0
         view.lineBreakMode = .byCharWrapping
         return view
     }()
@@ -119,7 +120,12 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
 
         imageView.isHidden = true
         rightConstraint?.isActive = true
+        leftSecondaryConstraint?.isActive = true
+
         leftConstraint?.isActive = false
+        rightSecondaryConstraint?.isActive = false
+
+        verticalStackView.alignment = .trailing
 
         contentBackView.backgroundColor = .accent
         contentLabel.textColor = .textLight
@@ -154,13 +160,21 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
     var leftConstraint: NSLayoutConstraint?
     var rightConstraint: NSLayoutConstraint?
 
+    var leftSecondaryConstraint: NSLayoutConstraint?
+    var rightSecondaryConstraint: NSLayoutConstraint?
+
     override func setupConstraints() {
         leftConstraint = backView.left == contentView.left
         rightConstraint = backView.right == contentView.right
+
+        leftSecondaryConstraint = backView.left >= contentView.left  + 100
+        rightSecondaryConstraint = backView.right <= contentView.right - 100
+
         backView.top == contentView.top
         backView.bottom == contentView.bottom
 
         rightConstraint?.isActive = false
+        leftSecondaryConstraint?.isActive = false
 
         horizontalStackView.setLayoutEqualTo(backView, space: 10)
 

@@ -27,23 +27,27 @@ class MessageModel {
     async getMessagesByRoom(room_id, room_user_id) {
         const sql = `
         SELECT 
-            Message.message_id,
-            Message.room_user_id AS author_id,
-            Message.content,
-            Message.created_at,
-            Message.updated_at,
-            (Message.room_user_id = ?) AS is_current_user,
-            User.image_url AS author_image
+            m1.message_id,
+            m1.room_user_id AS author_id,
+            m1.content,
+            m1.created_at,
+            m1.updated_at,
+            (m1.room_user_id = ?) AS is_current_user,
+            User.image_url AS author_image,
+            m2.room_user_id AS reply_to_user,
+            m2.content AS reply_to_content
         FROM 
-            Message
+            Message m1
         JOIN 
-            RoomUser ON Message.room_user_id = RoomUser.room_user_id
+            RoomUser ON m1.room_user_id = RoomUser.room_user_id
         JOIN 
             User ON RoomUser.user_id = User.user_id
+        LEFT JOIN
+            Message m2 ON m2.message_id = m1.reply_to_id
         WHERE 
-            RoomUser.room_id = ? AND Message.deleted_at IS NULL
+            RoomUser.room_id = ? AND m1.deleted_at IS NULL
         ORDER BY 
-            Message.created_at ASC
+            m1.created_at ASC
     `;
         const values = [room_user_id, room_id];
         return this.db.query(sql, values);
