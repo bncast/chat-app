@@ -10,13 +10,6 @@ import SuperEasyLayout
 import SwipeCellKit
 
 class ChatRoomDetailsViewController: BaseViewController {
-    private lazy var closeButton: BaseButton = {
-        let view = BaseButton()
-        view.setImage(UIImage(systemName: "xmark"),for: .normal)
-        view.tintColor = .textColor(.caption)
-        return view
-    }()
-
     private lazy var layout: UICollectionViewCompositionalLayout = {
         UICollectionViewCompositionalLayout { [weak self] index, _ in
             guard let self, let sections = dataSource?.snapshot().sectionIdentifiers else { fatalError() }
@@ -27,7 +20,7 @@ class ChatRoomDetailsViewController: BaseViewController {
     private lazy var collectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundView = nil
-        view.backgroundColor = .background(.main)
+        view.backgroundColor = .white
 
         MemberHeaderCollectionReusableView.registerView(to: view)
         MemberWithStatusCollectionViewCell.registerCell(to: view)
@@ -36,24 +29,24 @@ class ChatRoomDetailsViewController: BaseViewController {
 
     private lazy var inviteButton: BaseButton = {
         let view = BaseButton()
-        view.backgroundColor = .button(.active)
-        view.setTitle("INVITE", for: .normal)
-        view.titleLabel?.textColor = .textColor(.caption)
-        view.titleLabel?.font = .title
+        view.text = "INVITE"
+        view.colorStyle = .active
         view.layer.cornerRadius = 8
         return view
     }()
 
     private lazy var deleteRoomButton: BaseButton = {
         let view = BaseButton()
-        view.backgroundColor = .button(.active)
-        view.setTitle("DELETE ROOM", for: .normal)
-        view.titleLabel?.textColor = .textColor(.caption)
-        view.titleLabel?.font = .title
+        view.text = "DELETE ROOM"
+        view.colorStyle = .active
         view.layer.cornerRadius = 8
         return view
     }()
 
+    private var navigationBar: ChatRoomListNavigationBar? {
+        navigationController?.navigationBar as? ChatRoomListNavigationBar
+    }
+    
     private typealias ItemInfo = ChatRoomDetailsViewModel.ItemInfo
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Int, ItemInfo>
     private typealias DataSource = UICollectionViewDiffableDataSource<Int, ItemInfo>
@@ -62,17 +55,25 @@ class ChatRoomDetailsViewController: BaseViewController {
     private let viewModel = ChatRoomDetailsViewModel()
     private var continuation: CheckedContinuation<Bool, Never>?
 
+    // MARK: - View Lifecycle
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        navigationBar?.showCloseButtonOnly = true
         viewModel.load()
     }
 
+    // MARK: - Setups
+
+    override func setupNavigation() {
+        setNavigationBarDefaultStyle()
+        navigationBar?.title = "Members"
+    }
+
     override func setupLayout() {
-        view.backgroundColor = .background(.main)
+        view.backgroundColor = .background(.mainLight)
 
         addSubviews([
-            closeButton,
             collectionView,
             inviteButton,
             deleteRoomButton
@@ -80,14 +81,9 @@ class ChatRoomDetailsViewController: BaseViewController {
     }
 
     override func setupConstraints() {
-        closeButton.right == view.right - 20
-        closeButton.top == view.topMargin
-        closeButton.width == 44
-        closeButton.height == 44
-
         collectionView.left == view.left
         collectionView.right == view.right
-        collectionView.top == closeButton.bottom + 20
+        collectionView.top == view.top + 20
         collectionView.bottom == inviteButton.top - 20
 
         inviteButton.left == view.left + 20
@@ -111,10 +107,9 @@ class ChatRoomDetailsViewController: BaseViewController {
     }
 
     override func setupActions() {
-        closeButton.tapHandler = { [weak self] _ in
+        navigationBar?.closeTapHandler = { [weak self] _ in
             self?.dismiss(animated: true)
         }
-
         inviteButton.tapHandlerAsync = { [weak self] _ in
             guard let self, let roomId = viewModel.details?.roomId else { return }
             
@@ -162,15 +157,24 @@ class ChatRoomDetailsViewController: BaseViewController {
         .addButton(title: "Cancel", returnValue: false)
         .register(in: viewController)
     }
+}
 
+// MARK: - Navigation
+
+extension ChatRoomDetailsViewController {
     static func show(on parentViewController: UIViewController, using details: ChatInfo) async -> Bool {
         return await withCheckedContinuation { continuation in
-            let chatRoomDetailsViewController = Self()
-            chatRoomDetailsViewController.viewModel.details = details
-            chatRoomDetailsViewController.continuation = continuation
-            chatRoomDetailsViewController.modalPresentationStyle = .overFullScreen
-            chatRoomDetailsViewController.transitioningDelegate = chatRoomDetailsViewController.fadeInAnimator
-            parentViewController.present(chatRoomDetailsViewController, animated: true)
+            let viewController = Self()
+            viewController.viewModel.details = details
+            viewController.continuation = continuation
+
+            let navigationController = UINavigationController(navigationBarClass: ChatRoomListNavigationBar.self,
+                                                              toolbarClass: nil)
+            navigationController.modalPresentationStyle = .overFullScreen
+            navigationController.transitioningDelegate = viewController.fadeInAnimator
+            navigationController.viewControllers = [viewController]
+
+            parentViewController.present(navigationController, animated: true)
         }
     }
 }
@@ -186,7 +190,7 @@ extension ChatRoomDetailsViewController {
         let section = NSCollectionLayoutSection(group: group)
         section.boundarySupplementaryItems = [
             NSCollectionLayoutBoundarySupplementaryItem(
-                layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(228)),
+                layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(180)),
                 elementKind: MemberHeaderCollectionReusableView.viewOfKind,
                 alignment: .top
             )
@@ -289,8 +293,6 @@ extension ChatRoomDetailsViewController {
         cell.roomUserId = item.id
         cell.name = item.name
         cell.isAdmin = item.isAdmin
-        cell.backgroundColor = indexPath.row % 2 == 0 ? .background(.mainLight) : .background(.main)
-        
         cell.setIsAdminInServerHandler = { [weak self] isAdmin in
             guard let self else { return !isAdmin }
             do {

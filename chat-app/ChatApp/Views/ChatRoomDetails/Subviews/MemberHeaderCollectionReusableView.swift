@@ -18,21 +18,9 @@ class MemberHeaderCollectionReusableView: BaseCollectionReusableView {
         return view
     }()
 
-    private lazy var titleBackgroundView: BaseView = {
-        let view = BaseView()
-        view.backgroundColor = .background(.accent)
-        return view
-    }()
+    private lazy var titleTapView: BaseView = BaseView()
 
-    private lazy var titleTapView: BaseView = {
-        let view = BaseView()
-        return view
-    }()
-
-    private lazy var tapRecognizer: BaseTapGestureRecognizer = {
-        let recognizer = BaseTapGestureRecognizer(on: titleTapView)
-        return recognizer
-    }()
+    private lazy var tapRecognizer: BaseTapGestureRecognizer = BaseTapGestureRecognizer(on: titleTapView)
 
     private lazy var titleLabel: UILabel = {
         let view = UILabel()
@@ -46,17 +34,8 @@ class MemberHeaderCollectionReusableView: BaseCollectionReusableView {
     private lazy var titleEditImageView: UIImageView = {
         let view = UIImageView()
         view.image = UIImage(systemName: "pencil")
-        view.contentMode = .top
+        view.contentMode = .scaleAspectFit
         view.tintColor = .background(.accent)
-        return view
-    }()
-
-    private lazy var memberLabel: UILabel = {
-        let view = UILabel()
-        view.text = "Members"
-        view.font = .title
-        view.textColor = .textColor(.title)
-        view.textAlignment = .center
         return view
     }()
 
@@ -81,12 +60,10 @@ class MemberHeaderCollectionReusableView: BaseCollectionReusableView {
     override func setupLayout() {
         addSubviews([
             profileImage,
-            titleBackgroundView,
             titleTapView.addSubviews([
                 titleLabel,
                 titleEditImageView
             ]),
-            memberLabel
         ])
     }
 
@@ -102,24 +79,14 @@ class MemberHeaderCollectionReusableView: BaseCollectionReusableView {
         titleLabelWidthConstraint = titleLabel.width == 0
 
         titleEditImageView.left == titleLabel.right
-        titleEditImageView.top == titleTapView.top
-        titleEditImageView.bottom == titleTapView.bottom
-        titleEditImageView.width == 20
+        titleEditImageView.centerY == titleLabel.centerY
+        titleEditImageView.width == 25
+        titleEditImageView.height == 25
 
         titleTapView.centerX == centerX
         titleTapView.height == 44
         titleTapView.width == titleLabel.width
-
-        titleBackgroundView.left == left
-        titleBackgroundView.right == right
-        titleBackgroundView.bottom == titleTapView.bottom
-        titleBackgroundView.height == 44
-
-        memberLabel.right == right
-        memberLabel.left == left
-        memberLabel.top == titleTapView.bottom
-        memberLabel.bottom == bottom
-        memberLabel.height == 64
+        titleTapView.bottom == bottom - 20
     }
 
     override func setupActions() {

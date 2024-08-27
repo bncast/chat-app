@@ -105,16 +105,18 @@ class UserListViewController: BaseViewController {
             }
             .store(in: &cancellables)
 
-        navigationBar?.closeTapHandler = { [weak self] _ in
-            self?.dismiss(animated: true)
-        }
-
         searchBarView.textPublisher
             .sink { [weak self] text in
                 guard let text else { return }
                 self?.viewModel.filterByName(searchKey: text)
             }
             .store(in: &cancellables)
+    }
+
+    override func setupActions() {
+        navigationBar?.closeTapHandler = { [weak self] _ in
+            self?.dismiss(animated: true)
+        }
     }
 }
 

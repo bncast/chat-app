@@ -33,7 +33,8 @@ class MemberWithStatusCollectionViewCell: BaseSwipeCollectionViewCell {
     var isAdmin: Bool? { didSet {
         guard let isAdmin else { return }
         adminButton.backgroundColor = isAdmin ? .button(.inactive) : .button(.active)
-        adminButton.setTitle(isAdmin ? "ADMIN" : "NOT ADMIN", for: .normal)
+        adminButton.text = isAdmin ? "ADMIN" : "NOT ADMIN"
+        adminButton.colorStyle = isAdmin ? .active : .inactive
     } }
 
     var roomUserId: Int?

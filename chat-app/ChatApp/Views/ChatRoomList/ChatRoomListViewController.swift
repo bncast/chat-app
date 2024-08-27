@@ -78,6 +78,7 @@ class ChatRoomListViewController: BaseViewController {
         super.viewWillAppear(true)
 
         navigationBar?.showChatRoomListButtons = true
+        navigationBar?.title = "Chat Rooms"
 
         Task {
             if !AppConstant.shared.isNewUser {
@@ -91,7 +92,6 @@ class ChatRoomListViewController: BaseViewController {
     // MARK: - Setups
 
     override func setupNavigation() {
-        navigationBar?.title = "Chat Rooms"
         setNavigationBarDefaultStyle()
     }
 
