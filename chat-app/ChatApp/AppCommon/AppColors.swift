@@ -67,7 +67,7 @@ enum ColorStyle: Hashable {
     var backgroundColor: UIColor {
         switch self {
         case .active: .button(.active)
-        case .inactive: .button(.inactive)
+        case .inactive: .button(.ongoing)
         }
     }
 

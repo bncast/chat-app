@@ -17,7 +17,7 @@ class UserListViewController: BaseViewController {
 
     private lazy var dismissButton: UIBarButtonItem = {
         let view = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: nil, action: nil)
-        view.tintColor = .black
+        view.tintColor = .white
         return view
     }()
 
@@ -35,7 +35,7 @@ class UserListViewController: BaseViewController {
     private lazy var collectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundView = nil
-        view.backgroundColor = .background(.main)
+        view.backgroundColor = .white
 
         NoDataCollectionViewCell.registerCell(to: view)
         UserCollectionViewCell.registerCell(to: view)
@@ -195,7 +195,6 @@ extension UserListViewController {
     private func getUserCell(at indexPath: IndexPath, item: ItemInfo) -> UserCollectionViewCell {
         let cell = UserCollectionViewCell.dequeueCell(from: collectionView, for: indexPath)
         cell.name = item.name
-        cell.backgroundColor = indexPath.row % 2 == 0 ? .background(.mainLight) : .white
         cell.isInvited = item.isInvited
         cell.inviteHandlerAsync = { [weak self] _ in
             guard let self, !(cell.isInvited ?? false) else { return }
