@@ -1,12 +1,21 @@
 const RoomUserModel = require('../models/roomUserModel');
 const RoomModel = require('../models/roomModel');
 const UserModel = require('../models/userModel');
+const MessageModel = require('../models/messageModel');
 
 class RoomUserController {
     constructor(database) {
         this.roomModel = new RoomModel(database);
         this.roomUserModel = new RoomUserModel(database);
         this.userModel = new UserModel(database);
+        this.messageModel = new MessageModel(database);
+    }
+
+    async getRandomChatImageUrl(req) {
+        const randomNumber = Math.floor(Math.random() * 21) + 1; // Random number between 1 and 20
+        const imageName = `group${randomNumber}.png`;
+        const imageUrl = `/public/images/${imageName}`;
+        return imageUrl;
     }
 
     async createChatRoom(req, res) {
@@ -23,7 +32,8 @@ class RoomUserController {
                 throw new Error("User not found.");
             }
             
-            let roomResult = await this.roomModel.create(name, device_id, password);
+            let image_url = getRandomChatImageUrl(req);
+            let roomResult = await this.roomModel.create(name, device_id, password, image_url);
             if (!roomResult) { throw new Error("Failed to create room"); } 
 
             let roomId = roomResult.insertId;
@@ -33,17 +43,19 @@ class RoomUserController {
 
             let roomUserId = roomUserResult.insertId;
 
+            let imagePath = `${req.protocol}://${req.get('host')}/` + image_url;
+            
             let response = {
                 chatroom : {
                     room_id: roomId,
                     author_id: roomUserId,
                     author_name: author_name,
-                    preview: "",
+                    preview: "Say hello...",
                     is_joined: true,
                     current_room_user_id: roomUserId,
                     has_password: password != null,
                     chat_name: name,
-                    chat_image_url: "",
+                    chat_image_url: imagePath,
                     member_details: []
                 },
                 success: 1,
@@ -102,21 +114,31 @@ class RoomUserController {
             const memberDetails = members.map(member => ({
                 name: member.name,  
                 is_admin: member.is_admin == 1,
-                user_image_url: "",  
+                user_image_url: `${req.protocol}://${req.get('host')}/` + member.image_url,
                 room_user_id: member.room_user_id
             }));
+
+            let roomImagePath = `${req.protocol}://${req.get('host')}/` + room.image_url;
+            
+            let previewResult = await this.messageModel.getLatestMessage(roomId);
+            let lastMessage = previewResult[0];
+            
+            var preview = "Say hello...";
+            if (lastMessage != undefined && lastMessage.display_name != undefined && lastMessage.content != undefined) {
+                preview = lastMessage.display_name + " : " + lastMessage.content;
+            }
 
             let response = {
                 chatroom : {
                     room_id: roomId,
                     author_id: roomId,
                     author_name: userDisplayName,
-                    preview: "",
+                    preview: preview,
                     is_joined: true,
                     current_room_user_id: room_user_id,
                     has_password: hasPassword,
                     chat_name: newName,
-                    chat_image_url: "",
+                    chat_image_url: roomImagePath,
                     member_details: memberDetails
                 },
                 success: 1,
@@ -201,22 +223,30 @@ class RoomUserController {
                 const memberDetails = members.map(member => ({
                     name: member.name,  
                     is_admin: member.is_admin == 1,
-                    user_image_url: "",  
+                    user_image_url: `${req.protocol}://${req.get('host')}/` + member.image_url,  
                     room_user_id: member.room_user_id
                 }));
 
                 const roomUserId = members.find(member => member.user_id === device_id)?.room_user_id || null;
-    
+
+                let previewResult = await this.messageModel.getLatestMessage(room.room_id);
+                let lastMessage = previewResult[0];
+                
+                var preview = "Say hello...";
+                if (lastMessage != undefined && lastMessage.display_name != undefined && lastMessage.content != undefined) {
+                    preview = lastMessage.display_name + " : " + lastMessage.content;
+                }
+
                 const chatRoom = {
                     room_id: room.room_id,
                     author_id: roomDetails.creator_id,  
                     author_name: roomDetails.creator_name || "Unknown", 
-                    preview: "TODO",
+                    preview: preview,
                     is_joined: roomUserId != null,
                     current_room_user_id: roomUserId,
                     has_password: roomDetails.password != null,
                     chat_name: roomDetails.room_name,
-                    chat_image_url: roomDetails.image_url || "",
+                    chat_image_url: `${req.protocol}://${req.get('host')}/` + roomDetails.image_url,
                     member_details: memberDetails
                 };
     
@@ -269,20 +299,28 @@ class RoomUserController {
             const memberDetails = members.map(member => ({
                 name: member.name,  
                 is_admin: member.is_admin == 1,
-                user_image_url: "",  
+                user_image_url: `${req.protocol}://${req.get('host')}/` + member.image_url,  
                 room_user_id: member.room_user_id
             }));
+
+            let previewResult = await this.messageModel.getLatestMessage(roomDetails.room_id);
+            let lastMessage = previewResult[0];
+            
+            var preview = "Say hello...";
+            if (lastMessage != undefined && lastMessage.display_name != undefined && lastMessage.content != undefined) {
+                preview = lastMessage.display_name + " : " + lastMessage.content;
+            }
 
             const chatRoom = {
                 room_id: roomDetails.room_id,
                 author_id: roomDetails.creator_id,  
                 author_name: roomDetails.creator_name || "Unknown",  
-                preview: "TODO",
+                preview: preview,
                 is_joined: roomUserId != null,
                 current_room_user_id: roomUserId,
                 has_password: roomDetails.password != null,
                 chat_name: roomDetails.room_name,
-                chat_image_url: roomDetails.image_url || "",
+                chat_image_url: `${req.protocol}://${req.get('host')}/` + roomDetails.image_url,
                 member_details: memberDetails
             };
     

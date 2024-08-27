@@ -32,11 +32,14 @@ class MessageModel {
             Message.content,
             Message.created_at,
             Message.updated_at,
-            (Message.room_user_id = ?) AS is_current_user
+            (Message.room_user_id = ?) AS is_current_user,
+            User.image_url AS author_image
         FROM 
             Message
         JOIN 
             RoomUser ON Message.room_user_id = RoomUser.room_user_id
+        JOIN 
+            User ON RoomUser.user_id = User.user_id
         WHERE 
             RoomUser.room_id = ? AND Message.deleted_at IS NULL
         ORDER BY 
@@ -65,6 +68,20 @@ class MessageModel {
             WHERE message_id = ?
         `;
         const values = [message_id];
+        return this.db.query(sql, values);
+    }
+
+    async getLatestMessage(room_id) {
+        const sql = `
+            SELECT u.display_name, m.content
+            FROM Message m
+            JOIN RoomUser ru ON m.room_user_id = ru.room_user_id
+            JOIN User u ON ru.user_id = u.user_id
+            WHERE ru.room_id = ?
+            ORDER BY m.created_at DESC
+            LIMIT 1;
+        `;
+        const values = [room_id];
         return this.db.query(sql, values);
     }
 }

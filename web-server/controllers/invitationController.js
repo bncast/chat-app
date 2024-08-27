@@ -2,6 +2,7 @@ const UserModel = require('../models/userModel');
 const RoomUserModel = require('../models/roomUserModel');
 const RoomModel = require('../models/roomModel');
 const InvitationModel = require('../models/invitationModel');
+const MessageModel = require('../models/messageModel');
 
 class InvitationController {
     constructor(database) {
@@ -9,6 +10,7 @@ class InvitationController {
         this.userModel = new UserModel(database);
         this.roomUserModel = new RoomUserModel(database);
         this.roomModel = new RoomModel(database);
+        this.messageModel = new MessageModel(database);
     }
 
     async getAll(req, res) {
@@ -24,7 +26,7 @@ class InvitationController {
            
             const formattedInvitations = invitations.map(invitation => ({
                 chat_name: invitation.room_name, // Room name as chat_name
-                chat_image_url: "", // Assuming chat_image_url is not available in the current schema, defaulting to empty
+                chat_image_url: `${req.protocol}://${req.get('host')}/` + member.image_url,
                 inviter_name: invitation.inviter_name, // Inviter's display name
                 room_id: invitation.room_id // Room ID
             }));
@@ -108,12 +110,11 @@ class InvitationController {
 
             // Check if the user has an invitation for the room
             const invitation = await this.invitationModel.getByUserIdAndRoomId(device_id, room_id);
-            console.log("INVITATION " + invitation, device_id, room_id);
+            
             if (invitation.length > 0) {
                 // If invitation exists, set it to invalid
 
                 let invitationResult = invitation[0];
-                console.log("INVITATION " + invitationResult, invitationResult.invitation_id);
                 const result = await this.invitationModel.setInvitationInvalid(invitationResult.invitation_id);
 
                 if (result.affectedRows === 0) {
@@ -145,11 +146,19 @@ class InvitationController {
                     room_user_id: member.room_user_id
                 }));
     
+                let previewResult = await this.messageModel.getLatestMessage(roomDetails.room_id);
+                let lastMessage = previewResult[0];
+                
+                var preview = "Say hello...";
+                if (lastMessage != undefined && lastMessage.display_name != undefined && lastMessage.content != undefined) {
+                    preview = lastMessage.display_name + " : " + lastMessage.content;
+                }
+
                 const chatRoom = {
                     room_id: roomDetails.room_id,
                     author_id: roomDetails.creator_id,  
                     author_name: roomDetails.creator_name || "Unknown",  
-                    preview: "TODO",
+                    preview: preview,
                     is_joined: roomUserId != null,
                     current_room_user_id: roomUserId,
                     has_password: roomDetails.password != null,

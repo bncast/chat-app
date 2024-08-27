@@ -56,6 +56,7 @@ class MessageController {
             const formattedMessages = messages.map(msg => ({
                 message_id: msg.message_id,
                 author_id: msg.author_id,
+                author_image_url: `${req.protocol}://${req.get('host')}/` + msg.author_image,
                 content: msg.content,
                 created_at: msg.created_at,
                 updated_at: msg.updated_at,
