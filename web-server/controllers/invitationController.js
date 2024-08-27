@@ -26,7 +26,7 @@ class InvitationController {
            
             const formattedInvitations = invitations.map(invitation => ({
                 chat_name: invitation.room_name, // Room name as chat_name
-                chat_image_url: `${req.protocol}://${req.get('host')}/` + member.image_url,
+                chat_image_url: `${req.protocol}://${req.get('host')}/` + invitation.image_url,
                 inviter_name: invitation.inviter_name, // Inviter's display name
                 room_id: invitation.room_id // Room ID
             }));
