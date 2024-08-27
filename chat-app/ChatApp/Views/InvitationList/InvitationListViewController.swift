@@ -151,12 +151,16 @@ extension InvitationListViewController {
         let cell = InvitationCollectionViewCell.dequeueCell(from: collectionView, for: indexPath)
         cell.chatRoomName = item.chatRoomName
         cell.isInvited = item.isInvited
-        cell.backgroundColor = indexPath.row % 2 == 0 ? .background(.mainLight) : .background(.main)
-        
         cell.joinTapHandlerAsync = { [weak self] _ in
-            guard let chatInfo = await self?.viewModel.join(roomId: item.id) else { return }
-
-            self?.dismiss(animated: true) //TODO: Redirect to chat room
+            do {
+                await IndicatorController.shared.show()
+                let chatInfo = await self?.viewModel.join(roomId: item.id)
+                await IndicatorController.shared.dismiss()
+                self?.dismiss(animated: true) //TODO: Redirect to chat room
+            } catch {
+                print("[UserListViewController] Error! \(error as! NetworkError)")
+                await IndicatorController.shared.dismiss()
+            }
         }
 
         return cell
