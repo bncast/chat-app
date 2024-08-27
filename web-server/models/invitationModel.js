@@ -2,7 +2,7 @@ class InvitationModel {
     constructor(db) {
         this.db = db;
     }
-    
+
     async getAll() {
         const sql = `
             SELECT 
@@ -25,8 +25,8 @@ class InvitationModel {
     // Send a new invitation
     async sendInvitation(user_id, room_id, created_by) {
         const sql = `
-            INSERT INTO UserInvitation (user_id, room_id, created_by)
-            VALUES (?, ?, ?)
+            INSERT INTO UserInvitation (user_id, room_id, created_by, is_invalid)
+            VALUES (?, ?, ?, 0)
         `;
         const values = [user_id, room_id, created_by];
         return this.db.query(sql, values);

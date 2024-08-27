@@ -43,14 +43,14 @@ class InvitationController {
     // Send a new invitation
     async sendInvitation(req, res) {
         try {
-            const { device_id, invitee_devicee_id, room_id } = req.body;
+            const { device_id, invitee_device_id, room_id } = req.body;
 
             let userResult = await this.userModel.getUserById(device_id);
             if (userResult.length <= 0) {
                 throw new Error("User not found.");
             }
 
-            const result = await this.invitationModel.sendInvitation(invitee_devicee_id, room_id, device_id);
+            const result = await this.invitationModel.sendInvitation(invitee_device_id, room_id, device_id);
             if (result.affectedRows > 0) {
                 res.json({
                     success: 1,
