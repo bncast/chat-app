@@ -101,7 +101,7 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         }
     } }
 
-    var showInvitaionListButtons: Bool = true { didSet {
+    var showInvitationListButtons: Bool = true { didSet {
         invitationButton.isHidden = false
         profileImageView.isHidden = false
         moreButton.isHidden = false

@@ -36,6 +36,8 @@ class InvitationListViewController: BaseViewController {
 
     private let viewModel = InvitationListViewModel()
 
+    // MARK: - View Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -51,6 +53,8 @@ class InvitationListViewController: BaseViewController {
         }
     }
 
+    // MARK: - Setups
+    
     override func setupLayout() {
         view.backgroundColor = .background(.main)
 
@@ -60,10 +64,10 @@ class InvitationListViewController: BaseViewController {
     }
 
     override func setupNavigation() {
-        title = "Invitations"
-
         setNavigationBarDefaultStyle()
-        navigationBar?.showInvitaionListButtons = true
+
+        navigationBar?.title = "Invitations"
+        navigationBar?.showInvitationListButtons = true
     }
 
     override func setupConstraints() {
@@ -87,15 +91,20 @@ class InvitationListViewController: BaseViewController {
             self?.dismiss(animated: true)
         }
     }
+}
 
+// MARK: - Navigation
+
+extension InvitationListViewController {
     static func show(on parentViewController: UIViewController) {
-        let invitationListViewController = Self()
+        let viewController = Self()
 
         let navController = UINavigationController(navigationBarClass: ChatRoomListNavigationBar.self,
                                                    toolbarClass: nil)
-        navController.viewControllers = [invitationListViewController]
+        navController.viewControllers = [viewController]
         navController.modalPresentationStyle = .overFullScreen
-        navController.transitioningDelegate = invitationListViewController.fadeInAnimator
+        navController.transitioningDelegate = viewController.fadeInAnimator
+
         parentViewController.present(navController, animated: true)
     }
 }
