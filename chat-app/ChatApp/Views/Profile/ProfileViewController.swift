@@ -146,12 +146,9 @@ class ProfileViewController: BaseViewController {
                 await IndicatorController.shared.show(message: "\(statusBeforeUpdate ? "Registered" : "Updated") Successfully!", isDone: true)
                 await Task.sleep(seconds: 1)
                 await IndicatorController.shared.dismiss()
-                if statusBeforeUpdate {
-                    self?.dismiss(animated: true)
-                }
-
+                self?.dismiss(animated: true)
             } catch {
-                print("\(error as! NetworkError)")
+                print("[ProfileViewController] \(error as! NetworkError)")
                 await IndicatorController.shared.dismiss()
             }
         }
