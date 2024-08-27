@@ -10,6 +10,19 @@ import SuperEasyLayout
 import Combine
 
 class CreateChatRoomViewController: BaseViewController {
+    private lazy var visualEffectView: UIVisualEffectView = {
+        let view = UIVisualEffectView()
+        view.effect = UIBlurEffect(style: .regular)
+        return view
+    }()
+
+    private lazy var containerView: BaseView = {
+        let view = BaseView()
+        view.backgroundColor = .background(.mainLight)
+        view.layer.cornerRadius = 12
+        return view
+    }()
+
     private lazy var closeButton: BaseButton = {
         let view = BaseButton()
         view.setImage(UIImage(systemName: "xmark"),for: .normal)
@@ -92,22 +105,25 @@ class CreateChatRoomViewController: BaseViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        view.backgroundColor = .white
     }
 
     // MARK: - Setups
 
     override func setupLayout() {
+        view.backgroundColor = .clear
+
         addSubviews([
-            verticalStackView.addArrangedSubviews([
-                titleTextLabel,
-                roomTextLabel,
-                roomTextField,
-                passwordTextLabel,
-                passwordTextField,
-                createButton,
-                cancelButton
+            visualEffectView,
+            containerView.addSubviews([
+                verticalStackView.addArrangedSubviews([
+                    titleTextLabel,
+                    roomTextLabel,
+                    roomTextField,
+                    passwordTextLabel,
+                    passwordTextField,
+                    createButton,
+                    cancelButton
+                ])
             ])
         ])
 
@@ -118,22 +134,34 @@ class CreateChatRoomViewController: BaseViewController {
     }
 
     override func setupConstraints() {
-        verticalStackView.width == 300
-        verticalStackView.centerX == view.centerX
-        containerViewCenterYConstraint = verticalStackView.centerY == view.centerY
+        visualEffectView.setLayoutEqualTo(view)
 
-        titleTextLabel.width == 300
+        containerView.width == AppConstant.shared.screen(.width) - 40
+        containerView.centerX == view.centerX
+        containerViewCenterYConstraint = containerView.centerY == view.centerY
 
-        roomTextField.width == 300
+        verticalStackView.left == containerView.left + 20
+        verticalStackView.right == containerView.right - 20
+        verticalStackView.top == containerView.top + 20
+        verticalStackView.bottom == containerView.bottom - 20
+
+        titleTextLabel.left == verticalStackView.left
+        titleTextLabel.right == verticalStackView.right
+
+        roomTextField.left == verticalStackView.left
+        roomTextField.right == verticalStackView.right
         roomTextField.height == 44
 
-        passwordTextField.width == 300
+        passwordTextField.left == verticalStackView.left
+        passwordTextField.right == verticalStackView.right
         passwordTextField.height == 44
 
-        createButton.width == 300
+        createButton.left == verticalStackView.left
+        createButton.right == verticalStackView.right
         createButton.height == 44
 
-        cancelButton.width == 300
+        cancelButton.left == verticalStackView.left
+        cancelButton.right == verticalStackView.right
         cancelButton.height == 44
     }
 
@@ -184,7 +212,8 @@ extension CreateChatRoomViewController {
     static func show(on parentViewController: UIViewController) {
         let viewController = CreateChatRoomViewController()
         let navigationController = UINavigationController(rootViewController: viewController)
-        navigationController.modalPresentationStyle = .fullScreen
+        navigationController.modalPresentationStyle = .overFullScreen
+        navigationController.transitioningDelegate = viewController.fadeInAnimator
 
         parentViewController.present(navigationController, animated: true)
     }
