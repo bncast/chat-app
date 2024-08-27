@@ -18,7 +18,7 @@ class MemberHeaderCollectionReusableView: BaseCollectionReusableView {
 
     private lazy var titleBackgroundView: BaseView = {
         let view = BaseView()
-        view.backgroundColor = .active
+        view.backgroundColor = .background(.accent)
         return view
     }()
 
@@ -35,7 +35,7 @@ class MemberHeaderCollectionReusableView: BaseCollectionReusableView {
     private lazy var titleLabel: UILabel = {
         let view = UILabel()
         view.font = .largeTitle
-        view.textColor = .title
+        view.textColor = .background(.accent)
         view.textAlignment = .center
         return view
     }()
@@ -53,7 +53,7 @@ class MemberHeaderCollectionReusableView: BaseCollectionReusableView {
         let view = UILabel()
         view.text = "Members"
         view.font = .largeTitle
-        view.textColor = .title
+        view.textColor = .text(.title)
         view.textAlignment = .center
         return view
     }()

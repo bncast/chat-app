@@ -11,28 +11,28 @@ extension UIColor {
     static let background: (BackgroundColor) -> UIColor = { color in
         switch color {
         case .main: .main
-        case .compose: .compose
-        case .profileImage: .profile
-        case .delete: .delete
+        case .compose: .main
+        case .profileImage: .accent
+        case .delete: .systemRed
         case .accent: .accent
-        case .mainLight: .mainLight
+        case .mainLight: .mainBackground
         }
     }
 
     static let text: (TextColor) -> UIColor = { color in
         switch color {
-        case .title: .title
-        case .caption: .caption
-        case .date: .date
-        case .time: .time
+        case .title: .text1
+        case .caption: .subtext
+        case .date: .textLight
+        case .time: .textLight
         }
     }
 
     static let button: (ButtonColor) -> UIColor = { color in
         switch color {
-        case .active: .active
-        case .inactive: .inactive
-        case .ongoing: .ongoing
+        case .active: .main
+        case .inactive: .mainBackground
+        case .ongoing: .accentSecondary
         }
     }
 }

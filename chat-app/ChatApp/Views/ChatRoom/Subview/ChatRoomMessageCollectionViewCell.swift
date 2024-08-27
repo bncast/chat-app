@@ -36,7 +36,7 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
 
     private lazy var contentBackView: BaseView = {
         let view = BaseView()
-        view.backgroundColor = .mainLight
+        view.backgroundColor = .mainBackground
         view.clipsToBounds = true
         view.layer.cornerRadius = 12
         return view
@@ -79,7 +79,7 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
         let view = UILabel()
         view.textAlignment = .left
         view.font = .caption
-        view.textColor = .caption
+        view.textColor = .text(.title)
         view.lineBreakMode = .byTruncatingTail
         return view
     }()

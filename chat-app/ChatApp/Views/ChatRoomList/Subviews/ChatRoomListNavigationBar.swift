@@ -16,7 +16,7 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
             .withRenderingMode(.alwaysTemplate))
         view.contentMode = .scaleAspectFit
         view.tintColor = .white
-        view.backgroundColor = .black
+        view.backgroundColor = .background(.mainLight)
         view.layer.cornerRadius = 22
         return view
     }()
@@ -26,6 +26,7 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         let image = UIImage(systemName: "envelope", withConfiguration: configuration)?
             .withRenderingMode(.alwaysTemplate)
         let view = BaseButton()
+        view.tintColor = .background(.mainLight)
         view.setImage(image, for: .normal)
         view.layer.cornerRadius = 4
         return view
@@ -47,7 +48,7 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
             .withRenderingMode(.alwaysTemplate)
         let view = BaseButton()
         view.setImage(image, for: .normal)
-        view.tintColor = .text(.title)
+        view.tintColor = .background(.mainLight)
         return view
     }()
 
@@ -123,6 +124,9 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
             moreButton,
             closeButton
         ])
+
+        titleTextAttributes = [NSAttributedString.Key.backgroundColor: UIColor.background(.mainLight),
+                               NSAttributedString.Key.font: UIFont.title1]
     }
 
     override func setupConstraints() {

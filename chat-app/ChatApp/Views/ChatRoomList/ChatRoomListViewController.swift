@@ -18,7 +18,7 @@ class ChatRoomListViewController: BaseViewController {
 
     private let refreshControl = {
         let view = UIRefreshControl()
-        view.tintColor = .active
+        view.tintColor = .background(.main)
         return view
     }()
 
@@ -43,7 +43,7 @@ class ChatRoomListViewController: BaseViewController {
     private lazy var collectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundView = nil
-        view.backgroundColor = .background(.main)
+        view.backgroundColor = .white
         view.refreshControl = refreshControl
 
         NoDataCollectionViewCell.registerCell(to: view)
@@ -57,8 +57,8 @@ class ChatRoomListViewController: BaseViewController {
         let image = UIImage(systemName: "plus", withConfiguration: configuration)
 
         let view = BaseButton(type: .custom)
-        view.tintColor = .black
-        view.backgroundColor = .active
+        view.tintColor = .background(.mainLight)
+        view.backgroundColor = .background(.main)
         view.setImage(image, for: .normal)
         view.layer.cornerRadius = 12
         return view
@@ -315,10 +315,6 @@ extension ChatRoomListViewController {
             guard let detail = viewModel.details(for: item) else { return }
             
             ChatRoomViewController.push(on: self, using: detail)
-        }
-        
-        if indexPath.row % 2 == 0 {
-            cell.backgroundColor = .background(.mainLight)
         }
 
         return cell
