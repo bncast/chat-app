@@ -12,7 +12,7 @@ class ChatRoomMessageHeaderCollectionReusableView: BaseCollectionReusableView {
     private lazy var titleLabel: UILabel = {
         let view = UILabel()
         view.font = .caption
-        view.textColor = .textColor(.title)
+        view.textColor = .subtext
         return view
     }()
 

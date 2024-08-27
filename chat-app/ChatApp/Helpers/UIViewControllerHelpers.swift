@@ -12,7 +12,7 @@ extension UIViewController {
         view.addSubviews(views)
     }
 
-    func setNavigationBarDefaultStyle(backgroundColor: UIColor = .main, tintColor: UIColor = .black) {
+    func setNavigationBarDefaultStyle(backgroundColor: UIColor = .main, tintColor: UIColor = .mainBackground) {
         let image = UIImage(systemName: "chevron.left")
         if #available(iOS 15, *) {
             let appearance = UINavigationBarAppearance()

@@ -30,7 +30,7 @@ class ChatRoomMessageOptionsViewController: BaseViewController {
 
     private lazy var containerView: BaseView = {
         let view = BaseView()
-        view.backgroundColor = .textColor(.caption)
+        view.backgroundColor = .mainBackground
         view.layer.cornerRadius = 12
         view.clipsToBounds = true
         return view
@@ -40,8 +40,8 @@ class ChatRoomMessageOptionsViewController: BaseViewController {
         let view = BaseButton()
         view.backgroundColor = .button(.active)
         view.setTitle("REPLY", for: .normal)
-        view.titleLabel?.textColor = .textColor(.caption)
-        view.titleLabel?.font = .title.bold()
+        view.titleLabel?.textColor = .textLight
+        view.titleLabel?.font = .section
         return view
     }()
 
@@ -49,8 +49,8 @@ class ChatRoomMessageOptionsViewController: BaseViewController {
         let view = BaseButton()
         view.backgroundColor = .button(.active)
         view.setTitle("EDIT", for: .normal)
-        view.titleLabel?.textColor = .textColor(.caption)
-        view.titleLabel?.font = .title
+        view.titleLabel?.textColor = .textLight
+        view.titleLabel?.font = .section
         view.clipsToBounds = true
         return view
     }()
@@ -59,8 +59,8 @@ class ChatRoomMessageOptionsViewController: BaseViewController {
         let view = BaseButton()
         view.backgroundColor = .button(.active)
         view.setTitle("DELETE", for: .normal)
-        view.titleLabel?.textColor = .textColor(.caption)
-        view.titleLabel?.font = .title
+        view.titleLabel?.textColor = .textLight
+        view.titleLabel?.font = .section
         return view
     }()
 
@@ -106,12 +106,12 @@ class ChatRoomMessageOptionsViewController: BaseViewController {
 
         editButton.left == containerView.left
         editButton.right == containerView.right
-        editButton.top == replyButton.bottom + (isCurrentUser ? 0.5 : .zero)
+        editButton.top == replyButton.bottom + (isCurrentUser ? 1 : .zero)
         editButton.height == (isCurrentUser ? 44 : .zero)
 
         deleteButton.left == containerView.left
         deleteButton.right == containerView.right
-        deleteButton.top == editButton.bottom + 0.5
+        deleteButton.top == editButton.bottom + 1
         deleteButton.bottom == containerView.bottom
     }
 

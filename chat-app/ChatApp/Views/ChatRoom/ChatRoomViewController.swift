@@ -39,7 +39,7 @@ class ChatRoomViewController: BaseViewController {
 
     private lazy var replyingToView: BaseView = {
         let view = BaseView()
-        view.backgroundColor = .background(.main)
+        view.backgroundColor = .mainBackground
         view.clipsToBounds = true
         return view
     }()
@@ -47,22 +47,23 @@ class ChatRoomViewController: BaseViewController {
 
     private lazy var replyingToLabel: UILabel = {
         let view = UILabel()
-        view.font = .body
-        view.textColor = .textColor(.caption)
+        view.font = .body.semibold()
+        view.textColor = .subtext
         return view
     }()
 
     private lazy var messageReplyingToLabel: UILabel = {
         let view = UILabel()
         view.font = .caption
-        view.textColor = .textColor(.caption)
+        view.textColor = .subtext
         return view
     }()
 
     private lazy var closeReplyingToButton: BaseButton = {
         let view = BaseButton()
         view.setImage(UIImage(systemName: "xmark"),for: .normal)
-        view.tintColor = .textColor(.caption)
+        view.tintColor = .main
+        view.backgroundColor = .clear
         return view
     }()
 
@@ -71,12 +72,17 @@ class ChatRoomViewController: BaseViewController {
         view.layer.cornerRadius = 22
         return view
     }()
+    private weak var bottomViewHeightConstraint: NSLayoutConstraint?
     private weak var bottomViewBottomConstraint: NSLayoutConstraint?
 
     private lazy var textView: UITextView = {
         let textView = UITextView()
-        textView.textContainerInset = UIEdgeInsets(top: 20, left: 0, bottom: 20, right: 0)
+        textView.textContainerInset = UIEdgeInsets(top: 13, left: 5, bottom: 13, right: 5)
+        textView.font = .body
         textView.layer.cornerRadius = 22
+        textView.clipsToBounds = true
+        textView.backgroundColor = .mainBackground
+        textView.delegate = self
         return textView
     }()
 
@@ -85,7 +91,8 @@ class ChatRoomViewController: BaseViewController {
         let image = UIImage(systemName: "paperplane.fill", withConfiguration: configuration)?.withRenderingMode(.alwaysTemplate)
         let view = BaseButton()
         view.setImage(image, for: .normal)
-        view.tintColor = .background(.accent)
+        view.tintColor = .main
+        view.backgroundColor = .clear
         return view
     }()
 
@@ -114,8 +121,6 @@ class ChatRoomViewController: BaseViewController {
     override func setupLayout() {
         view.backgroundColor = .white
 
-        bottomView.backgroundColor = .lightGray.withAlphaComponent(0.5)
-
         addSubviews([
             collectionView,
             replyingToView.addSubviews([
@@ -134,7 +139,7 @@ class ChatRoomViewController: BaseViewController {
         collectionView.left == view.left
         collectionView.right == view.right
         collectionView.top == view.top + 8
-        collectionView.bottom == bottomView.top - 5
+        collectionView.bottom == replyingToView.top - 5
 
         replyingToView.left == view.left
         replyingToView.right == view.right
@@ -158,13 +163,13 @@ class ChatRoomViewController: BaseViewController {
 
         bottomView.left == view.left
         bottomView.right == view.right
-        bottomView.height == 180
-        bottomViewBottomConstraint = bottomView.bottom == view.bottom
+        bottomViewHeightConstraint = bottomView.height == 60
+        bottomViewBottomConstraint = bottomView.bottom == view.bottomMargin
 
         textView.top == bottomView.top + 8
         textView.left == bottomView.left + 8
         textView.right == sendButton.left - 8
-        textView.bottom == bottomView.bottom - (AppConstant.safeAreaInsets.bottom + 8)
+        textView.bottom == bottomView.bottom - 8
 
         sendButton.right == bottomView.right - 8
         sendButton.height == 44
@@ -188,6 +193,7 @@ class ChatRoomViewController: BaseViewController {
             await viewModel.sendMessage(textView.text)
 
             textView.text = ""
+            textViewDidChange(textView)
         }
 
         navigationBar?.moreTapHandlerAsync = { [weak self] _ in
@@ -337,9 +343,11 @@ extension ChatRoomViewController {
         viewModel.isEditingMessageId = messageId
 
         replyingToLabel.text = "Edit message"
-        textView.text = message
+        messageReplyingToLabel.text = ""
         textView.becomeFirstResponder()
-    
+        textView.text = message
+        textViewDidChange(textView)
+
         replyingToViewHeightConstraint?.constant = 44
         UIView.animate(withDuration: 0.2) {
             self.view.layoutIfNeeded()
@@ -349,8 +357,6 @@ extension ChatRoomViewController {
 
 extension ChatRoomViewController: ViewControllerKeyboardAppear {
     func willShowKeyboard(frame: CGRect, duration: TimeInterval, curve: UIView.AnimationCurve) {
-
-
         bottomViewBottomConstraint?.constant =  -(frame.height - AppConstant.safeAreaInsets.bottom)
         UIView.animate(withDuration: duration, delay: 0, options: curve.animationOptions) { [weak self] in
             guard let self else { return }
@@ -370,5 +376,28 @@ extension ChatRoomViewController: ViewControllerKeyboardAppear {
         UIView.animate(withDuration: duration, delay: 0, options: curve.animationOptions) { [weak self] in
             self?.view.layoutIfNeeded()
         }
+    }
+}
+
+extension ChatRoomViewController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        guard let bottomViewHeightConstraint else { return }
+        let textViewHeight = getTextViewContentHeight()
+        if textViewHeight < 117 {
+            bottomViewHeightConstraint.constant = textViewHeight
+            UIView.animate(withDuration: 0.1) {
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+
+    func getTextViewContentHeight() -> CGFloat {
+        guard let text = textView.text else { return 0 }
+
+        let sizeThatFits = textView.sizeThatFits(CGSize(width: textView.bounds.width, height: .greatestFiniteMagnitude))
+
+        let contentHeight = sizeThatFits.height + textView.textContainerInset.top
+
+        return contentHeight
     }
 }

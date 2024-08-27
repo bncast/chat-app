@@ -29,5 +29,9 @@ extension UIFont {
     func bold() -> UIFont {
         return .systemFont(ofSize: self.pointSize, weight: .bold)
     }
+
+    func semibold() -> UIFont {
+        return .systemFont(ofSize: self.pointSize, weight: .semibold)
+    }
 }
 
