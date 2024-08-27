@@ -145,7 +145,7 @@ class CreateChatRoomViewController: BaseViewController {
             .sink { [weak self] text in
                 guard let text else { return }
                 self?.createButton.isEnabled = !text.isEmpty
-                self?.createButton.backgroundColor = text.isEmpty ? .inactive : .active
+                self?.createButton.backgroundColor = text.isEmpty ? .button(.inactive) : .button(.active)
             }
             .store(in: &cancellables)
     }

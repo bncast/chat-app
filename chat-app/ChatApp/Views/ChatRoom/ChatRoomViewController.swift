@@ -85,7 +85,7 @@ class ChatRoomViewController: BaseViewController {
         let image = UIImage(systemName: "paperplane.fill", withConfiguration: configuration)?.withRenderingMode(.alwaysTemplate)
         let view = BaseButton()
         view.setImage(image, for: .normal)
-        view.tintColor = .caption
+        view.tintColor = .background(.accent)
         return view
     }()
 

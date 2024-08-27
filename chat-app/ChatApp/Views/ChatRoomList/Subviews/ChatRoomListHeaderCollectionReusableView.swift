@@ -11,20 +11,20 @@ import SuperEasyLayout
 class ChatRoomListHeaderCollectionReusableView: BaseCollectionReusableView {
     private lazy var leftSeparatorView: BaseView = {
         let view = BaseView()
-        view.backgroundColor = .active
+        view.backgroundColor = .background(.accent)
         return view
     }()
 
     private lazy var titleLabel: UILabel = {
         let view = UILabel()
         view.font = .callout
-        view.textColor = .active
+        view.textColor = .background(.accent)
         return view
     }()
 
     private lazy var rightSeparatorView: BaseView = {
         let view = BaseView()
-        view.backgroundColor = .active
+        view.backgroundColor = .background(.accent)
         return view
     }()
 

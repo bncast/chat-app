@@ -16,7 +16,7 @@ class NoDataCollectionViewCell: BaseCollectionViewCell {
         let image = UIImage(systemName: "questionmark.diamond", withConfiguration: configuration)?.withRenderingMode(.alwaysTemplate)
         let view = UIImageView(image: image)
         view.contentMode = .scaleAspectFill
-        view.tintColor = .active
+        view.tintColor = .background(.accent)
         return view
     }()
 

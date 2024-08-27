@@ -22,7 +22,7 @@ class ProfileViewController: BaseViewController {
 
     private lazy var containerView: BaseView = {
         let view = BaseView()
-        view.backgroundColor = .background(.main)
+        view.backgroundColor = .background(.mainLight)
         view.layer.cornerRadius = 12
         return view
     }()
@@ -32,7 +32,7 @@ class ProfileViewController: BaseViewController {
         let view = UILabel()
         view.text = "User Profile"
         view.font = .largeTitle
-        view.textColor = .title
+        view.textColor = .text(.title)
         view.textAlignment = .center
         return view
     }()
