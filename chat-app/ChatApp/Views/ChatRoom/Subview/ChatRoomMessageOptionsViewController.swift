@@ -30,7 +30,7 @@ class ChatRoomMessageOptionsViewController: BaseViewController {
 
     private lazy var containerView: BaseView = {
         let view = BaseView()
-        view.backgroundColor = .text
+        view.backgroundColor = .textColor(.caption)
         view.layer.cornerRadius = 12
         view.clipsToBounds = true
         return view
@@ -40,8 +40,8 @@ class ChatRoomMessageOptionsViewController: BaseViewController {
         let view = BaseButton()
         view.backgroundColor = .button(.active)
         view.setTitle("REPLY", for: .normal)
-        view.titleLabel?.textColor = .subtext
-        view.titleLabel?.font = .caption
+        view.titleLabel?.textColor = .textColor(.caption)
+        view.titleLabel?.font = .title.bold()
         return view
     }()
 
@@ -49,8 +49,8 @@ class ChatRoomMessageOptionsViewController: BaseViewController {
         let view = BaseButton()
         view.backgroundColor = .button(.active)
         view.setTitle("EDIT", for: .normal)
-        view.titleLabel?.textColor = .subtext
-        view.titleLabel?.font = .caption
+        view.titleLabel?.textColor = .textColor(.caption)
+        view.titleLabel?.font = .title
         view.clipsToBounds = true
         return view
     }()
@@ -59,8 +59,8 @@ class ChatRoomMessageOptionsViewController: BaseViewController {
         let view = BaseButton()
         view.backgroundColor = .button(.active)
         view.setTitle("DELETE", for: .normal)
-        view.titleLabel?.textColor = .subtext
-        view.titleLabel?.font = .caption
+        view.titleLabel?.textColor = .textColor(.caption)
+        view.titleLabel?.font = .title
         return view
     }()
 

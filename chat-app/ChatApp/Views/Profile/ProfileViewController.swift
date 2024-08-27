@@ -32,15 +32,15 @@ class ProfileViewController: BaseViewController {
         let view = UILabel()
         view.text = "User Profile"
         view.font = .title
-        view.textColor = .text
+        view.textColor = .textColor(.title)
         view.textAlignment = .center
         return view
     }()
 
     private lazy var closeButton: BaseButton = {
         let view = BaseButton()
-        view.setImage(UIImage(systemName: "xmark"),for: .normal)
-        view.tintColor = .subtext
+        view.setImage(UIImage(systemName: "xmark"), for: .normal)
+        view.tintColor = .textColor(.title)
         return view
     }()
 
@@ -62,8 +62,8 @@ class ProfileViewController: BaseViewController {
         let view = BaseButton()
         view.backgroundColor = .button(.active)
         view.setTitle("SAVE", for: .normal)
-        view.titleLabel?.textColor = .subtext
-        view.titleLabel?.font = .body
+        view.titleLabel?.textColor = .textColor(.caption)
+        view.titleLabel?.font = .title
         view.layer.cornerRadius = 8
         return view
     }()
@@ -114,7 +114,7 @@ class ProfileViewController: BaseViewController {
         nameTextField.left == containerView.left + 20
         nameTextField.right == containerView.right - 20
         nameTextField.top == profileImage.bottom + 20
-        nameTextField.height == 30
+        nameTextField.height == 44
 
         saveButton.left == containerView.left + 20
         saveButton.right == containerView.right - 20

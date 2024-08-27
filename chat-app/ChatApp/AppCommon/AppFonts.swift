@@ -26,8 +26,8 @@ extension UIFont {
     }
 }
 extension UIFont {
-    func weight(_ weight: UIFont.Weight) -> UIFont {
-        return .systemFont(ofSize: self.pointSize, weight: weight)
+    func bold() -> UIFont {
+        return .systemFont(ofSize: self.pointSize, weight: .bold)
     }
 }
 

@@ -19,7 +19,7 @@ class UserCollectionViewCell: BaseCollectionViewCell {
     private lazy var nameTextLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .left
-        view.font = .body
+        view.font = .title
         view.textColor = .black
         view.lineBreakMode = .byCharWrapping
         return view
@@ -27,8 +27,8 @@ class UserCollectionViewCell: BaseCollectionViewCell {
     
     private lazy var actionButton: BaseButton = {
         let view = BaseButton()
-        view.titleLabel?.textColor = .text
-        view.titleLabel?.font = .body
+        view.titleLabel?.textColor = .textColor(.caption)
+        view.titleLabel?.font = .title
         view.layer.cornerRadius = 8
         return view
     }()
