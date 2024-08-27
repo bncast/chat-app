@@ -113,8 +113,8 @@ class ChatRoomViewController: BaseViewController {
     // MARK: - Setups
 
     override func setupNavigation() {
-        setNavigationBarDefaultStyle()
-        navigationBar?.title = viewModel.details?.name ?? ""
+        guard let details = viewModel.details else { return }
+        navigationBar?.title = details.name
     }
 
     override func setupLayout() {
@@ -328,6 +328,12 @@ extension ChatRoomViewController {
             case .delete: viewModel.deleteMessage(item.id)
             case .none: break
             }
+        }
+        if let replyTo = item.replyTo, let replyToContent = replyTo.isReplyingToContent {
+            cell.replyToContent = replyToContent
+            cell.replyToName = "Replied to \(replyTo.isReplyingToName)"
+        } else {
+            cell.hideReplyTo()
         }
         return cell
     }

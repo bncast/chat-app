@@ -43,7 +43,8 @@ final class InvitationListViewModel {
 
             return ChatInfo(name: result.chatName,
                             roomId: roomId,
-                            currentRoomUserId: result.currentRoomUserId, imageUrlString: result.chatImageUrl,
+                            currentRoomUserId: result.currentRoomUserId,
+                            imageUrlString: result.chatImageUrl,
                             memberDetails: result.memberDetails.map {
                                 MemberInfo(name: $0.name, isAdmin: $0.isAdmin, roomUserId: $0.roomUserId)
                             })

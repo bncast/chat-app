@@ -32,7 +32,44 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
         view.axis = .horizontal
         view.spacing = 10
         view.distribution = .fill
+        view.alignment = .bottom
+        return view
+    }()
+
+    private lazy var verticalContentsStackView: UIStackView = {
+        let view = UIStackView()
+        view.axis = .vertical
         view.alignment = .leading
+        return view
+    }()
+
+    private lazy var replyToContentBackView: BaseView = {
+        let view = BaseView()
+        view.backgroundColor = .mainBackground
+        view.clipsToBounds = true
+        view.layer.cornerRadius = 12
+        return view
+    }()
+
+    private lazy var replyToNameBackView = BaseView()
+
+    private lazy var replyToNameLabel: UILabel = {
+        let view = UILabel()
+        view.textAlignment = .left
+        view.font = .captionSubtext
+        view.textColor = .subtext
+        view.numberOfLines = 3
+        view.lineBreakMode = .byTruncatingTail
+        return view
+    }()
+
+    private lazy var replyToContentLabel: UILabel = {
+        let view = UILabel()
+        view.textAlignment = .left
+        view.font = .caption
+        view.textColor = .subtext
+        view.numberOfLines = 3
+        view.lineBreakMode = .byTruncatingTail
         return view
     }()
 
@@ -110,6 +147,16 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
         set { timeLabel.text = newValue }
     }
 
+    var replyToContent: String? {
+        get { replyToContentLabel.text }
+        set { replyToContentLabel.text = newValue }
+    }
+
+    var replyToName: String? {
+        get { replyToNameLabel.text }
+        set { replyToNameLabel.text = newValue }
+    }
+
     var imageUrlString: String? { didSet {
         guard let imageUrlString else { return }
         imageView.setImage(from: imageUrlString)
@@ -131,6 +178,8 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
         contentLabel.textColor = .textLight
         timeLabel.textColor = .subtextLight
 
+        verticalContentsStackView.alignment = .trailing
+
         nameLabel.isHidden = true
     } }
 
@@ -143,18 +192,24 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
             backView.addSubviews([
                 horizontalStackView.addArrangedSubviews([
                     imageView,
-                    contentBackView.addSubviews([
-                        verticalStackView.addArrangedSubviews([
-                            contentLabel,
-                            labelHorizontalStackView.addArrangedSubviews([
-                                nameLabel,
-                                timeLabel
+                    verticalContentsStackView.addArrangedSubviews([
+                        replyToNameBackView.addSubviews([replyToNameLabel]),
+                        replyToContentBackView.addSubviews([replyToContentLabel]),
+                        contentBackView.addSubviews([
+                            verticalStackView.addArrangedSubviews([
+                                contentLabel,
+                                labelHorizontalStackView.addArrangedSubviews([
+                                    nameLabel,
+                                    timeLabel
+                                ])
                             ])
                         ])
                     ])
                 ])
             ])
         ])
+
+        verticalContentsStackView.setCustomSpacing(-18, after: replyToContentBackView)
     }
 
     var leftConstraint: NSLayoutConstraint?
@@ -183,6 +238,21 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
 
         verticalStackView.setLayoutEqualTo(contentBackView, space: 10)
 
+        replyToContentLabel.compressionRegistanceVerticalPriority = .required
+
+        replyToContentLabel.left == replyToContentBackView.left + 10
+        replyToContentLabel.right == replyToContentBackView.right - 10
+        replyToContentLabel.top == replyToContentBackView.top + 10
+        replyToContentLabel.bottom == replyToContentBackView.bottom - 20
+        replyToContentLabel.width <= replyToContentBackView.width * 0.92
+
+        replyToNameLabel.compressionRegistanceVerticalPriority = .required
+
+        replyToNameLabel.left == replyToNameBackView.left
+        replyToNameLabel.right == replyToNameBackView.right
+        replyToNameLabel.top == replyToNameBackView.top
+        replyToNameLabel.bottom == replyToNameBackView.bottom
+
         imageView.width == 50
         imageView.height == 50
     }
@@ -199,6 +269,11 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
                 await showOptionsHandler(self.contentBackView)
             }
         }
+    }
+
+    func hideReplyTo() {
+        replyToNameBackView.isHidden = true
+        replyToContentBackView.isHidden = true
     }
 
 }
