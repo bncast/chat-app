@@ -33,12 +33,21 @@ class UserModel {
 
     async getUsersNotInRoom(room_id) {
         const sql = `
-            SELECT User.user_id, User.display_name, User.image_url
-            FROM User
-            LEFT JOIN RoomUser ON User.user_id = RoomUser.user_id AND RoomUser.room_id = ?
-            WHERE RoomUser.user_id IS NULL
-        `;
-        const values = [room_id];
+        SELECT 
+            User.user_id, 
+            User.display_name, 
+            User.image_url
+        FROM 
+            User
+        LEFT JOIN 
+            RoomUser ON User.user_id = RoomUser.user_id AND RoomUser.room_id = ?
+        LEFT JOIN 
+            UserInvitation ON User.user_id = UserInvitation.user_id AND UserInvitation.room_id = ? AND UserInvitation.is_invalid = 0
+        WHERE 
+            RoomUser.user_id IS NULL 
+            AND UserInvitation.user_id IS NULL
+    `;
+    const values = [room_id, room_id];
         return this.database.query(sql, values);
     }
 }

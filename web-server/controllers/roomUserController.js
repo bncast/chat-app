@@ -254,7 +254,7 @@ class RoomUserController {
                 throw new Error("User not found.");
             }
     
-            const roomResult = await this.roomModel.getById(room_id);
+            const roomResult = await this.roomModel.getById(room_id, password);
             if (roomResult.length <= 0) { throw new Error("Room not found."); }
             
             const roomDetails = roomResult[0];

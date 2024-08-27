@@ -38,6 +38,8 @@ class InvitationCollectionViewCell: BaseCollectionViewCell {
         joinButton.isHidden = !isInvited
     } }
 
+    var joinTapHandlerAsync: ((BaseButton) async -> Void)?
+
     override func setupLayout() {
         contentView.addSubviews([
             chatRoomNameLabel,
@@ -55,6 +57,14 @@ class InvitationCollectionViewCell: BaseCollectionViewCell {
         joinButton.centerY == contentView.centerY
         joinButton.width == 80
         joinButton.height == 44
+    }
+
+    override func setupActions() {
+        joinButton.tapHandlerAsync = { [weak self] _ in
+            guard let self else { return }
+            
+            await joinTapHandlerAsync?(joinButton)
+        }
     }
 
 }

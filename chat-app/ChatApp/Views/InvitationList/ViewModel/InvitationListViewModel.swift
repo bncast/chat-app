@@ -32,4 +32,24 @@ final class InvitationListViewModel {
             ItemInfo(id: invitation.roomId, chatRoomName: "\(invitation.inviterName) invited you to join \(invitation.chatName)", isInvited: true)
         })
     }
+
+    func join(roomId: Int) async -> ChatInfo? {
+        guard let deviceId = AppConstant.shared.deviceId else { return nil }
+        do {
+            guard let result = try await AcceptInvitationEntity(deviceId: deviceId,
+                                                                roomId: roomId).run().chatroom
+            else { return nil}
+
+
+            return ChatInfo(name: result.chatName,
+                            roomId: roomId,
+                            currentRoomUserId: result.currentRoomUserId,
+                            memberDetails: result.memberDetails.map {
+                                MemberInfo(name: $0.name, isAdmin: $0.isAdmin, roomUserId: $0.roomUserId)
+                            })
+        } catch {
+            print(error)
+            return nil
+        }
+    }
 }
