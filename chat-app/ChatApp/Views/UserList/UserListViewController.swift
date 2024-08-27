@@ -134,7 +134,9 @@ extension UserListViewController {
         viewController.viewModel.roomId = roomId
         
         let navigationController = UINavigationController(rootViewController: viewController)
-        viewController.modalPresentationStyle = .overFullScreen
+        navigationController.modalPresentationStyle = .overFullScreen
+        navigationController.transitioningDelegate = viewController.fadeInAnimator
+        
         parentViewController.present(navigationController, animated: true)
     }
 }
