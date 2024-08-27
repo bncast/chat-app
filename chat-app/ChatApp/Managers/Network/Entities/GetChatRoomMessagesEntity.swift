@@ -55,5 +55,7 @@ struct MessageEntity: Codable {
     var updatedAt: Date
     var isCurrentUser: Bool?
     var authorImageUrl: String
+    var isReplyingTo: Int?
+    var isReplyingToContent: String?
 }
 

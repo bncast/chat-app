@@ -32,6 +32,13 @@ class ChatRoomViewModel {
         var time: String
         var isCurrentUser: Bool
         var imageUrlString: String
+        var replyTo: ReplyTo?
+    }
+
+    struct ReplyTo: Hashable {
+        var isReplyingTo: Int?
+        var isReplyingToName: String
+        var isReplyingToContent: String?
     }
 
     @Published var items: [Section: [Item]] = [:]
@@ -44,7 +51,9 @@ class ChatRoomViewModel {
         guard let deviceId = AppConstant.shared.deviceId,
               let roomId = details?.roomId,
               let roomUserId = details?.currentRoomUserId,
-              var messages = try? await GetChatRoomMessagesEntity(deviceId: deviceId, roomId: roomId, roomUserId: roomUserId).run().messages
+              var messages = try? await GetChatRoomMessagesEntity(
+                deviceId: deviceId, roomId: roomId, roomUserId: roomUserId
+              ).run().messages
         else {
             //TODO: NO DATA
             return
@@ -52,7 +61,7 @@ class ChatRoomViewModel {
 
         var items: [Section: [Item]] = [:]
         var sections = [Date]()
-
+        
         messages.sort { $0.createdAt < $1.createdAt }
 
         for (index, messageItem) in messages.enumerated() {
@@ -62,14 +71,25 @@ class ChatRoomViewModel {
 
                 items[.main(string, index)] = messages
                     .filter { $0.createdAt.isSameDayWith(date: messageItem.createdAt) }
-                    .map { item in .messageItem(
+                    .map { item in
+                        var replyTo: ReplyTo?
+                        if let _ = item.isReplyingTo {
+                            replyTo = ReplyTo(isReplyingTo: item.isReplyingTo,
+                                              isReplyingToName: details?.memberDetails.first(
+                                                where: { $0.roomUserId == item.isReplyingTo}
+                                              )?.name ?? "No name" ,
+                                              isReplyingToContent: item.isReplyingToContent)
+                        }
+
+                        return .messageItem(
                         MessageInfo(id: item.messageId,
                                     content: item.content,
                                     name: details?.memberDetails.first(
                                         where: { $0.roomUserId == item.authorId}
                                     )?.name ?? "No name",
                                     time: item.createdAt.toString(by: "hh:mm a"),
-                                    isCurrentUser: item.isCurrentUser == true, imageUrlString: item.authorImageUrl)
+                                    isCurrentUser: item.isCurrentUser == true,
+                                    imageUrlString: item.authorImageUrl, replyTo: replyTo)
                     ) }
 
                 sections.append(messageItem.createdAt)

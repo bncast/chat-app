@@ -24,6 +24,10 @@ extension UIFont {
     static var caption: UIFont {
         .systemFont(ofSize: 16)
     }
+
+    static var captionSubtext: UIFont {
+        .systemFont(ofSize: 14)
+    }
 }
 extension UIFont {
     func bold() -> UIFont {
