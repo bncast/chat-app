@@ -13,7 +13,7 @@ class ChatRoomDetailsViewController: BaseViewController {
     private lazy var closeButton: BaseButton = {
         let view = BaseButton()
         view.setImage(UIImage(systemName: "xmark"),for: .normal)
-        view.tintColor = .subtext
+        view.tintColor = .textColor(.caption)
         return view
     }()
 
@@ -38,8 +38,8 @@ class ChatRoomDetailsViewController: BaseViewController {
         let view = BaseButton()
         view.backgroundColor = .button(.active)
         view.setTitle("INVITE", for: .normal)
-        view.titleLabel?.textColor = .subtext
-        view.titleLabel?.font = .body
+        view.titleLabel?.textColor = .textColor(.caption)
+        view.titleLabel?.font = .title
         view.layer.cornerRadius = 8
         return view
     }()
@@ -48,8 +48,8 @@ class ChatRoomDetailsViewController: BaseViewController {
         let view = BaseButton()
         view.backgroundColor = .button(.active)
         view.setTitle("DELETE ROOM", for: .normal)
-        view.titleLabel?.textColor = .subtext
-        view.titleLabel?.font = .body
+        view.titleLabel?.textColor = .textColor(.caption)
+        view.titleLabel?.font = .title
         view.layer.cornerRadius = 8
         return view
     }()

@@ -32,15 +32,15 @@ class ProfileViewController: BaseViewController {
         let view = UILabel()
         view.text = "User Profile"
         view.font = .title
-        view.textColor = .text
+        view.textColor = .textColor(.title)
         view.textAlignment = .center
         return view
     }()
 
     private lazy var closeButton: BaseButton = {
         let view = BaseButton()
-        view.setImage(UIImage(systemName: "xmark"),for: .normal)
-        view.tintColor = .subtext
+        view.setImage(UIImage(systemName: "xmark"), for: .normal)
+        view.tintColor = .textColor(.title)
         return view
     }()
 
@@ -62,14 +62,16 @@ class ProfileViewController: BaseViewController {
         let view = BaseButton()
         view.backgroundColor = .button(.active)
         view.setTitle("SAVE", for: .normal)
-        view.titleLabel?.textColor = .subtext
-        view.titleLabel?.font = .body
+        view.titleLabel?.textColor = .textColor(.caption)
+        view.titleLabel?.font = .title
         view.layer.cornerRadius = 8
         return view
     }()
 
     private let viewModel = ProfileViewModel()
     private var continuation: CheckedContinuation<Void, Never>?
+
+    // MARK: - Setups
 
     override func setupLayout() {
         view.backgroundColor = .clear
@@ -114,7 +116,7 @@ class ProfileViewController: BaseViewController {
         nameTextField.left == containerView.left + 20
         nameTextField.right == containerView.right - 20
         nameTextField.top == profileImage.bottom + 20
-        nameTextField.height == 30
+        nameTextField.height == 44
 
         saveButton.left == containerView.left + 20
         saveButton.right == containerView.right - 20
@@ -134,26 +136,11 @@ class ProfileViewController: BaseViewController {
 
     override func setupActions() {
         saveButton.tapHandlerAsync = { [weak self] _ in
-            do {
-                guard let text = self?.nameTextField.text, !text.isEmpty else { return }
-                let statusBeforeUpdate = AppConstant.shared.isNewUser
+            await self?.updateProfile()
+        }
 
-                self?.nameTextField.resignFirstResponder()
-                await IndicatorController.shared.show()
-                try await self?.viewModel.updateName(name: text)
-                await IndicatorController.shared.dismiss()
-                self?.viewModel.setDisplayName(name: text)
-                await IndicatorController.shared.show(message: "\(statusBeforeUpdate ? "Registered" : "Updated") Successfully!", isDone: true)
-                await Task.sleep(seconds: 1)
-                await IndicatorController.shared.dismiss()
-                if statusBeforeUpdate {
-                    self?.dismiss(animated: true)
-                }
-
-            } catch {
-                print("\(error as! NetworkError)")
-                await IndicatorController.shared.dismiss()
-            }
+        nameTextField.onSubmitAsync = { [weak self] _ in
+            await self?.updateProfile()
         }
 
         keyboardAppear = self
@@ -171,6 +158,40 @@ class ProfileViewController: BaseViewController {
         }
     }
 
+    // MARK: - View Controller
+
+    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        super.dismiss(animated: flag, completion: completion)
+        continuation?.resume()
+    }
+
+    // MARK: - Private Methods
+
+    func updateProfile() async {
+        do {
+            guard let text = nameTextField.text, !text.isEmpty else { return }
+            let statusBeforeUpdate = AppConstant.shared.isNewUser
+
+            nameTextField.resignFirstResponder()
+            await IndicatorController.shared.show()
+            try await viewModel.updateName(name: text)
+            await IndicatorController.shared.dismiss()
+            viewModel.setDisplayName(name: text)
+            await IndicatorController.shared.show(
+                message: "\(statusBeforeUpdate ? "Registered" : "Updated") Successfully!", isDone: true
+            )
+            await Task.sleep(seconds: 1)
+            await IndicatorController.shared.dismiss()
+            dismiss(animated: true)
+        } catch {
+            print("[ProfileViewController] \(error as! NetworkError)")
+            await IndicatorController.shared.dismiss()
+        }
+    }
+}
+
+// MARK: - Navigation
+extension ProfileViewController {
     static func show(on parentViewController: UIViewController) async {
         await withCheckedContinuation { continuation in
             let profileViewController = Self()
@@ -181,13 +202,9 @@ class ProfileViewController: BaseViewController {
             parentViewController.present(profileViewController, animated: true)
         }
     }
-
-    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-        super.dismiss(animated: flag, completion: completion)
-        continuation?.resume()
-    }
 }
 
+// MARK: - Keyboard Appearance
 extension ProfileViewController: ViewControllerKeyboardAppear {
     func willShowKeyboard(frame: CGRect, duration: TimeInterval, curve: UIView.AnimationCurve) {
         containerViewCenterYConstraint?.constant = -abs((containerView.frame.height) - frame.height) - 44

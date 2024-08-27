@@ -53,7 +53,7 @@ class MemberHeaderCollectionReusableView: BaseCollectionReusableView {
         let view = UILabel()
         view.text = "Members"
         view.font = .title
-        view.textColor = .text
+        view.textColor = .textColor(.title)
         view.textAlignment = .center
         return view
     }()
