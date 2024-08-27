@@ -14,7 +14,7 @@ class RoomUserController {
     async getRandomChatImageUrl(req) {
         const randomNumber = Math.floor(Math.random() * 21) + 1; // Random number between 1 and 20
         const imageName = `group${randomNumber}.png`;
-        const imageUrl = `/public/images/${imageName}`;
+        const imageUrl = `public/images/${imageName}`;
         return imageUrl;
     }
 
@@ -32,11 +32,13 @@ class RoomUserController {
                 throw new Error("User not found.");
             }
             
-            let image_url = getRandomChatImageUrl(req);
-            let roomResult = await this.roomModel.create(name, device_id, password, image_url);
-            if (!roomResult) { throw new Error("Failed to create room"); } 
+            let image_url = await this.getRandomChatImageUrl(req);
+            let createResult = await this.roomModel.create(name, device_id, password, image_url);
+            if (!createResult) { throw new Error("Failed to create room"); } 
 
-            let roomId = roomResult.insertId;
+            let roomId = createResult.insertId;
+            let roomResult = await this.roomModel.getById(roomId, password);
+            let roomCreatorId = roomResult[0].creator_id;
             
             let roomUserResult = await this.roomUserModel.createRoomUser(roomId, device_id, 1);
             if (!roomUserResult) { throw new Error("Failed to create room user"); } 
@@ -48,7 +50,7 @@ class RoomUserController {
             let response = {
                 chatroom : {
                     room_id: roomId,
-                    author_id: roomUserId,
+                    author_id: roomCreatorId,
                     author_name: author_name,
                     preview: "Say hello...",
                     is_joined: true,

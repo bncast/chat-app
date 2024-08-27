@@ -99,6 +99,7 @@ class CreateChatRoomViewController: BaseViewController {
         return view
     }()
 
+    var continuation: CheckedContinuation<Bool, Never>?
     let viewModel = CreateChatRoomViewModel()
 
     // MARK: - View Lifecycle
@@ -194,28 +195,37 @@ class CreateChatRoomViewController: BaseViewController {
                     password: password.isEmpty ? nil : password
                 )
                 await IndicatorController.shared.dismiss()
+
+                self.dismiss(animated: true) { [weak self] in
+                    self?.continuation?.resume(returning: true)
+                }
             } catch {
                 print("[CreateChatRoomViewController] Error! \(error as! NetworkError)")
                 await IndicatorController.shared.dismiss()
             }
-            await IndicatorController.shared.dismiss()
-            self.dismiss(animated: true)
         }
+
         cancelButton.tapHandler = { [weak self] _ in
-            self?.dismiss(animated: true)
+            self?.dismiss(animated: true) { [weak self] in
+                self?.continuation?.resume(returning: false)
+            }
         }
     }
 }
 
 // MARK: - Navigation
 extension CreateChatRoomViewController {
-    static func show(on parentViewController: UIViewController) {
-        let viewController = CreateChatRoomViewController()
-        let navigationController = UINavigationController(rootViewController: viewController)
-        navigationController.modalPresentationStyle = .overFullScreen
-        navigationController.transitioningDelegate = viewController.fadeInAnimator
+    static func show(on parentViewController: UIViewController) async -> Bool {
+        await withCheckedContinuation { continuation in
+            let viewController = CreateChatRoomViewController()
+            viewController.continuation = continuation
 
-        parentViewController.present(navigationController, animated: true)
+            let navigationController = UINavigationController(rootViewController: viewController)
+            navigationController.modalPresentationStyle = .overFullScreen
+            navigationController.transitioningDelegate = viewController.fadeInAnimator
+
+            parentViewController.present(navigationController, animated: true)
+        }
     }
 }
 

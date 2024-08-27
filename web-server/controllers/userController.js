@@ -9,7 +9,7 @@ class UserController {
     async getRandomProfileImageUrl(req) {
         const randomNumber = Math.floor(Math.random() * 21) + 1; // Random number between 1 and 20
         const imageName = `profile${randomNumber}.png`;
-        const imageUrl = `/public/images/${imageName}`;
+        const imageUrl = `public/images/${imageName}`;
         return imageUrl;
     }
 

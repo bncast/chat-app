@@ -9,7 +9,7 @@ class RoomModel {
     async create(room_name, creator_id, password, image_url) {
         const sql = `
             INSERT INTO Room (room_name, creator_id, password, image_url, is_deleted, updated_by, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
         const values = [room_name, creator_id, password, image_url, 0, creator_id, new Date()];
         return this.db.query(sql, values);
