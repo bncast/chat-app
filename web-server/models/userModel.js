@@ -6,9 +6,9 @@ class UserModel {
     }
 
     // Create a new user
-    async createUser(user_id, display_name) {
-        const sql = 'INSERT INTO User (user_id, display_name) VALUES (?, ?)';
-        const values = [user_id, display_name];
+    async createUser(user_id, display_name, image_url) {
+        const sql = 'INSERT INTO User (user_id, display_name, image_url) VALUES (?, ?, ?)';
+        const values = [user_id, display_name, image_url];
         return this.database.query(sql, values);
     };
 

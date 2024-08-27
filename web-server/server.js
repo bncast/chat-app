@@ -90,6 +90,7 @@ app.get('/api/invites', (req, res) => invitationController.getAll(req, res));
 app.post('/api/invites', (req, res) => invitationController.send(req, res));
 app.post('/api/invites/accept', (req, res) => invitationController.accept(req, res));
 
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 process.on('SIGINT', async () => {
   try {
@@ -101,6 +102,7 @@ process.on('SIGINT', async () => {
       process.exit();
   }
 });
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
