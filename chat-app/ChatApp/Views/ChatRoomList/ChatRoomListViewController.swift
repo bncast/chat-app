@@ -82,7 +82,7 @@ class ChatRoomListViewController: BaseViewController {
         Task {
             if !AppConstant.shared.isNewUser {
                 await IndicatorController.shared.show()
-                await viewModel.load()
+                await load()
                 await IndicatorController.shared.dismiss()
             }
         }
@@ -108,7 +108,7 @@ class ChatRoomListViewController: BaseViewController {
         Task {
             await showProfile()
             await IndicatorController.shared.show()
-            await viewModel.load()
+            await load()
             await IndicatorController.shared.dismiss()
         }
     }
@@ -159,7 +159,12 @@ class ChatRoomListViewController: BaseViewController {
 
         composeButton.tapHandlerAsync = { [weak self] _ in
             guard let self else { return }
-            CreateChatRoomViewController.show(on: self)
+
+            guard await CreateChatRoomViewController.show(on: self) else { return }
+
+            await IndicatorController.shared.show()
+            await load()
+            await IndicatorController.shared.dismiss()
         }
 
         refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
@@ -170,9 +175,15 @@ class ChatRoomListViewController: BaseViewController {
     @objc
     private func didPullToRefresh(_ sender: UIRefreshControl) {
         if !AppConstant.shared.isNewUser {
-            Task { await viewModel.load() }
+            searchBarView.setInitTerm("")
+            Task { await load() }
         }
         refreshControl.endRefreshing()
+    }
+
+    func load() async {
+        searchBarView.setInitTerm("")
+        await viewModel.load()
     }
 
     func showProfile() async {
@@ -301,6 +312,7 @@ extension ChatRoomListViewController {
                     let _ = try await viewModel.joinChatRoom(
                         roomId: item.roomId, deviceId: deviceId, password: password
                     )
+                    await load()
                     await IndicatorController.shared.dismiss()
                     print("[ChatRoomListViewController] Show Messages from Room (\(item.roomId))")
                 } catch {
