@@ -46,7 +46,7 @@ class ChatRoomListCollectionViewCell: BaseCollectionViewCell {
     private lazy var nameTextLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .left
-        view.font = .title2
+        view.font = .body
         view.textColor = .black
         view.lineBreakMode = .byCharWrapping
         return view

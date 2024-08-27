@@ -59,7 +59,7 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
     private lazy var contentLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .left
-        view.font = .title2
+        view.font = .body
         view.textColor = .black
         view.lineBreakMode = .byCharWrapping
         return view
@@ -79,7 +79,7 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
         let view = UILabel()
         view.textAlignment = .left
         view.font = .caption
-        view.textColor = .text(.title)
+        view.textColor = .textColor(.title)
         view.lineBreakMode = .byTruncatingTail
         return view
     }()

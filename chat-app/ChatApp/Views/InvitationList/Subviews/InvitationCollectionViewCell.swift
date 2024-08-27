@@ -11,8 +11,8 @@ import SuperEasyLayout
 class InvitationCollectionViewCell: BaseCollectionViewCell {
     private lazy var chatRoomNameLabel: UILabel = {
         let view = UILabel()
-        view.font = .title3
-        view.textColor = .text(.title)
+        view.font = .caption
+        view.textColor = .text
         view.lineBreakMode = .byWordWrapping
         view.numberOfLines = 2
         return view
@@ -20,8 +20,8 @@ class InvitationCollectionViewCell: BaseCollectionViewCell {
 
     private lazy var joinButton: BaseButton = {
         let view = BaseButton()
-        view.titleLabel?.textColor = .text(.caption)
-        view.titleLabel?.font = .title3
+        view.titleLabel?.textColor = .text
+        view.titleLabel?.font = .body
         view.layer.cornerRadius = 8
         view.backgroundColor = .button(.active)
         view.setTitle("JOIN", for: .normal)

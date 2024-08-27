@@ -13,7 +13,7 @@ class CreateChatRoomViewController: BaseViewController {
     private lazy var closeButton: BaseButton = {
         let view = BaseButton()
         view.setImage(UIImage(systemName: "xmark"),for: .normal)
-        view.tintColor = .text(.caption)
+        view.tintColor = .subtext
         return view
     }()
 
@@ -29,7 +29,7 @@ class CreateChatRoomViewController: BaseViewController {
     private lazy var titleTextLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
-        view.font = .titleBold
+        view.font = .title
         view.textColor = .black
         view.lineBreakMode = .byCharWrapping
         view.text = "New Chat Room"
@@ -39,7 +39,7 @@ class CreateChatRoomViewController: BaseViewController {
     private lazy var roomTextLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .left
-        view.font = .body2
+        view.font = .body
         view.textColor = .black
         view.lineBreakMode = .byCharWrapping
         view.text = "Room Name"
@@ -55,7 +55,7 @@ class CreateChatRoomViewController: BaseViewController {
     private lazy var passwordTextLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .left
-        view.font = .body2
+        view.font = .body
         view.textColor = .black
         view.lineBreakMode = .byCharWrapping
         view.text = "Password (optional)"
@@ -73,8 +73,8 @@ class CreateChatRoomViewController: BaseViewController {
         let view = BaseButton()
         view.backgroundColor = .button(.inactive)
         view.setTitle("CREATE", for: .normal)
-        view.titleLabel?.textColor = .text(.caption)
-        view.titleLabel?.font = .title3
+        view.titleLabel?.textColor = .subtext
+        view.titleLabel?.font = .caption
         view.layer.cornerRadius = 8
         return view
     }()
@@ -83,8 +83,8 @@ class CreateChatRoomViewController: BaseViewController {
         let view = BaseButton()
         view.backgroundColor = .button(.active)
         view.setTitle("CANCEL", for: .normal)
-        view.titleLabel?.textColor = .text(.caption)
-        view.titleLabel?.font = .title3
+        view.titleLabel?.textColor = .subtext
+        view.titleLabel?.font = .caption
         view.layer.cornerRadius = 8
         return view
     }()

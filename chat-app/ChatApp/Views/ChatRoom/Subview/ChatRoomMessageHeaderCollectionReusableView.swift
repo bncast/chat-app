@@ -11,8 +11,8 @@ import SuperEasyLayout
 class ChatRoomMessageHeaderCollectionReusableView: BaseCollectionReusableView {
     private lazy var titleLabel: UILabel = {
         let view = UILabel()
-        view.font = .callout
-        view.textColor = .text(.title)
+        view.font = .body
+        view.textColor = .text
         return view
     }()
 

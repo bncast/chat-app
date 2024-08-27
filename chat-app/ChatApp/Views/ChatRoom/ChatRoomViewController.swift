@@ -47,22 +47,22 @@ class ChatRoomViewController: BaseViewController {
 
     private lazy var replyingToLabel: UILabel = {
         let view = UILabel()
-        view.font = .subhead
-        view.textColor = .text(.caption)
+        view.font = .caption
+        view.textColor = .text
         return view
     }()
 
     private lazy var messageReplyingToLabel: UILabel = {
         let view = UILabel()
-        view.font = .callout
-        view.textColor = .text(.caption)
+        view.font = .body
+        view.textColor = .text
         return view
     }()
 
     private lazy var closeReplyingToButton: BaseButton = {
         let view = BaseButton()
         view.setImage(UIImage(systemName: "xmark"),for: .normal)
-        view.tintColor = .text(.caption)
+        view.tintColor = .text
         return view
     }()
 

@@ -35,7 +35,7 @@ class SearchBarView: BaseView {
     private lazy var searchTextField: BaseTextField = {
         let view = BaseTextField()
 
-        view.placeholderFont = .body2
+        view.placeholderFont = .caption
         view.placeholderColor = .black
         view.placeholder = "Search by name"
 
@@ -68,7 +68,7 @@ class SearchBarView: BaseView {
         view.numberOfLines = 0
         view.lineBreakMode = .byCharWrapping
         view.attributedText = "Error"
-            .getAttributedString(with: .callout, color: .red)
+            .getAttributedString(with: .caption, color: .red)
             .setParagraphStyle(NSMutableParagraphStyle().setLineSpacing(5))
             .insertImage(image, origin: CGPoint(x: 0, y: -5))
         view.isHidden = true
