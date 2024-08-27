@@ -113,9 +113,8 @@ class ChatRoomViewController: BaseViewController {
     // MARK: - Setups
 
     override func setupNavigation() {
-        title = viewModel.details?.name
-
         setNavigationBarDefaultStyle()
+        navigationBar?.title = viewModel.details?.name ?? ""
     }
 
     override func setupLayout() {

@@ -54,6 +54,10 @@ class ChatRoomDetailsViewController: BaseViewController {
         return view
     }()
 
+    private var navigationBar: ChatRoomListNavigationBar? {
+        navigationController?.navigationBar as? ChatRoomListNavigationBar
+    }
+    
     private typealias ItemInfo = ChatRoomDetailsViewModel.ItemInfo
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Int, ItemInfo>
     private typealias DataSource = UICollectionViewDiffableDataSource<Int, ItemInfo>
@@ -62,11 +66,15 @@ class ChatRoomDetailsViewController: BaseViewController {
     private let viewModel = ChatRoomDetailsViewModel()
     private var continuation: CheckedContinuation<Bool, Never>?
 
+    // MARK: - View Lifecycle
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        navigationBar?.showCloseButtonOnly = true
         viewModel.load()
     }
+
+    // MARK: - Setups
 
     override func setupLayout() {
         view.backgroundColor = .background(.main)
