@@ -38,10 +38,10 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         let configuration = UIImage.SymbolConfiguration(pointSize: 30)
         let image = UIImage(systemName: "envelope", withConfiguration: configuration)?
             .withRenderingMode(.alwaysTemplate)
-        let view = BaseButton()
+
+        let view = BaseButton(image: image)
         view.tintColor = .background(.mainLight)
-        view.setImage(image, for: .normal)
-        view.layer.cornerRadius = 4
+        view.setBackgroundColor(.clear, for: .normal)
         return view
     }()
 
@@ -49,9 +49,10 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         let configuration = UIImage.SymbolConfiguration(pointSize: 30)
         let image = UIImage(systemName: "info.circle", withConfiguration: configuration)?
             .withRenderingMode(.alwaysTemplate)
-        let view = BaseButton()
-        view.setImage(image, for: .normal)
-        view.layer.cornerRadius = 4
+
+        let view = BaseButton(image: image)
+        view.tintColor = .background(.mainLight)
+        view.setBackgroundColor(.clear, for: .normal)
         return view
     }()
 

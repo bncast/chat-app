@@ -114,6 +114,8 @@ class ChatRoomViewController: BaseViewController {
 
     override func setupNavigation() {
         guard let details = viewModel.details else { return }
+
+        setNavigationBarDefaultStyle()
         navigationBar?.title = details.name
     }
 
@@ -226,7 +228,11 @@ class ChatRoomViewController: BaseViewController {
             self.view.layoutIfNeeded()
         }
     }
+}
 
+// MARK: - Navigation
+
+extension ChatRoomViewController {
     static func push(on parentViewController: UIViewController, using details: ChatInfo) {
         let viewController = Self()
         viewController.viewModel.details = details
@@ -234,9 +240,9 @@ class ChatRoomViewController: BaseViewController {
             navigationController.pushViewController(viewController, animated: true)
         }
     }
-
-    
 }
+
+// MARK: - Collection Layout
 
 extension ChatRoomViewController {
     private func getSectionLayout() -> NSCollectionLayoutSection {
