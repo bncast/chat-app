@@ -53,7 +53,7 @@ class ChatRoomDetailsViewController: BaseViewController {
     private var dataSource: DataSource?
 
     private let viewModel = ChatRoomDetailsViewModel()
-    private var continuation: CheckedContinuation<Bool, Never>?
+    private var continuation: CheckedContinuation<(Bool, String?), Never>?
 
     // MARK: - View Lifecycle
 
@@ -71,7 +71,7 @@ class ChatRoomDetailsViewController: BaseViewController {
     }
 
     override func setupLayout() {
-        view.backgroundColor = .background(.mainLight)
+        view.backgroundColor = .white
 
         addSubviews([
             collectionView,
@@ -79,12 +79,17 @@ class ChatRoomDetailsViewController: BaseViewController {
             deleteRoomButton
         ])
     }
+    var constraintBottomToButton: NSLayoutConstraint?
+    var constraintBottomToParent: NSLayoutConstraint?
 
     override func setupConstraints() {
         collectionView.left == view.left
         collectionView.right == view.right
         collectionView.top == view.top + 20
-        collectionView.bottom == inviteButton.top - 20
+        constraintBottomToButton = collectionView.bottom == inviteButton.top - 20
+        constraintBottomToParent = collectionView.bottom == view.bottomMargin - 20
+
+        constraintBottomToParent?.isActive = false
 
         inviteButton.left == view.left + 20
         inviteButton.right == view.right - 20
@@ -104,20 +109,34 @@ class ChatRoomDetailsViewController: BaseViewController {
                 self?.apply(items)
             }
             .store(in: &cancellables)
+        viewModel.$isAdmin
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isAdmin in
+                self?.deleteRoomButton.isHidden = !isAdmin
+                self?.inviteButton.isHidden = !isAdmin
+                self?.constraintBottomToButton?.isActive = isAdmin
+                self?.constraintBottomToParent?.isActive = !isAdmin
+            }
+            .store(in: &cancellables)
     }
 
     override func setupActions() {
         navigationBar?.closeTapHandler = { [weak self] _ in
-            self?.dismiss(animated: true)
+            self?.dismiss(animated: true) { [weak self] in
+                self?.continuation?.resume(returning: (false, self?.viewModel.updatedName))
+            }
         }
+
         inviteButton.tapHandlerAsync = { [weak self] _ in
             guard let self, let roomId = viewModel.details?.roomId else { return }
             
             UserListViewController.show(on: self, roomId: roomId)
         }
+
         deleteRoomButton.tapHandlerAsync = { [weak self] _ in
             guard let self,
-                  let isDeleteChatRoom = await showChatRoomDeleteAlert(in: self),
+                  let chatName = viewModel.details?.name,
+                  let isDeleteChatRoom = await showChatRoomDeleteAlert(in: self, chatName: chatName),
                   let roomUserId = viewModel.details?.currentRoomUserId,
                   isDeleteChatRoom
             else { return }
@@ -127,11 +146,11 @@ class ChatRoomDetailsViewController: BaseViewController {
                 try await viewModel.removeChatRoom(roomUserId: roomUserId)
                 await IndicatorController.shared.dismiss()
                 dismiss(animated: true)
-                continuation?.resume(returning: isDeleteChatRoom)
+                continuation?.resume(returning: (isDeleteChatRoom, nil))
             } catch {
                 print("[ChatRoomDetailsViewController] Error! \(error as! NetworkError)")
                 await IndicatorController.shared.dismiss()
-                continuation?.resume(returning: false)
+                continuation?.resume(returning: (false, nil))
             }
         }
     }
@@ -139,21 +158,21 @@ class ChatRoomDetailsViewController: BaseViewController {
     @MainActor
     private func showChatRoomEditNameAlert(in viewController: UIViewController, currentName: String) async -> String? {
         return await AsyncInputAlertController<String>(
-            title: "CHAT ROOM",
-            message: "Edit chatroom name.",
+            title: "Change name for \(currentName)",
+            message: "Enter new chat room name.",
             name: currentName
         )
-        .addButton(title: "Ok")
+        .addButton(title: "OK")
         .register(in: viewController)
     }
 
     @MainActor
-    private func showChatRoomDeleteAlert(in viewController: UIViewController) async -> Bool? {
+    private func showChatRoomDeleteAlert(in viewController: UIViewController, chatName: String) async -> Bool? {
         return await AsyncAlertController<Bool>(
-            title: "CHAT ROOM",
-            message: "Delete this chat room?"
+            title: "Delete confirmation",
+            message: "Are you sure you want to delete the chat room \(chatName) and all it's messages?"
         )
-        .addButton(title: "Ok", returnValue: true)
+        .addButton(title: "Yes, I want to delete this chat room", style: .destructive, returnValue: true)
         .addButton(title: "Cancel", returnValue: false)
         .register(in: viewController)
     }
@@ -162,7 +181,7 @@ class ChatRoomDetailsViewController: BaseViewController {
 // MARK: - Navigation
 
 extension ChatRoomDetailsViewController {
-    static func show(on parentViewController: UIViewController, using details: ChatInfo) async -> Bool {
+    static func show(on parentViewController: UIViewController, using details: ChatInfo) async -> (Bool, String?) {
         return await withCheckedContinuation { continuation in
             let viewController = Self()
             viewController.viewModel.details = details
@@ -263,27 +282,30 @@ extension ChatRoomDetailsViewController {
     private func getHeader(at indexPath: IndexPath) -> MemberHeaderCollectionReusableView {
         let view = MemberHeaderCollectionReusableView.dequeueView(from: collectionView, for: indexPath)
 
-        view.title = "Chat Room"
+        view.title = viewModel.details?.name
         view.imageUrlString = viewModel.getRoomImageUrlString()
+        view.isAdmin = viewModel.isAdmin
         view.editHandler = { [weak self] currentName in
-            guard let self, let updatedChatroomName = await self.showChatRoomEditNameAlert(in: self, currentName: currentName) else { return "" }
-            
-            return updatedChatroomName
-        }
-        view.editNameInServerHandler = { [weak self] updatedTitle in
-            guard let self else { return "" }
+            guard let self, viewModel.isAdmin,
+                  let roomUserId = self.viewModel.details?.currentRoomUserId,
+                  let currentName,
+                  let updatedName = await self.showChatRoomEditNameAlert(in: self, currentName: currentName)
+            else { return nil }
 
             do {
                 await IndicatorController.shared.show()
-                try await viewModel.updateChatRoomNameInServer(name: updatedTitle)
+                try await viewModel.updateChatRoomNameInServer(name: updatedName, roomUserId: roomUserId)
                 await IndicatorController.shared.dismiss()
-                return updatedTitle
+
+                viewModel.updatedName = updatedName
+                return updatedName
             } catch {
                 print("[ChatRoomDetailsViewController] Error in ChatRoom change name! \(error as! NetworkError)")
                 await IndicatorController.shared.dismiss()
-                return ""
+                return nil
             }
         }
+
         return view
     }
 
@@ -293,6 +315,7 @@ extension ChatRoomDetailsViewController {
         cell.roomUserId = item.id
         cell.name = item.name
         cell.isAdmin = item.isAdmin
+        cell.currentUserIsAdmin = viewModel.isAdmin
         cell.setIsAdminInServerHandler = { [weak self] isAdmin in
             guard let self else { return !isAdmin }
             do {

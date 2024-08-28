@@ -193,10 +193,10 @@ class ChatRoomListViewController: BaseViewController {
     }
 
     @MainActor
-    private func showChatRoomPasswordAlert(in viewController: UIViewController) async -> String? {
+    private func showChatRoomPasswordAlert(in viewController: UIViewController, chatName: String) async -> String? {
         return await AsyncInputAlertController<String>(
-            title: "CHAT ROOM",
-            message: "Password required."
+            title: "\(chatName) requires a password",
+            message: "Please enter the password."
         )
         .addButton(title: "Ok")
         .register(in: viewController)
@@ -298,7 +298,7 @@ extension ChatRoomListViewController {
     private func getRoomCell(at indexPath: IndexPath, item: ItemInfo) -> ChatRoomListCollectionViewCell {
         let cell = ChatRoomListCollectionViewCell.dequeueCell(from: collectionView, for: indexPath)
         cell.name = item.name
-        cell.preview = item.hasPassword ? "[Private Chat - Password Protected]" : item.preview
+        cell.preview = item.hasPassword ? "Private Chat - Password Protected" : item.preview
         cell.imageUrlString = item.imageUrlString
         cell.tapHandlerAsync = { [weak self] _ in
             guard let self, let deviceId = AppConstant.shared.deviceId else { return }
@@ -307,7 +307,7 @@ extension ChatRoomListViewController {
 
                 var password: String?
                 if item.hasPassword {
-                    password = await showChatRoomPasswordAlert(in: self)
+                    password = await showChatRoomPasswordAlert(in: self, chatName: item.name)
                 }
                 do {
                     await IndicatorController.shared.show()

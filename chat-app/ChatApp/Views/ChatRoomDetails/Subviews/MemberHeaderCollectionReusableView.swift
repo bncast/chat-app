@@ -20,8 +20,6 @@ class MemberHeaderCollectionReusableView: BaseCollectionReusableView {
 
     private lazy var titleTapView: BaseView = BaseView()
 
-    private lazy var tapRecognizer: BaseTapGestureRecognizer = BaseTapGestureRecognizer(on: titleTapView)
-
     private lazy var titleLabel: UILabel = {
         let view = UILabel()
         view.font = .title
@@ -54,8 +52,10 @@ class MemberHeaderCollectionReusableView: BaseCollectionReusableView {
         }
     }
 
-    var editHandler: ((String) async -> String)?
-    var editNameInServerHandler: ((String) async -> String?)?
+    var editHandler: ((String?) async -> String?)?
+    var isAdmin: Bool = false { didSet {
+        titleEditImageView.isHidden = !isAdmin
+    } }
 
     override func setupLayout() {
         addSubviews([
@@ -90,15 +90,10 @@ class MemberHeaderCollectionReusableView: BaseCollectionReusableView {
     }
 
     override func setupActions() {
-        tapRecognizer.tapHandlerAsync = { [weak self] _ in
-            guard let self, let editHandler, let currentTitle = title else { return }
+        BaseTapGestureRecognizer(on: titleTapView).tapHandlerAsync = { [weak self] _ in
+            guard let newTitle = await self?.editHandler?(self?.title) else { return }
 
-            let newTitle = await editHandler(currentTitle)
-            guard newTitle != title, !newTitle.isEmpty,
-                  let editNameInServerHandler,
-                  let titleFromServer = await editNameInServerHandler(newTitle) else { return }
-
-            title = titleFromServer
+            self?.title = newTitle
         }
     }
 }
