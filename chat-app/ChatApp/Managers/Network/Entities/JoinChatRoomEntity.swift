@@ -40,5 +40,5 @@ struct JoinChatRoomRespondableEntity: RespondableApiEntity {
 
     var success: Int
     var error: ErrorMessage?
-    var chatroom: ChatRoomEntity?
+    var chatRoom: ChatRoomEntity?
 }

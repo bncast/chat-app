@@ -62,7 +62,7 @@ final class InvitationListViewModel {
         guard let deviceId = AppConstant.shared.deviceId else { return nil }
         do {
             guard let result = try await AcceptInvitationEntity(deviceId: deviceId,
-                                                                roomId: roomId).run().chatroom
+                                                                roomId: roomId).run().chatRoom
             else { return nil}
 
             return ChatInfo(name: result.chatName,

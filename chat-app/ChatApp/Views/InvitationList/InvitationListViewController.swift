@@ -42,6 +42,7 @@ class InvitationListViewController: BaseViewController {
     private var dataSource: DataSource?
 
     private let viewModel = InvitationListViewModel()
+    var continuation: CheckedContinuation<ChatInfo?, Never>?
 
     // MARK: - View Lifecycle
 
@@ -95,7 +96,9 @@ class InvitationListViewController: BaseViewController {
 
     override func setupActions() {
         navigationBar?.closeTapHandler = { [weak self] _ in
-            self?.dismiss(animated: true)
+            self?.dismiss(animated: true) { [weak self] in
+                self?.continuation?.resume(returning: nil)
+            }
         }
     }
 }
@@ -103,16 +106,19 @@ class InvitationListViewController: BaseViewController {
 // MARK: - Navigation
 
 extension InvitationListViewController {
-    static func show(on parentViewController: UIViewController) {
-        let viewController = Self()
+    static func show(on parentViewController: UIViewController) async -> ChatInfo? {
+        await withCheckedContinuation { continuation in
+            let navController = UINavigationController(navigationBarClass: ChatRoomListNavigationBar.self,
+                                                       toolbarClass: nil)
+            let viewController = Self()
+            viewController.continuation = continuation
 
-        let navController = UINavigationController(navigationBarClass: ChatRoomListNavigationBar.self,
-                                                   toolbarClass: nil)
-        navController.viewControllers = [viewController]
-        navController.modalPresentationStyle = .overFullScreen
-        navController.transitioningDelegate = viewController.fadeInAnimator
+            navController.viewControllers = [viewController]
+            navController.modalPresentationStyle = .overFullScreen
+            navController.transitioningDelegate = viewController.fadeInAnimator
 
-        parentViewController.present(navController, animated: true)
+            parentViewController.present(navController, animated: true)
+        }
     }
 }
 
@@ -179,7 +185,9 @@ extension InvitationListViewController {
                 await IndicatorController.shared.show()
                 let chatInfo = await self?.viewModel.join(roomId: item.id)
                 await IndicatorController.shared.dismiss()
-                self?.dismiss(animated: true) //TODO: Redirect to chat room
+
+                self?.continuation?.resume(returning: chatInfo)
+                self?.dismiss(animated: true) 
             } catch {
                 print("[UserListViewController] Error! \(error as! NetworkError)")
                 await IndicatorController.shared.dismiss()

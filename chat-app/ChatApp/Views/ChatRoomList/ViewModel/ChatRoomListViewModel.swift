@@ -108,7 +108,7 @@ final class ChatRoomListViewModel {
     func joinChatRoom(roomId: Int, deviceId: String, password: String?) async throws -> ChatRoomEntity? {
         guard let chatRoom = try await JoinChatRoomEntity(
             roomId: roomId, deviceId: deviceId, password: password
-        ).run().chatroom else { return nil }
+        ).run().chatRoom else { return nil }
 
         return chatRoom
     }

@@ -150,7 +150,12 @@ class ChatRoomListViewController: BaseViewController {
         navigationBar?.invitationTapHandler = { [weak self] _ in
             guard let self else { return }
 
-            InvitationListViewController.show(on: self)
+            Task { [weak self] in
+                guard let self, let info = await InvitationListViewController.show(on: self) else { return }
+
+                ChatRoomViewController.push(on: self, using: info)
+
+            }
         }
         navigationBar?.profileTapHandlerAsync = { [weak self] _ in
             guard let self else { return }
@@ -161,11 +166,12 @@ class ChatRoomListViewController: BaseViewController {
         composeButton.tapHandlerAsync = { [weak self] _ in
             guard let self else { return }
 
-            guard await CreateChatRoomViewController.show(on: self) else { return }
-
             await IndicatorController.shared.show()
             await load()
             await IndicatorController.shared.dismiss()
+
+            guard let info = await CreateChatRoomViewController.show(on: self) else { return }
+            ChatRoomViewController.push(on: self, using: info)
         }
 
         refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)

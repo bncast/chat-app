@@ -99,7 +99,7 @@ class CreateChatRoomViewController: BaseViewController {
         return view
     }()
 
-    var continuation: CheckedContinuation<Bool, Never>?
+    var continuation: CheckedContinuation<ChatInfo?, Never>?
     let viewModel = CreateChatRoomViewModel()
 
     // MARK: - View Lifecycle
@@ -190,14 +190,23 @@ class CreateChatRoomViewController: BaseViewController {
             await IndicatorController.shared.show()
             do {
                 await IndicatorController.shared.show()
-                let _ = try await viewModel.createChatRoom(
+                let result = try await viewModel.createChatRoom(
                     name: roomName, deviceId: deviceId,
                     password: password.isEmpty ? nil : password
                 )
                 await IndicatorController.shared.dismiss()
 
+                guard let result else { return }
+                let chatRoom = ChatInfo(
+                    name: result.chatName,
+                    roomId: result.roomId,
+                    currentRoomUserId: result.currentRoomUserId,
+                    imageUrlString: result.chatImageUrl,
+                    memberDetails: result.memberDetails.map {
+                        MemberInfo(name: $0.name, isAdmin: $0.isAdmin, roomUserId: $0.roomUserId)
+                    })
                 self.dismiss(animated: true) { [weak self] in
-                    self?.continuation?.resume(returning: true)
+                    self?.continuation?.resume(returning: chatRoom)
                 }
             } catch {
                 print("[CreateChatRoomViewController] Error! \(error as! NetworkError)")
@@ -207,7 +216,7 @@ class CreateChatRoomViewController: BaseViewController {
 
         cancelButton.tapHandler = { [weak self] _ in
             self?.dismiss(animated: true) { [weak self] in
-                self?.continuation?.resume(returning: false)
+                self?.continuation?.resume(returning: nil)
             }
         }
     }
@@ -215,7 +224,7 @@ class CreateChatRoomViewController: BaseViewController {
 
 // MARK: - Navigation
 extension CreateChatRoomViewController {
-    static func show(on parentViewController: UIViewController) async -> Bool {
+    static func show(on parentViewController: UIViewController) async -> ChatInfo? {
         await withCheckedContinuation { continuation in
             let viewController = CreateChatRoomViewController()
             viewController.continuation = continuation
