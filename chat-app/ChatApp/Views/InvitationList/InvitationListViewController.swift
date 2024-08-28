@@ -12,7 +12,11 @@ class InvitationListViewController: BaseViewController {
     private lazy var layout: UICollectionViewCompositionalLayout = {
         UICollectionViewCompositionalLayout { [weak self] index, _ in
             guard let self, let sections = dataSource?.snapshot().sectionIdentifiers else { fatalError() }
-            return getSectionLayout()
+
+            switch sections[index] {
+            case .list: return getListSectionLayout()
+            case .whole: return getWholeSectionLayout()
+            }
         }
     }()
 
@@ -21,6 +25,7 @@ class InvitationListViewController: BaseViewController {
         view.backgroundView = nil
         view.backgroundColor = .white
 
+        NoDataCollectionViewCell.registerCell(to: view)
         InvitationCollectionViewCell.registerCell(to: view)
         return view
     }()
@@ -29,9 +34,11 @@ class InvitationListViewController: BaseViewController {
         navigationController?.navigationBar as? ChatRoomListNavigationBar
     }
 
+    private typealias Section = InvitationListViewModel.Section
+    private typealias Item = InvitationListViewModel.Item
     private typealias ItemInfo = InvitationListViewModel.ItemInfo
-    private typealias Snapshot = NSDiffableDataSourceSnapshot<Int, ItemInfo>
-    private typealias DataSource = UICollectionViewDiffableDataSource<Int, ItemInfo>
+    private typealias DataSource = UICollectionViewDiffableDataSource<Section, Item>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Item>
     private var dataSource: DataSource?
 
     private let viewModel = InvitationListViewModel()
@@ -112,33 +119,49 @@ extension InvitationListViewController {
 // MARK: - Collection Layout
 
 extension InvitationListViewController {
-    private func getSectionLayout() -> NSCollectionLayoutSection {
+    private func getListSectionLayout() -> NSCollectionLayoutSection {
         let unitSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(84))
         let item = NSCollectionLayoutItem(layoutSize: unitSize)
         let group = NSCollectionLayoutGroup.vertical(layoutSize: unitSize, subitems: [item])
         return NSCollectionLayoutSection(group: group)
+    }
+
+    private func getWholeSectionLayout() -> NSCollectionLayoutSection {
+        let unitSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: unitSize)
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: unitSize, subitems: [item])
+        let section = NSCollectionLayoutSection(group: group)
+        return section
     }
 }
 
 // MARK: - Set View Based on Data
 
 extension InvitationListViewController {
-    private func apply(_ items: [ItemInfo]) {
+    private func apply(_ items: [Section: [Item]]) {
         guard !items.isEmpty else { return }
 
         var snapshot = Snapshot()
-        snapshot.appendSections([0])
+        snapshot.appendSections(items.keys.sorted())
 
-        snapshot.appendItems(items)
+        for (section, subitems) in items {
+            snapshot.appendItems(subitems, toSection: section)
+        }
 
         if let dataSource {
             dataSource.apply(snapshot, animatingDifferences: true)
         } else {
             dataSource = DataSource(
                 collectionView: collectionView,
-                cellProvider: { [weak self] collectionView, indexPath, info in
-                    self?.getInvitationCell(at: indexPath, item: info)
+                cellProvider: { [weak self] collectionView, indexPath, itemIdentifier in
+                    switch itemIdentifier {
+                    case .invitation(let info): self?.getInvitationCell(at: indexPath, item: info)
+                    case .noData: self?.getNoDataCell(at: indexPath)
+                    }
                 })
+
             if #available(iOS 15.0, *) {
                 dataSource?.applySnapshotUsingReloadData(snapshot)
             } else {
@@ -164,5 +187,9 @@ extension InvitationListViewController {
         }
 
         return cell
+    }
+
+    private func getNoDataCell(at indexPath: IndexPath) -> NoDataCollectionViewCell {
+        NoDataCollectionViewCell.dequeueCell(from: collectionView, for: indexPath)
     }
 }

@@ -8,6 +8,20 @@
 import Foundation
 
 final class InvitationListViewModel {
+    enum Section: Int, Hashable, Comparable  {
+        static func < (lhs: Self, rhs: Self) -> Bool {
+            lhs.rawValue < rhs.rawValue
+        }
+
+        case list
+        case whole
+    }
+
+    enum Item: Hashable {
+        case noData
+        case invitation(ItemInfo)
+    }
+
     struct ItemInfo: Hashable, Codable {
         var id: Int
         var chatRoomName: String
@@ -24,13 +38,24 @@ final class InvitationListViewModel {
         }
     }
 
-    @Published var items: [ItemInfo] = [ItemInfo]()
+    @Published var items: [Section: [Item]] = [:]
 
     func load() async throws {
         let invitations = try await GetInvitationsListEntity().run().invitations
-        items = invitations.compactMap({ invitation in
-            ItemInfo(id: invitation.roomId, chatRoomName: "\(invitation.inviterName) invited you to join \(invitation.chatName)", isInvited: true)
-        })
+        if invitations.isEmpty {
+            items = [.whole: [.noData]]
+            return
+        }
+
+        items = [
+            .list: invitations.compactMap({ invitation in
+                .invitation(
+                    ItemInfo(id: invitation.roomId,
+                             chatRoomName: "\(invitation.inviterName) invited you to join \(invitation.chatName)",
+                             isInvited: true)
+                )
+            })
+        ]
     }
 
     func join(roomId: Int) async -> ChatInfo? {
@@ -40,7 +65,6 @@ final class InvitationListViewModel {
                                                                 roomId: roomId).run().chatroom
             else { return nil}
 
-
             return ChatInfo(name: result.chatName,
                             roomId: roomId,
                             currentRoomUserId: result.currentRoomUserId,
@@ -49,7 +73,7 @@ final class InvitationListViewModel {
                                 MemberInfo(name: $0.name, isAdmin: $0.isAdmin, roomUserId: $0.roomUserId)
                             })
         } catch {
-            print(error)
+            print("[InvitationListViewModel] Error! \(error as! NetworkError)")
             return nil
         }
     }

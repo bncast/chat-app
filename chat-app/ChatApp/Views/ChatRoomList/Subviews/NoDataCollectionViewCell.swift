@@ -13,7 +13,10 @@ class NoDataCollectionViewCell: BaseCollectionViewCell {
 
     private lazy var imageView: UIImageView = {
         let configuration = UIImage.SymbolConfiguration(pointSize: 100)
-        let image = UIImage(systemName: "questionmark.diamond", withConfiguration: configuration)?.withRenderingMode(.alwaysTemplate)
+        let image = UIImage(
+            systemName: "questionmark.diamond", withConfiguration: configuration
+        )?.withRenderingMode(.alwaysTemplate)
+
         let view = UIImageView(image: image)
         view.contentMode = .scaleAspectFill
         view.tintColor = .background(.accent)
@@ -27,7 +30,7 @@ class NoDataCollectionViewCell: BaseCollectionViewCell {
         view.numberOfLines = 0
         view.lineBreakMode = .byCharWrapping
         view.text = "No Data"
-        view.textColor = .black
+        view.textColor = .textColor(.title)
         return view
     }()
 
