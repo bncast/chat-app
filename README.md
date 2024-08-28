@@ -45,8 +45,8 @@
 
 - NodeJS + ExpressJS
 - NPM
-- MySQL
-- MYSQL Workbench
+- [MySQL Community Server](https://dev.mysql.com/downloads/mysql/)
+- [MYSQL Workbench](https://dev.mysql.com/downloads/workbench/)
 
 ## Screenshots
 
