@@ -235,4 +235,9 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
             profileTapHandler?(imageView)
         }
     }
+
+    func loadProfileButtonImage() {
+        guard let urlString = AppConstant.shared.currentUserImageUrlString else { return }
+        profileImageView.setImage(from: urlString)
+    }
 }
