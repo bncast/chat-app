@@ -36,7 +36,10 @@
 - User Defaults
 - Package Dependencies
 	- [SuperEasyLayout](https://github.com/doil6317/SuperEasyLayout) - apply UI constraints programmatically
-
+	- [KeychainAccess](https://github.com/kishikawakatsumi/KeychainAccess.git) - wrapper for Keychain that works on iOS and macOS
+	- [Lottie](https://github.com/airbnb/lottie-ios.git) - loads and renders animations and vectors exported in the bodymovin JSON format
+	- [SwipeCellKit](https://github.com/SwipeCellKit/SwipeCellKit.git) - apply swipe actions to cell
+	- [Kingfisher](https://github.com/onevcat/Kingfisher.git) - downloading and caching images from the web
 
 ### BACKEND
 
