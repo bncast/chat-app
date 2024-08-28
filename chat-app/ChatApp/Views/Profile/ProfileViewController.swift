@@ -56,6 +56,12 @@ class ProfileViewController: BaseViewController {
         return view
     }()
 
+    private lazy var verticalStackView: UIStackView = {
+        let view = UIStackView()
+        view.axis = .vertical
+        view.spacing = 10
+        return view
+    }()
     private lazy var saveButton: BaseButton = {
         let view = BaseButton()
         view.text = "SAVE"
@@ -63,7 +69,6 @@ class ProfileViewController: BaseViewController {
         view.layer.cornerRadius = 8
         return view
     }()
-
     private lazy var cancelButton: BaseButton = {
         let view = BaseButton()
         view.text = "CANCEL"
@@ -86,12 +91,15 @@ class ProfileViewController: BaseViewController {
                 titleLabel,
                 profileImage,
                 nameTextField,
-                saveButton,
-                cancelButton
+                verticalStackView.addArrangedSubviews([
+                    saveButton,
+                    cancelButton
+                ])
             ])
         ])
 
         guard AppConstant.shared.isNewUser else { return }
+        cancelButton.isHidden = true
     }
 
     override func setupConstraints() {
@@ -116,15 +124,12 @@ class ProfileViewController: BaseViewController {
         nameTextField.top == profileImage.bottom + 20
         nameTextField.height == 44
 
-        saveButton.left == containerView.left + 20
-        saveButton.right == containerView.right - 20
-        saveButton.top == nameTextField.bottom + 20
-        saveButton.height == 44
+        verticalStackView.left == containerView.left + 20
+        verticalStackView.right == containerView.right - 20
+        verticalStackView.top == nameTextField.bottom + 20
+        verticalStackView.bottom == containerView.bottom - 20
 
-        cancelButton.left == containerView.left + 20
-        cancelButton.right == containerView.right - 20
-        cancelButton.top == saveButton.bottom + 10
-        cancelButton.bottom == containerView.bottom - 20
+        saveButton.height == 44
         cancelButton.height == 44
     }
 
