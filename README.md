@@ -2,6 +2,25 @@
 
 ## Featured List
 
+- User registration
+- Room / Create room
+- Room / Set room name, add password
+- Room / list
+- Room / joined
+- Room / update name
+- Room / user list
+- Room / latest message preview
+- Room / delete
+- Room / add admin
+- Room / Invite user
+- Room / Remove user
+- List of invitations
+- Message / list
+- Message / Edit
+- Message / Delete
+- Message / Send
+- Message / Reply
+
 ## Project Specifications
 
 - **IDE:** `XCode 15.4 for iOS 17.5`
@@ -10,7 +29,7 @@
 
 ## Technical Implementations
 
-FRONT END
+### FRONT END
 
 - iOS Swift
 - MVVM + Combine
@@ -19,9 +38,10 @@ FRONT END
 	- [SuperEasyLayout](https://github.com/doil6317/SuperEasyLayout) - apply UI constraints programmatically
 
 
-BACKEND
+### BACKEND
 
-- NodeJS
+- NodeJS + ExpressJS
+- NPM
 - MySQL
 - MYSQL Workbench
 
