@@ -38,5 +38,5 @@ struct UpdateChatRoomNameRequestBody: RequestJsonBody {
 struct UpdateChatRoomNameRespondableEntity: RespondableApiEntity {
     var success: Int
     var error: ErrorMessage?
-    var chatrooms: [ChatRoomEntity]
+    var chatrooms: ChatRoomEntity
 }

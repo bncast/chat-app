@@ -25,13 +25,17 @@ final class ChatRoomDetailsViewModel {
     }
 
     @Published var items: [ItemInfo] = [ItemInfo]()
+    @Published var isAdmin: Bool = false
 
     var details: ChatInfo?
     var itemsToLoad: [ItemInfo] = []
+    var updatedName: String?
 
     func load() {
         guard let details else { fatalError() }
-        
+
+        isAdmin = details.memberDetails.first(where: { $0.roomUserId == details.currentRoomUserId })?.isAdmin ?? false
+
         itemsToLoad = details.memberDetails.map { ItemInfo(id: $0.roomUserId, name: $0.name, isAdmin: $0.isAdmin)}
 
         let sortedItems = itemsToLoad.sorted { (item1, item2) -> Bool in
@@ -43,8 +47,8 @@ final class ChatRoomDetailsViewModel {
         items = sortedItems
     }
 
-    func updateChatRoomNameInServer(name: String) async throws {
-        try await UpdateChatRoomNameEntity(name: name, roomUserId: 11106).run()
+    func updateChatRoomNameInServer(name: String, roomUserId: Int) async throws {
+        try await UpdateChatRoomNameEntity(name: name, roomUserId: roomUserId).run()
     }
 
     func removeChatRoom(roomUserId: Int) async throws {

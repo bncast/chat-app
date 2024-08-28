@@ -41,6 +41,16 @@ class MemberWithStatusCollectionViewCell: BaseSwipeCollectionViewCell {
 
     var setIsAdminInServerHandler: ((Bool) async -> Bool?)?
 
+    var currentUserIsAdmin: Bool = false { didSet {
+        adminButton.isEnabled = currentUserIsAdmin
+
+        if currentUserIsAdmin {
+            adminButton.isHidden = false
+        } else {
+            adminButton.isHidden = !(isAdmin ?? true)
+        }
+    } }
+
     override func setupLayout() {
         contentView.addSubviews([
             nameLabel,

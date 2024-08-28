@@ -103,9 +103,10 @@ class RoomUserController {
             let userDisplayName = otherUser.display_name;
 
 
-            let roomResult = await this.roomModel.updateNameById(name, userId, roomId);
-            if (!roomResult) { throw new Error("Failed to create room"); } 
+            let updateRoomResult = await this.roomModel.updateNameById(name, userId, roomId);
+            if (!updateRoomResult) { throw new Error("Failed to create room"); } 
 
+            let roomResult = await this.roomModel.getByIdByPassed(roomId);
             let room = roomResult[0];
             let hasPassword = room.hasPassword != null;
             let newName = room.room_name;
@@ -130,9 +131,9 @@ class RoomUserController {
             }
 
             let response = {
-                chatroom : {
+                chatrooms : {
                     room_id: roomId,
-                    author_id: roomId,
+                    author_id: room.creator_id,
                     author_name: userDisplayName,
                     preview: preview,
                     is_joined: true,

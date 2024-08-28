@@ -200,9 +200,11 @@ class ChatRoomViewController: BaseViewController {
         navigationBar?.moreTapHandlerAsync = { [weak self] _ in
             guard let self, let details = viewModel.details else { return }
 
-            let isRemovedChatRoom = await ChatRoomDetailsViewController.show(on: self, using: details)
+            let (isRemovedChatRoom, newName) = await ChatRoomDetailsViewController.show(on: self, using: details)
             if isRemovedChatRoom {
                 navigationController?.popViewController(animated: true)
+            } else if let newName {
+                navigationBar?.title = newName
             }
         }
 
@@ -410,7 +412,7 @@ extension ChatRoomViewController: UITextViewDelegate {
     }
 
     func getTextViewContentHeight() -> CGFloat {
-        guard let text = textView.text else { return 0 }
+        guard textView.text != nil else { return 0 }
 
         let sizeThatFits = textView.sizeThatFits(CGSize(width: textView.bounds.width, height: .greatestFiniteMagnitude))
 
