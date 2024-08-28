@@ -79,6 +79,7 @@ class ChatRoomListViewController: BaseViewController {
 
         navigationBar?.showChatRoomListButtons = true
         navigationBar?.title = "Chat Rooms"
+        navigationBar?.loadProfileButtonImage()
 
         Task {
             if !AppConstant.shared.isNewUser {
@@ -188,6 +189,7 @@ class ChatRoomListViewController: BaseViewController {
 
     func showProfile() async {
         await ProfileViewController.show(on: self)
+        navigationBar?.loadProfileButtonImage()
     }
 
     @MainActor
@@ -318,6 +320,8 @@ extension ChatRoomListViewController {
                 } catch {
                     print("[ChatRoomListViewController] Error! \(error as! NetworkError)")
                     await IndicatorController.shared.dismiss()
+                    // TODO: Show error alert
+                    return
                 }
             }
 

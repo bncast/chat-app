@@ -212,7 +212,7 @@ class RoomUserController {
             const chatRooms = [];
     
             for (const room of allRooms) {
-                const roomResult = await this.roomModel.getById(room.room_id);
+                const roomResult = await this.roomModel.getByIdByPassed(room.room_id);
                 if (roomResult.length <= 0) continue;  
 
                 const roomDetails = roomResult[0];            
@@ -251,7 +251,7 @@ class RoomUserController {
     
                 chatRooms.push(chatRoom);
             }
-    
+            
             let response = {
                 chat_rooms: chatRooms,
                 success: 1,
@@ -260,7 +260,7 @@ class RoomUserController {
                     message: ""
                 }
             }
-
+            console.log(response);
             res.json(response);
         } catch (err) {
             res.status(500).json({
