@@ -134,6 +134,11 @@ class MessageController {
 
             const updatedMessageResult = await this.messageModel.getMessageById(message_id);
             let updatedMessage = updatedMessageResult[0];
+            
+            let roomUserResult = await this.roomUserModel.getRoomUserForRoomUserId(updatedMessage.room_user_id);
+            let room = await roomUserResult[0];
+
+            completion(room.room_id);
 
             res.json({
                 success: 1,
@@ -142,11 +147,6 @@ class MessageController {
                     message: ""
                 }
             });
-            
-            let roomUserResult = await this.roomUserModel.getRoomUserForRoomUserId(updatedMessage.room_user_id);
-            let room = await roomUserResult.pop();
-
-            completion(room.room_id);
         } catch (err) {
             res.status(500).json({ error: "Failed to delete message" });
         }

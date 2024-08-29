@@ -115,6 +115,7 @@
 		1D12934B2C7615CA0079C48C /* ChatRoomViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewModel.swift; sourceTree = "<group>"; };
 		1D12934D2C7616CD0079C48C /* ChatRoomMessageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomMessageCollectionViewCell.swift; sourceTree = "<group>"; };
 		1D1293502C7632420079C48C /* ChatRoomMessageHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomMessageHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
+		1D29E0782C80354F00CE8784 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		1D3A9FB42C75BBB200AC3AD6 /* GetChatRoomMessagesEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatRoomMessagesEntity.swift; sourceTree = "<group>"; };
 		1D3DA0142C7875C400D4C980 /* UICollectionViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionViewHelper.swift; sourceTree = "<group>"; };
 		1D3DC6722C7C15C200D64B24 /* UpdateMessageEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateMessageEntity.swift; sourceTree = "<group>"; };
@@ -841,6 +842,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				1D7235C72C72CE38003B419B /* Base */,
+				1D29E0782C80354F00CE8784 /* en */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -977,6 +979,7 @@
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ChatApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Chesmes;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -1005,6 +1008,7 @@
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ChatApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Chesmes;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

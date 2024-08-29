@@ -44,7 +44,7 @@ function notifyClients(roomId) {
 app.get('/api/listen', (req, res) => {
   const { device_id, room_id } = req.query;
   
-  waitingClients.push({ room_id, clientRes: res, timestamp: Date.now() });
+  waitingClients.push({ room_id: room_id, clientRes: res, timestamp: Date.now() });
 });
 
 
