@@ -21,9 +21,9 @@ router.get('/api/listen', (req, res) => {
   waitingClients.push({ room_id: room_id, clientRes: res, timestamp: Date.now() });
 });
 
-router.post('/users/login', (req, res) => userController.login(req, res));
-
-router.post('/users/register', (req, res) => userController.setUser(req, res));
+router.post('/login', (req, res) => userController.login(req, res));
+router.post('/token', (req, res) => userController.token(req, res));
+router.post('/register', (req, res) => userController.register(req, res));
 router.get('/users', (req, res) => userController.getUsers(req, res)); 
 
 router.get('/api/rooms', (req, res) => roomUserController.getChatRooms(req, res));
