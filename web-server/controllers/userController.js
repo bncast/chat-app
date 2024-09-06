@@ -2,43 +2,74 @@
 const UserModel = require('../models/userModel');
 
 class UserController {
-    constructor(database) {
-        this.userModel = new UserModel(database);
+    constructor() {
     }
 
-    async getRandomProfileImageUrl(req) {
+    getRandomProfileImageUrl(req) {
         const randomNumber = Math.floor(Math.random() * 21) + 1; // Random number between 1 and 20
         const imageName = `profile${randomNumber}.png`;
         const imageUrl = `public/images/${imageName}`;
         return imageUrl;
     }
 
+    async login(req, res) {
+        try {
+            const { username, password, device_id, device_name } = req.body;
+
+            var result = await UserModel.findOne({ where: { username: username, password: password }});
+            
+            if (result == null) {
+                throw new Error("User not found.");
+            }
+
+            let imagePath = `${req.protocol}://${req.get('host')}/` + result.image_url;
+
+            // TODO: device management
+            
+            res.json({
+                info: {
+                    display_name: result.display_name,
+                    username: result.username,
+                    image_url: imagePath
+                },
+                token: "ACCESS_TOKEN_HERE", // TODO:
+                success: 1,
+                error: {
+                    code: "000",
+                    message: ""
+                }
+            });
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: {
+                    code: "002",
+                    message: err.message || "An error occurred while processing the request"
+                }
+            });    
+        }
+    }
+
     async setUser(req, res) {
         try {
-            const { name, device_id } = req.body;
+            const { username, display_name, password } = req.body;
 
-            let userResult = await this.userModel.getUserById(device_id);
-            let user = userResult[0];
-            let result;
-
-            let imageUrl
+            var result = await UserModel.findOne({ where: { username: username }});
+            let imageUrl = this.getRandomProfileImageUrl(req);
             
-            if (userResult.length > 0) {
-                result = await this.userModel.updateUserById(device_id, name);
-                imageUrl = user.image_url
-                if (!result) throw new Error("Failed to update user");
+            if (result == null) {
+                result = await UserModel.create({ username: username, display_name: display_name, password: password, image_url: imageUrl });
             } else {
-                imageUrl = await this.getRandomProfileImageUrl(req);
-                result = await this.userModel.createUser(device_id, name, imageUrl);
-                if (!result) throw new Error("Failed to create user");
+                throw new Error("User already exists.");
             }
 
             let imagePath = `${req.protocol}://${req.get('host')}/` + imageUrl;
             
             res.json({
-                user: {
-                    device_id: device_id,
-                    user_image_url: imagePath
+                info: {
+                    display_name: result.display_name,
+                    username: result.username,
+                    image_url: imagePath
                 },
                 success: 1,
                 error: {
@@ -59,6 +90,7 @@ class UserController {
 
     async getUsers(req, res) {
         try {
+            console.log("NINOTEST");
             const { device_id, room_id } = req.query;
             
             let userResult = await this.userModel.getUserById(device_id);

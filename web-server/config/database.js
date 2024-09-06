@@ -1,62 +1,41 @@
 // database.js
 require('dotenv').config();
-const mysql = require('mysql2');
-
-
+const Sequelize = require('sequelize');
 
 class Database {
     constructor() {
-        this.connection = mysql.createConnection({
+        if (Database.instance) {
+            return Database.instance;
+        }
+
+        this.sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
             host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASS,
-            database: process.env.DB_NAME,
-            port: process.env.DB_PORT
+            dialect: 'mysql'
         });
 
         this.connect();
+
+        Database.instance = this;
     }
 
-    connect() {
-        this.connection.connect((err) => {
-            if (err) {
-                console.error('Error connecting to the database:', err.stack);
-                return;
-            }
-            console.log('Connected to the database as ID:', this.connection.threadId);
-        });
-
-        // Handle connection errors and auto-reconnect
-        this.connection.on('error', (err) => {
-            console.error('Database error:', err);
-            if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-                this.connect();
-            } else {
-                throw err;
-            }
-        });
+    static getInstance() {
+        if (!Database.instance) {
+            Database.instance = new Database();
+        }
+        return Database.instance;
     }
 
-    query(sql, args = []) {
-        return new Promise((resolve, reject) => {
-            this.connection.query(sql, args, (err, results) => {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(results);
-            });
-        });
+    async connect() {
+        try {
+            await this.sequelize.authenticate();
+            console.log('Connection has been established successfully.');
+          } catch (error) {
+            console.error('Unable to connect to the database:', error);
+          }
     }
 
     close() {
-        return new Promise((resolve, reject) => {
-            this.connection.end((err) => {
-                if (err) {
-                    return reject(err);
-                }
-                resolve();
-            });
-        });
+        return this.sequelize.close();
     }
 }
 
