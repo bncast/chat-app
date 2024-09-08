@@ -2,6 +2,7 @@
 const crypto = require("crypto");
 const { Op } = require('sequelize');
 const UserModel = require('../models/userModel');
+const UserDeviceModel = require('../models/userDeviceModel');
 const UserTokenModel = require('../models/userTokenModel');
 const RoomUserModel = require('../models/roomUserModel');
 const CryptHelper = require('../utils/cryptHelper');
@@ -50,8 +51,20 @@ class UserController {
                 signedAccessToken = fetchTokenResult.access_token;
                 signedRefreshToken = fetchTokenResult.refresh_token;
             }
+            
+            let findResult = await UserDeviceModel.findOne({ where: { device_id : device_id, user_id: result.id }});
 
-            // TODO: Manage devices
+            if (findResult) {
+                let userDeviceResult = await UserDeviceModel.update({ device_name: device_name }, { where: { device_id: device_id }});
+			    if (userDeviceResult == null) { throw new Error("Failed to update user device."); }
+            } else {
+                var userDeviceResult = await UserDeviceModel.create({
+                    user_id: result.id,
+                    device_name: device_name,
+                    device_id: device_id
+                });
+                if (userDeviceResult == null) { throw new Error("Failed to create user device."); }
+            }
 
             res.json({
                 info: {

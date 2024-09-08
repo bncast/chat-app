@@ -5,12 +5,14 @@ const UserController = require('../controllers/userController');
 const RoomUserController = require('../controllers/roomUserController');
 const MessageController = require('../controllers/messageController');
 const InvitationController = require('../controllers/invitationController');
+const NotificationController = require('../controllers/notificationController');
 
 const router = Express.Router();
 const userController = new UserController();
 const roomUserController = new RoomUserController();
 const messageController = new MessageController();
 const invitationController = new InvitationController();
+const notificationController = new NotificationController();
 
 const WAITING_TIME_LIMIT = 60 * 1000;
 var waitingClients = []; // Store waiting client responses
@@ -64,6 +66,10 @@ router.patch('/api/rooms/detail', (req, res) => roomUserController.updateAdminSt
 router.get('/invites', (req, res) => invitationController.getAll(req, res));  
 router.post('/invites', (req, res) => invitationController.send(req, res));  
 router.post('/invites/accept', (req, res) => invitationController.accept(req, res)); 
+
+router.post('/notification', (req, res) => {
+  notificationController.saveDeviceToken(req, res);
+});
 
 function removeTimedOutClients() {
     const currentTime = Date.now();

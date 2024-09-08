@@ -1,10 +1,12 @@
 const UserModel = require('../models/userModel');
+const UserDeviceModel = require('../models/userDeviceModel');
 const RoomUserModel = require('../models/roomUserModel');
 const RoomModel = require('../models/roomModel');
 const InvitationModel = require('../models/invitationModel');
 const MessageModel = require('../models/messageModel');
 const UserController = require('../controllers/userController');
 const ImageHelper = require('../utils/imageHelper');
+const NotificationController = require('../controllers/notificationController');
 
 class InvitationController {
     constructor(database) {
@@ -13,6 +15,7 @@ class InvitationController {
         this.roomUserModel = new RoomUserModel(database);
         this.roomModel = new RoomModel(database);
         this.messageModel = new MessageModel(database);
+        this.notificationController = new NotificationController();
     }
 
     async getAll(req, res) {
@@ -59,7 +62,7 @@ class InvitationController {
     }
 
     // Send a new invitation
-    async send(req, res) {
+    async send(req, res, device_token) {
         try {
             const accessToken = req.headers['authorization'];
             let tokenCheck = await UserController.getAccessTokenError(accessToken)
@@ -92,6 +95,19 @@ class InvitationController {
             });
             
             if (result) {
+                const userDeviceResult = await UserDeviceModel.findOne({ where: { user_id: invitee_user_id }});
+                let senderResult = await UserModel.findOne({ where: { id: userId }});
+                let roomResult = await RoomModel.findOne({ where: { room_id: room_id }});
+                await this.notificationController.sendNotification(userDeviceResult.device_push_token,
+                    senderResult.display_name,
+                    "invited you to join " + roomResult.room_name,
+                    "ROOM_INVITATION",
+                    {
+                        "roomId" : room_id,
+                        "invitationId": result.invitation_id
+                    }
+                );
+
                 res.json({
                     success: 1,
                     error: {

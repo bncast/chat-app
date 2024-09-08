@@ -1,16 +1,20 @@
 
 const MessageModel = require('../models/messageModel');
 const UserModel = require('../models/userModel');
+const UserDeviceModel = require('../models/userDeviceModel');
+const RoomModel = require('../models/roomModel');
 const RoomUserModel = require('../models/roomUserModel');
 const UserController = require('../controllers/userController');
+const NotificationController = require('../controllers/notificationController');
 const ImageHelper = require('../utils/imageHelper');
-
+const { Op } = require('sequelize');
 
 class MessageController {
     constructor(database) {
         this.messageModel = new MessageModel(database);
         this.userModel = new UserModel(database);
         this.roomUserModel = new RoomUserModel(database);
+        this.notificationController = new NotificationController();
     }
 
     // Create a new message
@@ -31,6 +35,25 @@ class MessageController {
                 reply_to_id: reply_to_id
             });//this.messageModel.createMessage(room_user_id, message, reply_to_id);
             
+            let roomUserResult = await RoomUserModel.findOne({ where: { room_user_id: room_user_id}});
+            
+            const roomUsers = await RoomUserModel.findAll({ where: { room_id: roomUserResult.room_id, user_id: { [Op.not] : [userId]} } });
+            const userIds = roomUsers.map((item) => item.user_id);
+            const userDeviceResult = await UserDeviceModel.findAll({ where: { user_id: userIds }});
+            
+            for await(const result of userDeviceResult) {
+                let senderResult = await UserModel.findOne({ where: { id: result.user_id }});
+                let roomResult = await RoomModel.findOne({ where: { room_id: roomUserResult.room_id }});
+                let deviceToken = result.device_push_token;
+
+                await this.notificationController.sendNotification(deviceToken,
+                    senderResult.display_name,
+                    "sent a message in " + roomResult.room_name,
+                    "NEW_MESSAGE",
+                    {"roomId" : roomUserResult.room_id}
+                );
+            }; 
+
             res.status(201).json({ 
                 success: 1,
                 error: {
@@ -38,8 +61,6 @@ class MessageController {
                     message: ""
                 }
             });
-
-            let roomUserResult = await RoomUserModel.findOne({ where: { room_user_id: room_user_id}});
             
             completion(roomUserResult.room_id);
         } catch (err) {

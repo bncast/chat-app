@@ -82,6 +82,8 @@
 		6FB326552C749D9E00F1B2E4 /* FadeInAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB326542C749D9E00F1B2E4 /* FadeInAnimator.swift */; };
 		6FBE7BEA2C72E4AF00AE0ACB /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBE7BE92C72E4AF00AE0ACB /* AppColors.swift */; };
 		6FBE7BEF2C72ED2400AE0ACB /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6FBE7BEE2C72ED2400AE0ACB /* Colors.xcassets */; };
+		6FC419242C8951F50061E251 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC419232C8951F50061E251 /* NotificationManager.swift */; };
+		6FC419272C8987590061E251 /* SetDeviceTokenEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC419262C8987590061E251 /* SetDeviceTokenEntity.swift */; };
 		6FCC10F22C7706DF00BF2D9A /* SetIsAdminEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCC10F12C7706DF00BF2D9A /* SetIsAdminEntity.swift */; };
 		6FD425A32C7350F2004F9820 /* GetChatRoomListEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD425A22C7350F2004F9820 /* GetChatRoomListEntity.swift */; };
 		6FD767792C77310E00DAA989 /* ChatRoomMessageOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD767782C77310E00DAA989 /* ChatRoomMessageOptionsViewController.swift */; };
@@ -193,6 +195,9 @@
 		6FBE7BE92C72E4AF00AE0ACB /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
 		6FBE7BEB2C72E4BC00AE0ACB /* AppFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFonts.swift; sourceTree = "<group>"; };
 		6FBE7BEE2C72ED2400AE0ACB /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		6FC419232C8951F50061E251 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		6FC419252C89759F0061E251 /* ChatApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ChatApp.entitlements; sourceTree = "<group>"; };
+		6FC419262C8987590061E251 /* SetDeviceTokenEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetDeviceTokenEntity.swift; sourceTree = "<group>"; };
 		6FCC10F12C7706DF00BF2D9A /* SetIsAdminEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetIsAdminEntity.swift; sourceTree = "<group>"; };
 		6FD425A22C7350F2004F9820 /* GetChatRoomListEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetChatRoomListEntity.swift; sourceTree = "<group>"; };
 		6FD767782C77310E00DAA989 /* ChatRoomMessageOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomMessageOptionsViewController.swift; sourceTree = "<group>"; };
@@ -287,6 +292,7 @@
 		1D7235BA2C72CE37003B419B /* ChatApp */ = {
 			isa = PBXGroup;
 			children = (
+				6FC419252C89759F0061E251 /* ChatApp.entitlements */,
 				A700BF442C7323E300B38530 /* Helpers */,
 				1D7235BB2C72CE37003B419B /* AppDelegate.swift */,
 				1D7235BD2C72CE37003B419B /* SceneDelegate.swift */,
@@ -387,6 +393,7 @@
 			children = (
 				A7FB9C2A2C756A51008DE3F3 /* Alert */,
 				6F0B7E622C73159A00BFC370 /* Network */,
+				6FC419222C8951D70061E251 /* Notification */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -437,6 +444,7 @@
 				1D5FF7AF2C7D68E20047765F /* AcceptInvitationEntity.swift */,
 				1DD910C42C8EBA6D00085DBD /* LoginUserEntity.swift */,
 				1DD910CE2C8EE70800085DBD /* RegisterUserEntity.swift */,
+				6FC419262C8987590061E251 /* SetDeviceTokenEntity.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -594,6 +602,14 @@
 				6FBE7BEE2C72ED2400AE0ACB /* Colors.xcassets */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		6FC419222C8951D70061E251 /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				6FC419232C8951F50061E251 /* NotificationManager.swift */,
+			);
+			path = Notification;
 			sourceTree = "<group>";
 		};
 		A700BF3D2C73156400B38530 /* ChatRoomList */ = {
@@ -803,6 +819,7 @@
 				6F07ACEE2C7306730010E21A /* BaseViewController.swift in Sources */,
 				6F4CDE912C7465F100F310A1 /* PaddingLabel.swift in Sources */,
 				6F0B7E6E2C73249C00BFC370 /* DataHelpers.swift in Sources */,
+				6FC419272C8987590061E251 /* SetDeviceTokenEntity.swift in Sources */,
 				6F0B7E702C7324D800BFC370 /* RespondableApiEntity.swift in Sources */,
 				6F4CDE932C7466A000F310A1 /* UIStackViewHelpers.swift in Sources */,
 				A7FB9C432C76D1CA008DE3F3 /* CreateChatRoomEntity.swift in Sources */,
@@ -821,6 +838,7 @@
 				6F7969712C75B9AB0010B427 /* MemberHeaderCollectionReusableView.swift in Sources */,
 				A700BF462C7323EF00B38530 /* ArrayHelpers.swift in Sources */,
 				A7FB9C452C781A9B008DE3F3 /* RemoveMemberFromChatRoomEntity.swift in Sources */,
+				6FC419242C8951F50061E251 /* NotificationManager.swift in Sources */,
 				A700BF592C73982D00B38530 /* BaseButton.swift in Sources */,
 				1D3DA0152C7875C400D4C980 /* UICollectionViewHelper.swift in Sources */,
 				1DD910CA2C8ECA9B00085DBD /* FormTextField.swift in Sources */,
@@ -1034,9 +1052,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = ChatApp/ChatApp.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6858U5NRL7;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = RJFLLLJJBL;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ChatApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Chesmes;
@@ -1051,8 +1072,10 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.marites.Chesmes;
+				PRODUCT_BUNDLE_IDENTIFIER = com.marites.ios.chesmes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "chesmes develop profile";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1064,9 +1087,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = ChatApp/ChatApp.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6858U5NRL7;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = RJFLLLJJBL;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ChatApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Chesmes;
@@ -1081,8 +1107,10 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.marites.Chesmes;
+				PRODUCT_BUNDLE_IDENTIFIER = com.marites.ios.chesmes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "chesmes develop profile";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

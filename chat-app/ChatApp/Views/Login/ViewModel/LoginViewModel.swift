@@ -41,6 +41,12 @@ class LoginViewModel {
                 AppConstant.shared.currentUserImageUrlString = imageUrl
             }
 
+            if let currentDeviceTokenU = AppConstant.shared.deviceToken {
+                try await SetDeviceTokenEntity(deviceId: AppConstant.shared.deviceId ?? "",
+                                               deviceToken: currentDeviceTokenU).run()
+            }
+
+
             return true
         } catch {
             if let networkError = NetworkError(error) {

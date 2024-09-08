@@ -174,7 +174,39 @@ class ChatRoomListViewController: BaseViewController {
             ChatRoomViewController.push(on: self, using: info)
         }
 
+        NotificationManager.shared.showInvitationsList = { [weak self] in
+            guard let self else { return }
+
+            await dismissAllModalAsync() {
+                guard let info = await InvitationListViewController.show(on: self) else { return }
+
+                ChatRoomViewController.push(on: self, using: info)
+            }
+        }
+
+        NotificationManager.shared.showRoomFromNotif = { [weak self] roomId in
+            guard let self else { return }
+
+            dismissAllModal() {
+                guard let itemInfo = self.getRoomItemInfo(roomId),
+                      let detail = self.viewModel.details(for: itemInfo)
+                else { return }
+
+                ChatRoomViewController.push(on: self, using: detail)
+            }
+        }
+
         refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
+    }
+
+    private func getRoomItemInfo(_ roomId: Int) -> ChatRoomListViewModel.ItemInfo? {
+        guard let itemInfo = viewModel.items[.myRooms]?.compactMap({ item -> ItemInfo? in
+            guard case .room(let info) = item, info.roomId == roomId else { return nil }
+
+            return info
+        }).first else { return nil }
+
+        return itemInfo
     }
 
     // MARK: - Other Methods
