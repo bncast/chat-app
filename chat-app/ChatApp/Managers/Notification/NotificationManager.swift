@@ -65,11 +65,9 @@ final class NotificationManager: NSObject {
         print(userInfo)
         let category = NotificationCategory(rawValue: response.notification.request.content.categoryIdentifier)
         guard let roomId = userInfo["roomId"] as? Int else { return }
-        
         switch category {
         case .roomInvitation:
             if let showInvitationsList { Task { await showInvitationsList() } }
-
             guard NotificationAction(rawValue: response.actionIdentifier) == .acceptInvitation,
                   let invitationId = userInfo["invitationId"] as? Int
             else { return }

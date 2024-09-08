@@ -329,7 +329,7 @@ class AppConstant: NSObject {
     }
 
     private static var keychainServiceIdentifier: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as? String ?? "jp.aeonretail.aeon-coupon"
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as? String ?? "com.marites.ios.chesmes"
     }
     private static var keychain: Keychain = .init(service: keychainServiceIdentifier)
         .synchronizable(false)
@@ -340,7 +340,7 @@ class AppConstant: NSObject {
     static var shared = AppConstant()
 
     var appServerScheme: String {
-        guard let url = URL(string: AppConstant.shared.manualHost),
+        guard let url = URL(string: "\(hostAddress):\(port)"),
               let scheme = url.scheme,
               scheme.hasPrefix("http")
         else { return "http" }
@@ -348,7 +348,7 @@ class AppConstant: NSObject {
     }
 
     var appServerHost: String {
-        let manualHost = AppConstant.shared.manualHost
+        let manualHost = "\(hostAddress):\(port)"
         guard let url = URL(string: manualHost), let host = url.host
         else { return "\(manualHost)" }
         if let port = url.port {
@@ -359,8 +359,10 @@ class AppConstant: NSObject {
          
     @UserDefaultsReadOnly("SERVER_TYPE", default: .manual)
     var serverType: ServerType
-    @UserDefaultsReadOnly("MANUAL_HOST", default: "localhost:4000")
-    var manualHost: String
+    @UserDefaultsReadAndWrite("hostAddress", default: "localhost")
+    var hostAddress: String
+    @UserDefaultsReadAndWrite("port", default: "4000")
+    var port: String
     @KeychainReadAndWrite("keychainValue", default: nil)
     var keychainValue: String?
     @KeychainReadAndWrite("deviceId", default: nil)
@@ -375,13 +377,15 @@ class AppConstant: NSObject {
     var currentUserImageUrlString: String?
     @KeychainReadAndWrite("deviceToken", default: nil)
     var deviceToken: String?
+    @UserDefaultsReadAndWrite("serverList", default: nil)
+    var serverList: Data?
 
     let screen: (Size) -> CGFloat = { size in
         switch size {
         case .width: UIScreen.main.bounds.width
         case .height: UIScreen.main.bounds.height
         }
-    }
+    } 
 }
 
 // MARK: - App specification infos

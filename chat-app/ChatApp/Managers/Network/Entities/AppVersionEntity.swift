@@ -16,6 +16,12 @@ class AppVersionEntity: RequestableApiEntity {
     var isIgnoreLogoutErrors: Bool { ignoreError }
     private var ignoreError: Bool { false }
 
+    var host: String? { hostValue }
+    private var hostValue: String
+
+    init(hostValue: String) {
+        self.hostValue = hostValue
+    }
 }
 
 struct AppVersionRespondableEntity: RespondableApiEntity {

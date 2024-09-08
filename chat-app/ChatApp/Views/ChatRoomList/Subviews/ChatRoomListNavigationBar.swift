@@ -42,6 +42,17 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         return view
     }()
 
+    private(set) lazy var closeButton: BaseButton = {
+        let configuration = UIImage.SymbolConfiguration(pointSize: iconPointSize)
+        let image = UIImage(systemName: "xmark", withConfiguration: configuration)?
+            .withRenderingMode(.alwaysTemplate)
+
+        let view = BaseButton(image: image)
+        view.tintColor = .background(.mainLight)
+        view.setBackgroundColor(.clear, for: .normal)
+        return view
+    }()
+
     private(set) lazy var moreButton: BaseButton = {
         let configuration = UIImage.SymbolConfiguration(pointSize: iconPointSize)
         let image = UIImage(systemName: "info.circle", withConfiguration: configuration)?
@@ -53,17 +64,38 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         return view
     }()
 
+    var showServerListButton: Bool = true { didSet {
+        invitationButton.isHidden = false
+        menuButton.isHidden = false
+        moreButton.isHidden = false
+        closeButton.isHidden = false
+
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            self?.invitationButton.alpha = 0
+            self?.menuButton.alpha = 0
+            self?.moreButton.alpha = 0
+            self?.closeButton.alpha = 1
+        } completion: { [weak self] _ in
+            self?.invitationButton.isHidden = true
+            self?.menuButton.isHidden = true
+            self?.moreButton.isHidden = true
+        }
+    } }
+
     var showChatRoomListButtons: Bool = true { didSet {
         invitationButton.isHidden = false
         menuButton.isHidden = false
         moreButton.isHidden = false
+        closeButton.isHidden = false
 
         UIView.animate(withDuration: 0.2) { [weak self] in
             self?.invitationButton.alpha = 1
             self?.menuButton.alpha = 1
+            self?.closeButton.alpha = 0
             self?.moreButton.alpha = 0
         } completion: { [weak self] _ in
             self?.moreButton.isHidden = true
+            self?.closeButton.isHidden = true
         }
     } }
 
@@ -71,14 +103,17 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         invitationButton.isHidden = false
         menuButton.isHidden = false
         moreButton.isHidden = false
+        closeButton.isHidden = false
 
         UIView.animate(withDuration: 0.2) { [weak self] in
             self?.invitationButton.alpha = 0
             self?.menuButton.alpha = 0
+            self?.closeButton.alpha = 0
             self?.moreButton.alpha = 1
         } completion: { [weak self] _ in
             self?.invitationButton.isHidden = true
             self?.menuButton.isHidden = true
+            self?.closeButton.isHidden = true
         }
     } }
 
@@ -86,6 +121,7 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         menuButton.isHidden = true
         moreButton.isHidden = true
         invitationButton.isHidden = true
+        closeButton.isHidden = true
     } }
 
     var title: String = "" { didSet {
@@ -101,6 +137,9 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
     var moreTapHandler: ((BaseButton) -> Void)?
     var moreTapHandlerAsync: ((BaseButton) async -> Void)?
 
+    var closeTapHandler: ((BaseButton) -> Void)?
+    var closeTapHandlerAsync: ((BaseButton) async -> Void)?
+
     // MARK: - Setups
 
     override func setupLayout() {
@@ -108,7 +147,8 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
             titleLabel,
             menuButton,
             invitationButton,
-            moreButton
+            moreButton,
+            closeButton
         ])
 
         titleTextAttributes = [NSAttributedString.Key.backgroundColor: UIColor.background(.mainLight),
@@ -136,6 +176,11 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         moreButton.width == 44
         moreButton.centerY == centerY
         moreButton.height == 44
+
+        closeButton.right == right - 18
+        closeButton.width == 44
+        closeButton.centerY == centerY
+        closeButton.height == 44
     }
 
     override func setupActions() {
@@ -178,6 +223,20 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
                 }
             } else {
                 moreTapHandler?(moreButton)
+            }
+        }
+
+        closeButton.tapHandlerAsync = { [weak self] _ in
+            guard let self else { return }
+
+            if let closeTapHandlerAsync {
+                Task { [weak self] in
+                    guard let self else { return }
+
+                    await closeTapHandlerAsync(moreButton)
+                }
+            } else {
+                closeTapHandler?(moreButton)
             }
         }
     }

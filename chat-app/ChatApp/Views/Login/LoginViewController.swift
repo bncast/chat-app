@@ -149,6 +149,12 @@ class LoginViewController: BaseViewController {
 
             RegisterViewController.show(on: self)
         }
+
+        serverListButton.tapHandlerAsync = { [weak self] _ in
+            guard let self else { return }
+
+            ServerListViewController.show(on: self)
+        }
     }
 
     static func show(on parentViewController: UIViewController) {

@@ -156,7 +156,7 @@ class ChatRoomDetailsViewController: BaseViewController {
             name: currentName
         )
         .addButton(title: "OK")
-        .register(in: viewController)
+        .register(in: viewController) as? String
     }
 
     @MainActor

@@ -16,6 +16,7 @@ const notificationController = new NotificationController();
 const WAITING_TIME_LIMIT = 60 * 1000;
 var waitingClients = []; // Store waiting client responses
 
+router.get('/version', (req, res) => res.status(200).json({success: 1, version: "2"}));
 router.post('/login', (req, res) => userController.login(req, res));
 router.post('/logout', (req, res) => userController.logout(req, res));
 router.post('/register', (req, res) => userController.register(req, res));
