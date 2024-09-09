@@ -21,8 +21,8 @@ class UpdateUserEntity: RequestableApiEntity {
     init(name: String) {
         self.name = name
 
-        guard AppConstant.shared.isNewUser else {
-            self.deviceId = AppConstant.shared.deviceId ?? ""
+        if let deviceId = AppConstant.shared.deviceId {
+            self.deviceId = deviceId
             return
         }
 

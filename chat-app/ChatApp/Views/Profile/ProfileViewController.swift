@@ -51,7 +51,7 @@ class ProfileViewController: BaseViewController {
 
     private lazy var nameTextField: BaseTextField = {
         let view = BaseTextField()
-        view.placeholder = AppConstant.shared.isNewUser ? "Enter display name to register" : "Display Name"
+        view.placeholder = AppConstant.shared.deviceId == nil ? "Enter display name to register" : "Display Name"
         view.borderStyle = .roundedRect
         return view
     }()
@@ -98,7 +98,7 @@ class ProfileViewController: BaseViewController {
             ])
         ])
 
-        guard AppConstant.shared.isNewUser else { return }
+        guard AppConstant.shared.deviceId == nil else { return }
         cancelButton.isHidden = true
     }
 
@@ -160,7 +160,7 @@ class ProfileViewController: BaseViewController {
 
         keyboardAppear = self
 
-        guard !AppConstant.shared.isNewUser else {
+        guard AppConstant.shared.deviceId != nil else {
             nameTextField.becomeFirstResponder()
             return
         }
@@ -185,7 +185,7 @@ class ProfileViewController: BaseViewController {
     func updateProfile() async {
         do {
             guard let text = nameTextField.text, !text.isEmpty else { return }
-            let statusBeforeUpdate = AppConstant.shared.isNewUser
+            let statusBeforeUpdate = AppConstant.shared.deviceId == nil
 
             nameTextField.resignFirstResponder()
             await IndicatorController.shared.show()

@@ -82,7 +82,7 @@ class ChatRoomListViewController: BaseViewController {
         navigationBar?.loadProfileButtonImage()
 
         Task {
-            if !AppConstant.shared.isNewUser {
+            if AppConstant.shared.deviceId != nil {
                 await IndicatorController.shared.show()
                 await load()
                 await IndicatorController.shared.dismiss()
@@ -105,7 +105,7 @@ class ChatRoomListViewController: BaseViewController {
             composeButton
         ])
 
-        guard AppConstant.shared.isNewUser else { return }
+        guard AppConstant.shared.deviceId == nil else { return }
         Task {
             await showProfile()
             await IndicatorController.shared.show()
@@ -181,7 +181,7 @@ class ChatRoomListViewController: BaseViewController {
 
     @objc
     private func didPullToRefresh(_ sender: UIRefreshControl) {
-        if !AppConstant.shared.isNewUser {
+        if AppConstant.shared.deviceId != nil {
             searchBarView.setInitTerm("")
             Task { await load() }
         }

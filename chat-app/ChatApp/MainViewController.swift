@@ -11,6 +11,6 @@ class MainViewController: BaseViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        ChatRoomListViewController.show(on: self)
+        LoginViewController.show(on: self)
     }
 }
