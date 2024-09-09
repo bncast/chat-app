@@ -31,7 +31,7 @@ router.post('/rooms', (req, res) => roomUserController.createChatRoom(req, res))
 router.put('/api/rooms', (req, res) => roomUserController.updateChatRoom(req, res));  // TODO:
 router.delete('/api/rooms', (req, res) => roomUserController.deleteChatRoom(req, res));  // TODO:
 
-router.post('/api/rooms/join', (req, res) => roomUserController.joinRoom(req, res));  // TODO:
+router.post('/rooms/join', (req, res) => roomUserController.joinRoom(req, res)); 
 
 router.get('/api/messages', (req, res) => messageController.getMessagesByRoom(req, res));  // TODO:
 router.delete('/api/messages', (req, res) => {  // TODO:

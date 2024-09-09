@@ -307,7 +307,7 @@ extension ChatRoomListViewController {
         cell.preview = item.hasPassword ? "Private Chat - Password Protected" : item.preview
         cell.imageUrlString = item.imageUrlString
         cell.tapHandlerAsync = { [weak self] _ in
-            guard let self, let deviceId = AppConstant.shared.deviceId else { return }
+            guard let self else { return }
 
             if case .otherRooms = dataSource?.snapshot().sectionIdentifiers[indexPath.section] {
 
@@ -318,13 +318,13 @@ extension ChatRoomListViewController {
                 do {
                     await IndicatorController.shared.show()
                     let _ = try await viewModel.joinChatRoom(
-                        roomId: item.roomId, deviceId: deviceId, password: password
+                        roomId: item.roomId, password: password
                     )
                     await load()
                     await IndicatorController.shared.dismiss()
                     print("[ChatRoomListViewController] Show Messages from Room (\(item.roomId))")
                 } catch {
-                    print("[ChatRoomListViewController] Error! \(error as! NetworkError)")
+                    print("[ChatRoomListViewController] Error! \(error as! NetworkError)", error.localizedDescription)
                     await IndicatorController.shared.dismiss()
                     // TODO: Show error alert
                     return

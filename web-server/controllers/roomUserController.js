@@ -250,8 +250,6 @@ class RoomUserController {
                         room_user_id: member.room_user_id
                     });
                 }    
-                  
-                // const memberDetails = members.map(member => ());
 
                 const creator = await UserModel.findOne({ where: { id: room.creator_id }});
                 const creatorName = creator.display_name;
@@ -304,34 +302,57 @@ class RoomUserController {
 
     async joinRoom(req, res) {
         try {
-            const { room_id, device_id, password } = req.body;
-            
-            let userResult = await this.userModel.getUserById(device_id);
-            if (userResult.length <= 0) {
-                throw new Error("User not found.");
+            const accessToken = req.headers['authorization'];
+            let tokenCheck = await UserController.getAccessTokenError(accessToken)
+            if (tokenCheck.error != null) {
+                return res.status(401).json({ 
+                    error: {
+                        code: "401",
+                        message: tokenCheck.error
+                    } 
+                });
             }
-    
-            const roomResult = await this.roomModel.getById(room_id, password);
-            if (roomResult.length <= 0) { throw new Error("Room not found."); }
-            
-            const roomDetails = roomResult[0];
+            let userId = tokenCheck.result.user_id;
 
-            let roomUserResult = await this.roomUserModel.createRoomUser(room_id, device_id);
+            const { room_id, password } = req.body;
+            
+            const roomResult = await RoomModel.findOne({ where: {
+                room_id: room_id
+            }});
+            if (!roomResult) { throw new Error("Room not found."); }
+            
+            if (roomResult.password != null && roomResult.password == password) { throw new Error("Password is required.");}
+
+            let roomUserResult = await RoomUserModel.create({
+                room_id: room_id,
+                user_id: userId
+            });//this.roomUserModel.createRoomUser(room_id, device_id);
             if (!roomUserResult) { throw new Error("Failed to create room"); } 
         
-            const members = await this.roomUserModel.getUsersInRoom(roomDetails.room_id);
+            const members = await RoomUserModel.findAll({ where: {
+                room_id: room_id
+            }});
 
-            const roomUserId = members.find(member => member.user_id === device_id)?.room_user_id || null;
+            var memberDetails = [];
+            
+            for await (const member of members) {
+                const user = await UserModel.findOne({ where: { id: member.user_id }});
+                memberDetails.push({
+                    name: user.display_name,  
+                    is_admin: member.is_admin == 1,
+                    user_image_url: ImageHelper.getImagePath(req, user.image_url),  
+                    room_user_id: member.room_user_id
+                });
+            }    
 
-            const memberDetails = members.map(member => ({
-                name: member.name,  
-                is_admin: member.is_admin == 1,
-                user_image_url: `${req.protocol}://${req.get('host')}/` + member.image_url,  
-                room_user_id: member.room_user_id
-            }));
+            const creator = await UserModel.findOne({ where: { id: roomResult.creator_id }});
+            const creatorName = creator.display_name;
 
-            let previewResult = await this.messageModel.getLatestMessage(roomDetails.room_id);
-            let lastMessage = previewResult[0];
+            const currentUser = members.find(member => member.user_id === userId);
+            const roomUserId = currentUser?.room_user_id || null;
+
+            let previewResult = null;//await this.messageModel.getLatestMessage(room.room_id);
+            let lastMessage = null;
             
             var preview = "Say hello...";
             if (lastMessage != undefined && lastMessage.display_name != undefined && lastMessage.content != undefined) {
@@ -339,15 +360,15 @@ class RoomUserController {
             }
 
             const chatRoom = {
-                room_id: roomDetails.room_id,
-                author_id: roomDetails.creator_id,  
-                author_name: roomDetails.creator_name || "Unknown",  
+                room_id: room_id,
+                author_id: roomResult.creator_id,  
+                author_name: creatorName || "Unknown", 
                 preview: preview,
                 is_joined: roomUserId != null,
                 current_room_user_id: roomUserId,
-                has_password: roomDetails.password != null,
-                chat_name: roomDetails.room_name,
-                chat_image_url: `${req.protocol}://${req.get('host')}/` + roomDetails.image_url,
+                has_password: roomResult.password != null,
+                chat_name: roomResult.room_name,
+                chat_image_url: ImageHelper.getImagePath(req, roomResult.image_url),
                 member_details: memberDetails
             };
     

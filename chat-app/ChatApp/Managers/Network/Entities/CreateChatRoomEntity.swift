@@ -12,7 +12,7 @@ class CreateChatRoomEntity: RequestableApiEntity {
 
     static var method: BaseNetworkOperation.Method { .post }
     var path: String { "rooms" }
-    var body: RequestBody? { CreateChatRoomRequestBody(name: name, deviceId: deviceId, password: password) }
+    var body: RequestBody? { CreateChatRoomRequestBody(name: name, password: password) }
 
     private let name: String
     private let deviceId: String
@@ -30,13 +30,16 @@ struct CreateChatRoomRequestBody: RequestJsonBody {
     var encoder: JSONEncoder { JSONEncoder.snakeCaseEncoder() }
 
     var name: String
-    var deviceId: String
     var password: String?
 }
 
 // MARK: Defining response
 struct CreateChatRoomRespondableEntity: RespondableApiEntity {
-    var encoder: JSONEncoder { JSONEncoder.snakeCaseEncoder() }
+    static var decoder: JSONDecoder {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }
 
     var success: Int
     var error: ErrorMessage?
