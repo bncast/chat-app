@@ -32,7 +32,7 @@ class LoginViewModel {
     func login(username: String, password: String) async -> Bool {
         do {
             errorMessage = nil
-            let result = try await LoginEntity(username: username, password: password, deviceId: deviceId, deviceName: deviceName).run()
+            let result = try await LoginUserEntity(username: username, password: password, deviceId: deviceId, deviceName: deviceName).run()
 
             AppConstant.shared.accessToken = result.accessToken
             AppConstant.shared.refreshToken = result.refreshToken
@@ -42,7 +42,6 @@ class LoginViewModel {
             }
 
             return true
-
         } catch {
             if let networkError = NetworkError(error) {
                 errorMessage = networkError.message
