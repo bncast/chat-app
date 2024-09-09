@@ -1,23 +1,14 @@
 const { DataTypes, Model } = require('sequelize');
 const Database = require('../config/database');
 const UserModel = require('./userModel');
-const RoomModel = require('./roomModel');
 
-class InvitationModel extends Model {}
+class UserTokenModel extends Model {}
 
-InvitationModel.init({
-    invitation_id: {
+UserTokenModel.init({
+    id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
-    },
-    created_by: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: UserModel,
-            key: 'id',
-        },
     },
     user_id: {
         type: DataTypes.INTEGER,
@@ -27,13 +18,13 @@ InvitationModel.init({
             key: 'id',
         },
     },
-    room_id: {
-        type: DataTypes.INTEGER,
+    access_expiry: {
+        type: DataTypes.DATE,
         allowNull: false,
-        references: {
-            model: RoomModel,
-            key: 'room_id',
-        },
+    },
+    refresh_expiry: {
+        type: DataTypes.DATE,
+        allowNull: false,
     },
     created_at: {
         type: DataTypes.DATE,
@@ -47,10 +38,18 @@ InvitationModel.init({
         type: DataTypes.BOOLEAN,
         defaultValue: false
     },
+    access_token: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    refresh_token: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
 }, {
     timestamps: false,
-    tableName: 'UserInvitation',
+    tableName: 'UserToken',
     sequelize: Database.getInstance().sequelize
 });
 
-module.exports = InvitationModel;
+module.exports = UserTokenModel;

@@ -1,45 +1,173 @@
 // userController.js
+const crypto = require("crypto");
+const { Op } = require('sequelize');
 const UserModel = require('../models/userModel');
+const UserTokenModel = require('../models/userTokenModel');
+const CryptHelper = require('../utils/cryptHelper');
+const ImageHelper = require('../utils/imageHelper');
 
 class UserController {
-    constructor(database) {
-        this.userModel = new UserModel(database);
+    constructor() {
+        this.cryptHelper = new CryptHelper();
     }
 
-    async getRandomProfileImageUrl(req) {
-        const randomNumber = Math.floor(Math.random() * 21) + 1; // Random number between 1 and 20
-        const imageName = `profile${randomNumber}.png`;
-        const imageUrl = `public/images/${imageName}`;
-        return imageUrl;
-    }
-
-    async setUser(req, res) {
+    async login(req, res) {
         try {
-            const { name, device_id } = req.body;
+            const { username, password, device_id, device_name } = req.body;
 
-            let userResult = await this.userModel.getUserById(device_id);
-            let user = userResult[0];
-            let result;
+            var result = await UserModel.findOne({ where: { username: username, password: password }});
+            if (result == null) { throw new Error("User not found."); }
 
-            let imageUrl
-            
-            if (userResult.length > 0) {
-                result = await this.userModel.updateUserById(device_id, name);
-                imageUrl = user.image_url
-                if (!result) throw new Error("Failed to update user");
+            var fetchTokenResult = await UserTokenModel.findOne({ where: { 
+                user_id: result.id, 
+                access_expiry: { 
+                    [Op.gte]: Date.now()
+                } 
+            } });
+
+            let signedAccessToken
+            let signedRefreshToken
+
+            if (fetchTokenResult == null) {
+                const accessTokenExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+                const refreshTokenExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+                const accessToken = crypto.randomUUID();
+                const refreshToken = crypto.randomUUID();
+                signedAccessToken = this.cryptHelper.signToken(accessToken);
+                signedRefreshToken = this.cryptHelper.signToken(refreshToken);
+
+                var tokenResult = await UserTokenModel.create({
+                    access_token: signedAccessToken,
+                    refresh_token: signedRefreshToken,
+                    user_id: result.id,
+                    access_expiry: accessTokenExpiresAt,
+                    refresh_expiry: refreshTokenExpiresAt
+                });
+                if (tokenResult == null) { throw new Error("Failed to create token."); }
+                
             } else {
-                imageUrl = await this.getRandomProfileImageUrl(req);
-                result = await this.userModel.createUser(device_id, name, imageUrl);
-                if (!result) throw new Error("Failed to create user");
+                signedAccessToken = fetchTokenResult.access_token;
+                signedRefreshToken = fetchTokenResult.refresh_token;
             }
 
-            let imagePath = `${req.protocol}://${req.get('host')}/` + imageUrl;
-            
+            // TODO: Manage devices
+
             res.json({
-                user: {
-                    device_id: device_id,
-                    user_image_url: imagePath
+                info: {
+                    display_name: result.display_name,
+                    username: result.username,
+                    image_url: ImageHelper.getImagePath(req, result.image_url)
                 },
+                access_token: signedAccessToken, 
+                refresh_token: signedRefreshToken,
+                success: 1,
+                error: {
+                    code: "000",
+                    message: ""
+                }
+            });
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: {
+                    code: "002",
+                    message: err.message || "An error occurred while processing the request"
+                }
+            });    
+        }
+    }
+
+    async token(req, res) {
+        try {
+            const { refresh_token } = req.body;
+
+            if (!this.cryptHelper.verifyToken(refresh_token)) {
+                return res.status(401).json({ 
+                    error: { 
+                        code: "401", 
+                        message: "Invalid token signature" 
+                    } 
+                });
+            }
+
+            var fetchTokenResult = await UserTokenModel.findOne({ where: { 
+                refresh_token: refresh_token, 
+                refresh_expiry: { 
+                    [Op.gte]: Date.now()
+                },
+                is_invalid: 0
+            } });
+
+
+            if (fetchTokenResult != null) {
+                UserTokenModel.update({ is_invalid: 1 }, { where: { id: fetchTokenResult.id }});
+
+                const accessTokenExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+                const refreshTokenExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+                const accessToken = crypto.randomUUID();
+                const refreshToken = crypto.randomUUID();
+                let signedAccessToken = this.cryptHelper.signToken(accessToken);
+                let signedRefreshToken = this.cryptHelper.signToken(refreshToken);
+
+                var tokenResult = await UserTokenModel.create({
+                    access_token: signedAccessToken,
+                    refresh_token: signedRefreshToken,
+                    user_id: fetchTokenResult.user_id,
+                    access_expiry: accessTokenExpiresAt,
+                    refresh_expiry: refreshTokenExpiresAt
+                });
+                if (tokenResult == null) { throw new Error("Failed to create token."); }
+
+                res.json({
+                    access_token: signedAccessToken, 
+                    refresh_token: signedRefreshToken,
+                    success: 1,
+                    error: {
+                        code: "000",
+                        message: ""
+                    }
+                });
+                
+            } else {
+                throw new Error("Refresh token not found.");
+            }
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: {
+                    code: "002",
+                    message: err.message || "An error occurred while processing the request"
+                }
+            });    
+        }
+    }
+
+    async register(req, res) {
+        try {
+            const { username, display_name, password } = req.body;
+
+            var result = await UserModel.findOne({ where: { username: username }});
+            let imageUrl = ImageHelper.getRandomProfileImageUrl(req);
+            
+            if (result == null) {
+                result = await UserModel.create({ username: username, display_name: display_name, password: password, image_url: imageUrl });
+            } else {
+                throw new Error("User already exists.");
+            }
+
+            const accessToken = UUID().toString();
+            const refreshToken = UUID().toString();
+            const signedAccessToken = this.cryptHelper.signToken(accessToken);
+            const signedRefreshToken = this.cryptHelper.signToken(refreshToken);
+ 
+            res.json({
+                info: {
+                    display_name: result.display_name,
+                    username: result.username,
+                    image_url: ImageHelper.getImagePath(req, imageUrl)
+                },
+                access_token: signedAccessToken, 
+                refresh_token: signedRefreshToken,
                 success: 1,
                 error: {
                     code: "000",
@@ -59,14 +187,24 @@ class UserController {
 
     async getUsers(req, res) {
         try {
-            const { device_id, room_id } = req.query;
-            
-            let userResult = await this.userModel.getUserById(device_id);
-            if (userResult.length <= 0) {
-                throw new Error("User not found.");
+            const accessToken = req.headers['authorization'];
+            if (!accessToken) return res.status(401).json({ error: 'Access token required' });
+
+            if (!this.cryptHelper.verifyToken(accessToken)) {
+                return res.status(401).json({ error: 'Invalid token signature' });
             }
 
-            let result = await this.userModel.getUsersNotInRoom(room_id);
+            var fetchTokenResult = await UserTokenModel.findOne({ where: { 
+                access_token: accessToken, 
+                access_expiry: { 
+                    [Op.gte]: Date.now()
+                } 
+            } });
+
+            const { device_id, room_id } = req.query;
+            
+
+            throw new Error("TODO: Create request, get users not in room, move function to room user");
 
             const formattedResponse = result.map(member => ({
                 name: member.display_name,  
@@ -88,7 +226,12 @@ class UserController {
             }
             
         } catch (err) {
-            res.status(500).json({ error: err.message });
+            res.status(500).json({ 
+                error: {
+                    code: "500",
+                    message: err.message
+                } 
+            });
         }
     }
 }
