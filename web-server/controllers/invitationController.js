@@ -173,7 +173,6 @@ class InvitationController {
                         message: ""
                     }
                 }
-                console.log(response);
                 return res.json(response);
             } else {
                 // If no invitation exists

@@ -5,17 +5,15 @@ const UserModel = require('../models/userModel');
 const UserTokenModel = require('../models/userTokenModel');
 const CryptHelper = require('../utils/cryptHelper');
 const ImageHelper = require('../utils/imageHelper');
-const { use } = require("../routes/routes");
 
 class UserController {
     constructor() {
-        this.cryptHelper = new CryptHelper();
+        this.cryptHelper = CryptHelper.getInstance();
     }
 
     async login(req, res) {
         try {
             const { username, password, device_id, device_name } = req.body;
-
             
             var result = await UserModel.findOne({ where: { username: username, password: password }});
             if (result == null) { throw new Error("User not found"); }
@@ -148,8 +146,6 @@ class UserController {
         try {
             const { username, display_name, password } = req.body;
 
-            console.log("BACKEND", username, password, display_name);
-
             var result = await UserModel.findOne({ where: { username: username }});
             let imageUrl = ImageHelper.getRandomProfileImageUrl(req);
             
@@ -200,21 +196,39 @@ class UserController {
         }
     }
 
+    static async getAccessTokenError(accessToken) {
+        if (!accessToken) return { error: "Access token required" };
+
+        if (!CryptHelper.getInstance().verifyToken(accessToken)) {
+            return { error: "Invalid token signature" };
+        }
+
+        var fetchTokenResult = await UserTokenModel.findOne({ where: { 
+            access_token: accessToken, 
+            access_expiry: { 
+                [Op.gte]: Date.now()
+            } 
+        } });
+        
+        if (fetchTokenResult == null) {
+            return { error: "Token not found" };
+        }
+
+        return { result : fetchTokenResult};
+    }
+
     async getUsers(req, res) {
         try {
             const accessToken = req.headers['authorization'];
-            if (!accessToken) return res.status(401).json({ error: 'Access token required' });
-
-            if (!this.cryptHelper.verifyToken(accessToken)) {
-                return res.status(401).json({ error: 'Invalid token signature' });
+            let tokenCheck = await UserController.getAccessTokenError(accessToken)
+            if (tokenCheck.error != null) {
+                return res.status(401).json({ 
+                    error: {
+                        code: "401",
+                        message: tokenCheck.error
+                    } 
+                });
             }
-
-            var fetchTokenResult = await UserTokenModel.findOne({ where: { 
-                access_token: accessToken, 
-                access_expiry: { 
-                    [Op.gte]: Date.now()
-                } 
-            } });
 
             const { device_id, room_id } = req.query;
             
