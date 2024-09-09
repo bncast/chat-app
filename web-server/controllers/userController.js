@@ -32,7 +32,6 @@ class UserController {
                 const accessTokenExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
                 const refreshTokenExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
                 const accessToken = crypto.randomUUID();
-                console.log("origin access token:" + accessToken);
                 const refreshToken = crypto.randomUUID();
                 signedAccessToken = this.cryptHelper.signToken(accessToken);
                 signedRefreshToken = this.cryptHelper.signToken(refreshToken);
@@ -80,73 +79,58 @@ class UserController {
 
     async token(req, res) {
         try {
-            const { refresh_token, password, device_id, device_name } = req.body;
+            const { refresh_token } = req.body;
 
             if (!this.cryptHelper.verifyToken(refresh_token)) {
-                return res.status(401).json({ error: 'Invalid token signature' });
+                return res.status(401).json({ 
+                    error: { 
+                        code: "401", 
+                        message: "Invalid token signature" 
+                    } 
+                });
             }
 
             var fetchTokenResult = await UserTokenModel.findOne({ where: { 
-                refreshToken: refresh_token, 
+                refresh_token: refresh_token, 
                 refresh_expiry: { 
                     [Op.gte]: Date.now()
-                } 
+                },
+                is_invalid: 0
             } });
 
-            
 
-            var result = await UserModel.findOne({ where: { username: username, password: password }});
-            if (result == null) { throw new Error("User not found."); }
+            if (fetchTokenResult != null) {
+                UserTokenModel.update({ is_invalid: 1 }, { where: { id: fetchTokenResult.id }});
 
-            var fetchTokenResult = await UserTokenModel.findOne({ where: { 
-                user_id: result.id, 
-                access_expiry: { 
-                    [Op.gte]: Date.now()
-                } 
-            } });
-
-            let signedAccessToken
-            let signedRefreshToken
-
-            if (fetchTokenResult == null) {
                 const accessTokenExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
                 const refreshTokenExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
                 const accessToken = crypto.randomUUID();
-                console.log("origin access token:" + accessToken);
                 const refreshToken = crypto.randomUUID();
-                signedAccessToken = this.cryptHelper.signToken(accessToken);
-                signedRefreshToken = this.cryptHelper.signToken(refreshToken);
+                let signedAccessToken = this.cryptHelper.signToken(accessToken);
+                let signedRefreshToken = this.cryptHelper.signToken(refreshToken);
 
                 var tokenResult = await UserTokenModel.create({
                     access_token: signedAccessToken,
                     refresh_token: signedRefreshToken,
-                    user_id: result.id,
+                    user_id: fetchTokenResult.user_id,
                     access_expiry: accessTokenExpiresAt,
                     refresh_expiry: refreshTokenExpiresAt
                 });
                 if (tokenResult == null) { throw new Error("Failed to create token."); }
+
+                res.json({
+                    access_token: signedAccessToken, 
+                    refresh_token: signedRefreshToken,
+                    success: 1,
+                    error: {
+                        code: "000",
+                        message: ""
+                    }
+                });
                 
             } else {
-                signedAccessToken = fetchTokenResult.access_token;
-                signedRefreshToken = fetchTokenResult.refresh_token;
+                throw new Error("Refresh token not found.");
             }
-
-            // TODO: Manage devices
-
-            res.json({
-                info: {
-                    display_name: result.display_name,
-                    username: result.username,
-                    image_url: ImageHelper.getImagePath(req, result.image_url)
-                },
-                access_token: signedAccessToken, 
-                refresh_token: signedRefreshToken,
-                success: 1,
-                error: {
-                    code: "000",
-                    message: ""
-                }
-            });
         } catch (err) {
             res.status(500).json({
                 success: 0,
