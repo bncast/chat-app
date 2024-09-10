@@ -20,7 +20,7 @@ class UserCollectionViewCell: BaseCollectionViewCell {
         let view = UILabel()
         view.textAlignment = .left
         view.font = .title
-        view.textColor = .black
+        view.textColor = .text
         view.lineBreakMode = .byCharWrapping
         return view
     }()

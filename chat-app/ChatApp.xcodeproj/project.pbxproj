@@ -20,6 +20,9 @@
 		1D469A5E2C76C9F500FC044C /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F07ACE82C7304010010E21A /* MainViewController.swift */; };
 		1D469A5F2C76C9FA00FC044C /* AppFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBE7BEB2C72E4BC00AE0ACB /* AppFonts.swift */; };
 		1D469A602C76CA0400FC044C /* ChatRoomListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A700BF492C73258700B38530 /* ChatRoomListCollectionViewCell.swift */; };
+		1D5FEE352C9091EF00CF406D /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5FEE342C9091EF00CF406D /* MenuViewController.swift */; };
+		1D5FEE382C90930F00CF406D /* MenuCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5FEE372C90930F00CF406D /* MenuCollectionViewCell.swift */; };
+		1D5FEE3B2C9093B000CF406D /* MenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5FEE3A2C9093B000CF406D /* MenuViewModel.swift */; };
 		1D5FF7B02C7D68E20047765F /* AcceptInvitationEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5FF7AF2C7D68E20047765F /* AcceptInvitationEntity.swift */; };
 		1D7235BC2C72CE37003B419B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D7235BB2C72CE37003B419B /* AppDelegate.swift */; };
 		1D7235BE2C72CE37003B419B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D7235BD2C72CE37003B419B /* SceneDelegate.swift */; };
@@ -131,6 +134,9 @@
 		1D3DC6742C7C217A00D64B24 /* DeleteMessageEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteMessageEntity.swift; sourceTree = "<group>"; };
 		1D3DC6792C7C445500D64B24 /* GetInvitationsListEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetInvitationsListEntity.swift; sourceTree = "<group>"; };
 		1D3DC67B2C7C452600D64B24 /* SendInvitationEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendInvitationEntity.swift; sourceTree = "<group>"; };
+		1D5FEE342C9091EF00CF406D /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
+		1D5FEE372C90930F00CF406D /* MenuCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCollectionViewCell.swift; sourceTree = "<group>"; };
+		1D5FEE3A2C9093B000CF406D /* MenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewModel.swift; sourceTree = "<group>"; };
 		1D5FF7AF2C7D68E20047765F /* AcceptInvitationEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptInvitationEntity.swift; sourceTree = "<group>"; };
 		1D7235BB2C72CE37003B419B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1D7235BD2C72CE37003B419B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -280,6 +286,32 @@
 			path = Subview;
 			sourceTree = "<group>";
 		};
+		1D5FEE332C9091DA00CF406D /* Menu */ = {
+			isa = PBXGroup;
+			children = (
+				1D5FEE342C9091EF00CF406D /* MenuViewController.swift */,
+				1D5FEE392C9093A700CF406D /* ViewModel */,
+				1D5FEE362C9092E600CF406D /* Subviews */,
+			);
+			path = Menu;
+			sourceTree = "<group>";
+		};
+		1D5FEE362C9092E600CF406D /* Subviews */ = {
+			isa = PBXGroup;
+			children = (
+				1D5FEE372C90930F00CF406D /* MenuCollectionViewCell.swift */,
+			);
+			path = Subviews;
+			sourceTree = "<group>";
+		};
+		1D5FEE392C9093A700CF406D /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				1D5FEE3A2C9093B000CF406D /* MenuViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		1D7235AF2C72CE37003B419B = {
 			isa = PBXGroup;
 			children = (
@@ -347,6 +379,7 @@
 		6F07ACEA2C7306430010E21A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				1D5FEE332C9091DA00CF406D /* Menu */,
 				1DD910C62C8EC95A00085DBD /* Register */,
 				1DD910BE2C8E91EE00085DBD /* Login */,
 				A7FB9C512C7C06C8008DE3F3 /* UserList */,
@@ -806,6 +839,8 @@
 				1DD910C32C8EBA0B00085DBD /* LoginViewModel.swift in Sources */,
 				1D469A602C76CA0400FC044C /* ChatRoomListCollectionViewCell.swift in Sources */,
 				A7FB9C562C7C0701008DE3F3 /* UserListViewModel.swift in Sources */,
+				1D5FEE3B2C9093B000CF406D /* MenuViewModel.swift in Sources */,
+				1D5FEE352C9091EF00CF406D /* MenuViewController.swift in Sources */,
 				1D469A5F2C76C9FA00FC044C /* AppFonts.swift in Sources */,
 				1D469A5E2C76C9F500FC044C /* MainViewController.swift in Sources */,
 				A700BF5B2C739BC800B38530 /* StringHelpers.swift in Sources */,
@@ -832,6 +867,7 @@
 				A700BF612C74168500B38530 /* SearchBarView.swift in Sources */,
 				A7FB9C2E2C7589E6008DE3F3 /* JoinChatRoomEntity.swift in Sources */,
 				6F79696F2C75B99A0010B427 /* MemberWithStatusCollectionViewCell.swift in Sources */,
+				1D5FEE382C90930F00CF406D /* MenuCollectionViewCell.swift in Sources */,
 				A700BF4D2C73276B00B38530 /* UIViewControllerHelpers.swift in Sources */,
 				1DD910C82C8EC96A00085DBD /* RegisterViewController.swift in Sources */,
 				6F84CF6F2C7616F300F5C112 /* UpdateChatRoomNameEntity.swift in Sources */,

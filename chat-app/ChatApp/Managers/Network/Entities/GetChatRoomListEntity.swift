@@ -11,7 +11,7 @@ class GetChatRoomListEntity: RequestableApiEntity {
     typealias ResponseEntity = GetChatRoomListRespondableEntity
 
     static var method: BaseNetworkOperation.Method { .get }
-    var path: String { "rooms?device_id=\(AppConstant.shared.deviceId ?? "")" }
+    var path: String { "rooms" }
 }
 
 

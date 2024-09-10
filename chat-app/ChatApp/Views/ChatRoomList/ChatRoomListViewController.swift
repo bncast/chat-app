@@ -79,7 +79,6 @@ class ChatRoomListViewController: BaseViewController {
 
         navigationBar?.showChatRoomListButtons = true
         navigationBar?.title = "Chat Rooms"
-        navigationBar?.loadProfileButtonImage()
 
         Task {
             if AppConstant.shared.deviceId != nil {
@@ -107,7 +106,6 @@ class ChatRoomListViewController: BaseViewController {
 
         guard AppConstant.shared.deviceId == nil else { return }
         Task {
-            await showProfile()
             await IndicatorController.shared.show()
             await load()
             await IndicatorController.shared.dismiss()
@@ -157,10 +155,9 @@ class ChatRoomListViewController: BaseViewController {
 
             }
         }
-        navigationBar?.profileTapHandlerAsync = { [weak self] _ in
+        navigationBar?.menuTapHandlerAsync = { [weak self] _ in
             guard let self else { return }
-
-            await showProfile()
+            MenuViewController.push(on: self)
         }
 
         composeButton.tapHandlerAsync = { [weak self] _ in
@@ -223,11 +220,6 @@ class ChatRoomListViewController: BaseViewController {
     func load() async {
         searchBarView.setInitTerm("")
         await viewModel.load()
-    }
-
-    func showProfile() async {
-        await ProfileViewController.show(on: self)
-        navigationBar?.loadProfileButtonImage()
     }
 
     @MainActor

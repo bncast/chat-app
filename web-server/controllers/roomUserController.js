@@ -215,7 +215,7 @@ class RoomUserController {
     async getChatRooms(req, res) {
         try {
             const accessToken = req.headers['authorization'];
-            let tokenCheck = await UserController.getAccessTokenError(accessToken)
+            let tokenCheck = await UserController.getAccessTokenError(accessToken);
             if (tokenCheck.error != null) {
                 return res.status(401).json(tokenCheck);
             }
@@ -279,6 +279,7 @@ class RoomUserController {
                     message: ""
                 }
             }
+            console.log(response);
             res.json(response);
         } catch (err) {
             res.status(500).json({

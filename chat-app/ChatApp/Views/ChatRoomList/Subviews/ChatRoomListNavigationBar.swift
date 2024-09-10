@@ -13,29 +13,15 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
 
     private lazy var titleLabel: UILabel = {
         let view = UILabel()
-        view.font = .title
+        view.font = .title.semibold()
         view.textColor = UIColor.white
-        view.textAlignment = .center
+        view.textAlignment = .left
         return view
     }()
-
-    private lazy var profileImageView: UIImageView = {
-        let view = UIImageView(image: UIImage(systemName: "person.crop.circle.fill")?
-            .withRenderingMode(.alwaysTemplate))
-        view.contentMode = .scaleAspectFit
-        view.tintColor = .white
-        view.backgroundColor = .background(.mainLight)
-        view.layer.cornerRadius = 22
-        if let urlString = AppConstant.shared.currentUserImageUrlString {
-            view.setImage(from: urlString)
-        }
-        view.contentMode = .scaleAspectFill
-        view.clipsToBounds = true
-        return view
-    }()
+    private let iconPointSize: CGFloat = 25
 
     private(set) lazy var invitationButton: BaseButton = {
-        let configuration = UIImage.SymbolConfiguration(pointSize: 30)
+        let configuration = UIImage.SymbolConfiguration(pointSize: iconPointSize)
         let image = UIImage(systemName: "envelope", withConfiguration: configuration)?
             .withRenderingMode(.alwaysTemplate)
 
@@ -45,8 +31,19 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         return view
     }()
 
+    private(set) lazy var menuButton: BaseButton = {
+        let configuration = UIImage.SymbolConfiguration(pointSize: iconPointSize)
+        let image = UIImage(systemName: "gearshape", withConfiguration: configuration)?
+            .withRenderingMode(.alwaysTemplate)
+
+        let view = BaseButton(image: image)
+        view.tintColor = .background(.mainLight)
+        view.setBackgroundColor(.clear, for: .normal)
+        return view
+    }()
+
     private(set) lazy var moreButton: BaseButton = {
-        let configuration = UIImage.SymbolConfiguration(pointSize: 30)
+        let configuration = UIImage.SymbolConfiguration(pointSize: iconPointSize)
         let image = UIImage(systemName: "info.circle", withConfiguration: configuration)?
             .withRenderingMode(.alwaysTemplate)
 
@@ -57,7 +54,7 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
     }()
 
     private(set) lazy var closeButton: BaseButton = {
-        let configuration = UIImage.SymbolConfiguration(pointSize: 30)
+        let configuration = UIImage.SymbolConfiguration(pointSize: iconPointSize)
         let image = UIImage(systemName: "xmark", withConfiguration: configuration)?
             .withRenderingMode(.alwaysTemplate)
 
@@ -69,13 +66,13 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
 
     var showChatRoomListButtons: Bool = true { didSet {
         invitationButton.isHidden = false
-        profileImageView.isHidden = false
+        menuButton.isHidden = false
         moreButton.isHidden = false
         closeButton.isHidden = false
 
         UIView.animate(withDuration: 0.2) { [weak self] in
             self?.invitationButton.alpha = 1
-            self?.profileImageView.alpha = 1
+            self?.menuButton.alpha = 1
             self?.moreButton.alpha = 0
             self?.closeButton.alpha = 0
         } completion: { [weak self] _ in
@@ -86,42 +83,42 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
 
     var showChatRoomMessageButtons: Bool = true { didSet {
         invitationButton.isHidden = false
-        profileImageView.isHidden = false
+        menuButton.isHidden = false
         moreButton.isHidden = false
         closeButton.isHidden = false
 
         UIView.animate(withDuration: 0.2) { [weak self] in
             self?.invitationButton.alpha = 0
-            self?.profileImageView.alpha = 0
+            self?.menuButton.alpha = 0
             self?.closeButton.alpha = 0
             self?.moreButton.alpha = 1
         } completion: { [weak self] _ in
             self?.invitationButton.isHidden = true
-            self?.profileImageView.isHidden = true
+            self?.menuButton.isHidden = true
             self?.closeButton.isHidden = true
         }
     } }
 
     var showInvitationListButtons: Bool = true { didSet {
         invitationButton.isHidden = false
-        profileImageView.isHidden = false
+        menuButton.isHidden = false
         moreButton.isHidden = false
         closeButton.isHidden = false
 
         UIView.animate(withDuration: 0.2) { [weak self] in
             self?.invitationButton.alpha = 0
-            self?.profileImageView.alpha = 0
+            self?.menuButton.alpha = 0
             self?.moreButton.alpha = 0
             self?.closeButton.alpha = 1
         } completion: { [weak self] _ in
             self?.invitationButton.isHidden = true
-            self?.profileImageView.isHidden = true
+            self?.menuButton.isHidden = true
             self?.moreButton.isHidden = true
         }
     } }
 
     var showCloseButtonOnly: Bool = true { didSet {
-        profileImageView.isHidden = true
+        menuButton.isHidden = true
         closeButton.isHidden = false
         moreButton.isHidden = true
         invitationButton.isHidden = true
@@ -134,8 +131,8 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
     var invitationTapHandler: ((BaseButton) -> Void)?
     var invitationTapHandlerAsync: ((BaseButton) async -> Void)?
 
-    var profileTapHandler: ((UIImageView) -> Void)?
-    var profileTapHandlerAsync: ((UIImageView) async -> Void)?
+    var menuTapHandler: ((BaseButton) -> Void)?
+    var menuTapHandlerAsync: ((BaseButton) async -> Void)?
 
     var moreTapHandler: ((BaseButton) -> Void)?
     var moreTapHandlerAsync: ((BaseButton) async -> Void)?
@@ -147,7 +144,7 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
     override func setupLayout() {
         addSubviews([
             titleLabel,
-            profileImageView,
+            menuButton,
             invitationButton,
             moreButton,
             closeButton
@@ -159,17 +156,17 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
     }
 
     override func setupConstraints() {
-        titleLabel.left == left + 74
+        titleLabel.left == left + 42
         titleLabel.right == right - 74
         titleLabel.centerY == centerY
         titleLabel.height == 50
 
-        profileImageView.left == left + 22
-        profileImageView.width == 44
-        profileImageView.centerY == centerY
-        profileImageView.height == 44
+        menuButton.right == right - 18
+        menuButton.width == 44
+        menuButton.centerY == centerY
+        menuButton.height == 44
 
-        invitationButton.right == right - 18
+        invitationButton.right == menuButton.left - 8
         invitationButton.width == 44
         invitationButton.centerY == centerY
         invitationButton.height == 44
@@ -186,9 +183,19 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
     }
 
     override func setupActions() {
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:)))
-        profileImageView.isUserInteractionEnabled = true
-        profileImageView.addGestureRecognizer(tapRecognizer)
+        menuButton.tapHandlerAsync = { [weak self] _ in
+            guard let self else { return }
+
+            if let menuTapHandlerAsync {
+                Task { [weak self] in
+                    guard let self else { return }
+
+                    await menuTapHandlerAsync(menuButton)
+                }
+            } else {
+                menuTapHandler?(invitationButton)
+            }
+        }
 
         invitationButton.tapHandlerAsync = { [weak self] _ in
             guard let self else { return }
@@ -223,21 +230,5 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
             closeTapHandler?(closeButton)
         }
 
-    }
-
-    @objc
-    private func imageTapped(_ sender: UITapGestureRecognizer) {
-        guard let imageView = sender.view as? UIImageView else { return }
-
-        if let profileTapHandlerAsync {
-            Task { await profileTapHandlerAsync(imageView) }
-        } else {
-            profileTapHandler?(imageView)
-        }
-    }
-
-    func loadProfileButtonImage() {
-        guard let urlString = AppConstant.shared.currentUserImageUrlString else { return }
-        profileImageView.setImage(from: urlString)
     }
 }
