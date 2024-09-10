@@ -366,6 +366,10 @@ class AppConstant: NSObject {
     @KeychainReadAndWrite("deviceId", default: nil)
     var deviceId: String?
     @KeychainReadAndWrite("displayName", default: nil)
+    var accessToken: String?
+    @KeychainReadAndWrite("accessToken", default: nil)
+    var refreshToken: String?
+    @KeychainReadAndWrite("refreshToken", default: nil)
     var displayName: String?
     @KeychainReadAndWrite("currentUserImageUrlString", default: nil)
     var currentUserImageUrlString: String?
@@ -424,12 +428,6 @@ extension AppConstant {
     }
 }
 
-// MARK: - Device Key
-extension AppConstant {
-    var isNewUser: Bool {
-        deviceId == nil
-    }
-}
 
 // MARK: - Screen size
 extension AppConstant {

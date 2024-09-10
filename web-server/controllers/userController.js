@@ -5,6 +5,7 @@ const UserModel = require('../models/userModel');
 const UserTokenModel = require('../models/userTokenModel');
 const CryptHelper = require('../utils/cryptHelper');
 const ImageHelper = require('../utils/imageHelper');
+const { use } = require("../routes/routes");
 
 class UserController {
     constructor() {
@@ -15,9 +16,10 @@ class UserController {
         try {
             const { username, password, device_id, device_name } = req.body;
 
+            
             var result = await UserModel.findOne({ where: { username: username, password: password }});
-            if (result == null) { throw new Error("User not found."); }
-
+            if (result == null) { throw new Error("User not found"); }
+            console.log("NINOTEST", username, password);
             var fetchTokenResult = await UserTokenModel.findOne({ where: { 
                 user_id: result.id, 
                 access_expiry: { 
