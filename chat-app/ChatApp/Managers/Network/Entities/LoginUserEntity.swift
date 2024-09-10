@@ -1,5 +1,5 @@
 //
-//  LoginEntity.swift
+//  LoginUserEntity.swift
 //  ChatApp
 //
 //  Created by Niño Castorico on 9/9/24.
@@ -7,8 +7,8 @@
 
 import Foundation
 
-class LoginEntity: RequestableApiEntity {
-    typealias ResponseEntity = LoginRespondableEntity
+class LoginUserEntity: RequestableApiEntity {
+    typealias ResponseEntity = LoginUserRespondableEntity
 
     static var method: BaseNetworkOperation.Method { .post }
 
@@ -16,7 +16,7 @@ class LoginEntity: RequestableApiEntity {
     var isIgnoreAccessTokenError: Bool { ignoreError }
     var isIgnoreLogoutErrors: Bool { ignoreError }
     var body: RequestBody? {
-        LoginBody(username: username, password: password, deviceId: deviceId, deviceName: deviceName)
+        LoginUserBody(username: username, password: password, deviceId: deviceId, deviceName: deviceName)
     }
     private var ignoreError: Bool { false }
     private let username: String
@@ -32,7 +32,7 @@ class LoginEntity: RequestableApiEntity {
     }
 }
 
-struct LoginBody : RequestJsonBody {
+struct LoginUserBody : RequestJsonBody {
     var encoder: JSONEncoder { JSONEncoder.snakeCaseEncoder() }
 
     let username: String
@@ -41,7 +41,7 @@ struct LoginBody : RequestJsonBody {
     let deviceName: String
 }
 
-struct LoginRespondableEntity: RespondableApiEntity {
+struct LoginUserRespondableEntity: RespondableApiEntity {
     static var decoder: JSONDecoder {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -52,10 +52,10 @@ struct LoginRespondableEntity: RespondableApiEntity {
     var refreshToken: String?
     var success: Int
     var error: ErrorMessage?
-    var info: LoginInfoEntity?
+    var info: UserInfoEntity?
 }
 
-struct LoginInfoEntity: Codable {
+struct UserInfoEntity: Codable {
     var displayName: String
     var username: String
     var imageUrl: String?

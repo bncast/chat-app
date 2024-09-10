@@ -19,7 +19,7 @@ class UserController {
             
             var result = await UserModel.findOne({ where: { username: username, password: password }});
             if (result == null) { throw new Error("User not found"); }
-            console.log("NINOTEST", username, password);
+            
             var fetchTokenResult = await UserTokenModel.findOne({ where: { 
                 user_id: result.id, 
                 access_expiry: { 
@@ -148,6 +148,8 @@ class UserController {
         try {
             const { username, display_name, password } = req.body;
 
+            console.log("BACKEND", username, password, display_name);
+
             var result = await UserModel.findOne({ where: { username: username }});
             let imageUrl = ImageHelper.getRandomProfileImageUrl(req);
             
@@ -157,10 +159,21 @@ class UserController {
                 throw new Error("User already exists.");
             }
 
-            const accessToken = UUID().toString();
-            const refreshToken = UUID().toString();
-            const signedAccessToken = this.cryptHelper.signToken(accessToken);
-            const signedRefreshToken = this.cryptHelper.signToken(refreshToken);
+            const accessTokenExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+            const refreshTokenExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+            const accessToken = crypto.randomUUID();
+            const refreshToken = crypto.randomUUID();
+            let signedAccessToken = this.cryptHelper.signToken(accessToken);
+            let signedRefreshToken = this.cryptHelper.signToken(refreshToken);
+
+            var tokenResult = await UserTokenModel.create({
+                access_token: signedAccessToken,
+                refresh_token: signedRefreshToken,
+                user_id: result.id,
+                access_expiry: accessTokenExpiresAt,
+                refresh_expiry: refreshTokenExpiresAt
+            });
+            if (tokenResult == null) { throw new Error("Failed to create token."); }
  
             res.json({
                 info: {

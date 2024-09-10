@@ -215,7 +215,7 @@ class ChatRoomListViewController: BaseViewController {
         navController.viewControllers = [rootVC]
         navController.modalPresentationStyle = .fullScreen
 
-        parentViewController.present(navController, animated: false)
+        parentViewController.present(navController, animated: true)
     }
 }
 

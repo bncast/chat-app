@@ -23,7 +23,7 @@ class LoginViewController: BaseViewController {
     private lazy var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
-        view.alignment = .center
+        view.alignment = .fill
         view.spacing = 8
         return view
     }()
@@ -45,15 +45,15 @@ class LoginViewController: BaseViewController {
     private lazy var usernameField: FormTextField = {
         let view = FormTextField()
         view.title = "Username"
-        view.delegate = self
+        view.textField.delegate = self
         return view
     }()
 
     private lazy var passwordField: FormTextField = {
         let view = FormTextField()
         view.title = "Password"
-        view.isSecureTextEntry = true
-        view.delegate = self
+        view.textField.isSecureTextEntry = true
+        view.textField.delegate = self
         return view
     }()
 
@@ -100,8 +100,8 @@ class LoginViewController: BaseViewController {
         serverListButton.width == 40
         serverListButton.height == 40
 
-        stackView.left == view.left
-        stackView.right == view.right
+        stackView.left == view.left + 20
+        stackView.right == view.right - 24
         stackViewCenterYConstraint = stackView.centerY == view.centerY
 
         imageView.height == 250
@@ -132,20 +132,24 @@ class LoginViewController: BaseViewController {
         }
 
         loginButton.tapHandlerAsync = { [weak self] _ in
-            guard let self, let username = usernameField.text,
-                  let password = passwordField.text,
+
+            // TODO: Validation
+            guard let self, let username = usernameField.textField.text,
+                  let password = passwordField.textField.text,
                   !username.isEmpty, !password.isEmpty
             else { return }
 
             await IndicatorController.shared.show()
-            if await viewModel.login(username: username, password: password) == true {
+            if await viewModel.login(username: username, password: password) {
                 ChatRoomListViewController.show(on: self)
             }
             await IndicatorController.shared.dismiss()
         }
 
         registerButton.tapHandlerAsync = { [weak self] _ in
-            print("NINOTEST REGISTER")
+            guard let self else { return }
+
+            RegisterViewController.show(on: self)
         }
     }
 
@@ -159,7 +163,7 @@ class LoginViewController: BaseViewController {
 
 extension LoginViewController: ViewControllerKeyboardAppear {
     func willShowKeyboard(frame: CGRect, duration: TimeInterval, curve: UIView.AnimationCurve) {
-        stackViewCenterYConstraint?.constant =  -(frame.height / 2)
+        stackViewCenterYConstraint?.constant =  -(frame.height / 1.7)
         UIView.animate(withDuration: duration, delay: 0, options: curve.animationOptions) { [weak self] in
             self?.view.layoutIfNeeded()
         }
@@ -177,78 +181,5 @@ extension LoginViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false
-    }
-}
-
-class FormTextField: BaseView {
-    private var stackView: UIStackView = {
-        let view = UIStackView()
-        view.axis = .vertical
-        return view
-    }()
-
-    private var titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = .captionSubtext
-        return label
-    }()
-
-    private var textField: UITextField = {
-        let textField = UITextField()
-        textField.borderStyle = .roundedRect
-        textField.autocapitalizationType = .none
-        textField.autocorrectionType = .no
-        return textField
-    }()
-
-    private var messageLabel: UILabel = {
-        let label = UILabel()
-        label.font = .captionSubtext
-        return label
-    }()
-
-    var title: String? {
-        get { titleLabel.text }
-        set { titleLabel.text = newValue }
-    }
-
-    var message: String? {
-        get { messageLabel.text }
-    }
-
-    var isSecureTextEntry: Bool {
-        get { textField.isSecureTextEntry }
-        set { textField.isSecureTextEntry = newValue}
-    }
-
-    var delegate: UITextFieldDelegate? {
-        get { textField.delegate }
-        set { textField.delegate = newValue }
-    }
-
-    private(set) var text: String? {
-        get { textField.text }
-        set { textField.text = newValue }
-    }
-
-    override func setupLayout() {
-        addSubviews([
-            stackView.addArrangedSubviews([
-                titleLabel,
-                textField,
-                messageLabel
-            ])
-        ])
-    }
-
-    override func setupConstraints() {
-        stackView.setLayoutEqualTo(self)
-
-        textField.width == 250
-
-        titleLabel.height == 20
-        textField.height == 40
-        messageLabel.height == 10
-
     }
 }
