@@ -11,16 +11,14 @@ class GetMessageEntity: RequestableApiEntity {
 
     static var method: BaseNetworkOperation.Method { .get }
 
-    var path: String { "listen?device_id=\(deviceId)&room_id=\(roomId)" }
+    var path: String { "listen?room_id=\(roomId)" }
     var isIgnoreAccessTokenError: Bool { ignoreError }
     var isIgnoreLogoutErrors: Bool { ignoreError }
     private var ignoreError: Bool { false }
 
-    var deviceId: String
     var roomId: Int
 
-    init(deviceId: String, roomId: Int) {
-        self.deviceId = deviceId
+    init(roomId: Int) {
         self.roomId = roomId
     }
 }

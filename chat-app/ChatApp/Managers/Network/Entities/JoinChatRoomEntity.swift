@@ -12,15 +12,13 @@ class JoinChatRoomEntity: RequestableApiEntity {
 
     static var method: BaseNetworkOperation.Method { .post }
     var path: String { "rooms/join" }
-    var body: RequestBody? { JoinChatRoomRequestBody(roomId: roomId, deviceId: deviceId, password: password) }
+    var body: RequestBody? { JoinChatRoomRequestBody(roomId: roomId, password: password) }
 
     private let roomId: Int
-    private let deviceId: String
     private let password: String?
 
-    init(roomId: Int, deviceId: String, password: String?) {
+    init(roomId: Int, password: String?) {
         self.roomId = roomId
-        self.deviceId = deviceId
         self.password = password
     }
 }
@@ -30,13 +28,16 @@ struct JoinChatRoomRequestBody: RequestJsonBody {
     var encoder: JSONEncoder { JSONEncoder.snakeCaseEncoder() }
 
     var roomId: Int
-    var deviceId: String
     var password: String?
 }
 
 // MARK: Defining response
 struct JoinChatRoomRespondableEntity: RespondableApiEntity {
-    var encoder: JSONEncoder { JSONEncoder.snakeCaseEncoder() }
+    static var decoder: JSONDecoder {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }
 
     var success: Int
     var error: ErrorMessage?

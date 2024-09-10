@@ -44,4 +44,10 @@ MessageModel.init({
     sequelize: Database.getInstance().sequelize
 });
 
+// MessageModel.hasMany(RoomUserModel);
+// RoomUserModel.belongsTo(MessageModel);
+
+// RoomUserModel.hasMany(MessageModel);
+// MessageModel.belongsTo(RoomUserModel);
+
 module.exports = MessageModel;

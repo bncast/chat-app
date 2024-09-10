@@ -107,12 +107,9 @@ class LoginViewController: BaseViewController {
         imageView.height == 250
 
         errorLabel.height == 20
-
         loginButton.height == 40
-        loginButton.width == 250
-
         registerButton.height == 40
-        registerButton.width == 250
+
     }
 
     override func setupBindings() {

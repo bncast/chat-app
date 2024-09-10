@@ -183,7 +183,7 @@ extension InvitationListViewController {
         cell.joinTapHandlerAsync = { [weak self] _ in
             do {
                 await IndicatorController.shared.show()
-                let chatInfo = await self?.viewModel.join(roomId: item.id)
+                let chatInfo = try await self?.viewModel.join(roomId: item.roomId, invitationId: item.id)
                 await IndicatorController.shared.dismiss()
 
                 self?.continuation?.resume(returning: chatInfo)

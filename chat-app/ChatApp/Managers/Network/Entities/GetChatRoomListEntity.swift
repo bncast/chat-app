@@ -30,7 +30,7 @@ struct GetChatRoomListRespondableEntity: RespondableApiEntity {
 
 struct ChatRoomEntity: Codable {
     var roomId: Int
-    var authorId: String
+    var authorId: Int
     var authorName: String
     var preview: String
     var isJoined: Bool

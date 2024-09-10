@@ -199,7 +199,7 @@ extension UserListViewController {
 
             do {
                 await IndicatorController.shared.show()
-                try await viewModel.inviteUser(deviceId: item.deviceId)
+                try await viewModel.inviteUser(userId: item.userId)
                 await IndicatorController.shared.dismiss()
             } catch {
                 print("[UserListViewController] Error! \(error as! NetworkError)")

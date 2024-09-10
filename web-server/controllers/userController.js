@@ -3,19 +3,18 @@ const crypto = require("crypto");
 const { Op } = require('sequelize');
 const UserModel = require('../models/userModel');
 const UserTokenModel = require('../models/userTokenModel');
+const RoomUserModel = require('../models/roomUserModel');
 const CryptHelper = require('../utils/cryptHelper');
 const ImageHelper = require('../utils/imageHelper');
-const { use } = require("../routes/routes");
 
 class UserController {
     constructor() {
-        this.cryptHelper = new CryptHelper();
+        this.cryptHelper = CryptHelper.getInstance();
     }
 
     async login(req, res) {
         try {
             const { username, password, device_id, device_name } = req.body;
-
             
             var result = await UserModel.findOne({ where: { username: username, password: password }});
             if (result == null) { throw new Error("User not found"); }
@@ -148,8 +147,6 @@ class UserController {
         try {
             const { username, display_name, password } = req.body;
 
-            console.log("BACKEND", username, password, display_name);
-
             var result = await UserModel.findOne({ where: { username: username }});
             let imageUrl = ImageHelper.getRandomProfileImageUrl(req);
             
@@ -200,34 +197,60 @@ class UserController {
         }
     }
 
+    static async getAccessTokenError(accessToken) {
+        if (!accessToken) { return { 
+                error: {
+                    code: "401",
+                    message: "Access token required"
+                } 
+            }
+        }
+
+        if (!CryptHelper.getInstance().verifyToken(accessToken)) {
+            return { error: {
+                code: "401",
+                message: "Invalid token signature"
+            } };
+        }
+
+        var fetchTokenResult = await UserTokenModel.findOne({ where: { 
+            access_token: accessToken, 
+            access_expiry: { 
+                [Op.gte]: Date.now()
+            } 
+        } });
+        
+        if (fetchTokenResult == null) {
+            return { error:{
+                code: "401",
+                message: "Token not found"
+            } };
+        }
+
+        return { result : fetchTokenResult };
+    }
+
     async getUsers(req, res) {
         try {
             const accessToken = req.headers['authorization'];
-            if (!accessToken) return res.status(401).json({ error: 'Access token required' });
-
-            if (!this.cryptHelper.verifyToken(accessToken)) {
-                return res.status(401).json({ error: 'Invalid token signature' });
+            let tokenCheck = await UserController.getAccessTokenError(accessToken)
+            if (tokenCheck.error != null) {
+                return res.status(401).json(tokenCheck);
             }
 
-            var fetchTokenResult = await UserTokenModel.findOne({ where: { 
-                access_token: accessToken, 
-                access_expiry: { 
-                    [Op.gte]: Date.now()
-                } 
-            } });
-
-            const { device_id, room_id } = req.query;
+            const { room_id } = req.query;
             
+            let roomUserResult = await RoomUserModel.findAll({ where: {room_id: room_id } });
+            let roomUserIds = roomUserResult.map((item) => item.user_id);
+            let usersResult = await UserModel.findAll({ where: { id: { [Op.not]: roomUserIds }}});
 
-            throw new Error("TODO: Create request, get users not in room, move function to room user");
-
-            const formattedResponse = result.map(member => ({
+            const formattedResponse = usersResult.map(member => ({
                 name: member.display_name,  
-                user_image_url: `${req.protocol}://${req.get('host')}/` + member.image_url,  
-                device_id: member.user_id
+                user_image_url: ImageHelper.getImagePath(req, member.image_url), 
+                user_id: member.id
             }));
 
-            if (result) {
+            if (formattedResponse) {
                 res.json({
                     users: formattedResponse,
                     success: 1,
