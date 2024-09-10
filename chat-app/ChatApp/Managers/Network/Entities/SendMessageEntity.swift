@@ -15,16 +15,14 @@ class SendMessageEntity: RequestableApiEntity {
     var isIgnoreAccessTokenError: Bool { ignoreError }
     var isIgnoreLogoutErrors: Bool { ignoreError }
     var body: RequestBody? {
-        SendMessageBody(deviceId: deviceId, message: message, roomUserId: roomUserId, replyToId: replyToId)
+        SendMessageBody(message: message, roomUserId: roomUserId, replyToId: replyToId)
     }
     private var ignoreError: Bool { false }
-    private let deviceId: String
     private let message: String
     private let roomUserId: Int
     private let replyToId: Int?
 
-    init(deviceId: String, message: String, roomUserId: Int, replyToId: Int?) {
-        self.deviceId = deviceId
+    init(message: String, roomUserId: Int, replyToId: Int?) {
         self.message = message
         self.roomUserId = roomUserId
         self.replyToId = replyToId
@@ -33,8 +31,7 @@ class SendMessageEntity: RequestableApiEntity {
 
 struct SendMessageBody : RequestJsonBody {
     var encoder: JSONEncoder { JSONEncoder.snakeCaseEncoder() }
-    
-    let deviceId: String
+
     let message: String
     let roomUserId: Int
     let replyToId: Int?

@@ -2,6 +2,8 @@
 const MessageModel = require('../models/messageModel');
 const UserModel = require('../models/userModel');
 const RoomUserModel = require('../models/roomUserModel');
+const UserController = require('../controllers/userController');
+const ImageHelper = require('../utils/imageHelper');
 
 
 class MessageController {
@@ -14,14 +16,20 @@ class MessageController {
     // Create a new message
     async createMessage(req, res, completion) {
         try {
-            const { device_id, room_user_id, message, reply_to_id } = req.body;
-
-            let userResult = await this.userModel.getUserById(device_id);
-            if (userResult.length <= 0) {
-                throw new Error("User not found.");
+            const accessToken = req.headers['authorization'];
+            let tokenCheck = await UserController.getAccessTokenError(accessToken);
+            if (tokenCheck.error != null) {
+                return res.status(401).json(tokenCheck);
             }
+            let userId = tokenCheck.result.user_id;
 
-            let result = await this.messageModel.createMessage(room_user_id, message, reply_to_id);
+            const { room_user_id, message, reply_to_id } = req.body;
+
+            let messageResult = await MessageModel.create({ 
+                room_user_id: room_user_id,
+                content: message,
+                reply_to_id: reply_to_id
+            });//this.messageModel.createMessage(room_user_id, message, reply_to_id);
             
             res.status(201).json({ 
                 success: 1,
@@ -31,10 +39,9 @@ class MessageController {
                 }
             });
 
-            let roomUserResult = await this.roomUserModel.getRoomUserForRoomUserId(room_user_id);
-            let room = await roomUserResult[0];
-
-            completion(room.room_id);
+            let roomUserResult = await RoomUserModel.findOne({ where: { room_user_id: room_user_id}});
+            
+            completion(roomUserResult.room_id);
         } catch (err) {
             res.status(500).json({ error: "Failed to create message" });
         }
@@ -43,26 +50,37 @@ class MessageController {
     // Get all messages in a room
     async getMessagesByRoom(req, res) {
         try {
-            const { device_id, room_id, room_user_id } = req.query
-
-            let userResult = await this.userModel.getUserById(device_id);
-            if (userResult.length <= 0) {
-                throw new Error("User not found.");
+            const accessToken = req.headers['authorization'];
+            let tokenCheck = await UserController.getAccessTokenError(accessToken);
+            if (tokenCheck.error != null) {
+                return res.status(401).json(tokenCheck);
             }
+            let userId = tokenCheck.result.user_id;
 
-            const messages = await this.messageModel.getMessagesByRoom(room_id, room_user_id);
-            
-            const formattedMessages = messages.map(msg => ({
-                message_id: msg.message_id,
-                author_id: msg.author_id,
-                author_image_url: `${req.protocol}://${req.get('host')}/` + msg.author_image,
-                content: msg.content,
-                created_at: msg.created_at,
-                updated_at: msg.updated_at,
-                is_current_user: msg.is_current_user == 1,
-                is_replying_to: msg.reply_to_user,
-                is_replying_to_content: msg.reply_to_content
-            }));
+            const { room_id, room_user_id } = req.query
+
+            const roomUsers = await RoomUserModel.findAll({ where: { room_id: room_id }});
+            const roomUserIds = roomUsers.map((item) => item.room_user_id);
+            const messages = await MessageModel.findAll({ where: { room_user_id: roomUserIds }});
+
+            var formattedMessages = [];
+
+            for await (const msg of messages) {
+                const authorRoomUser = await RoomUserModel.findOne({ where: { room_user_id: msg.room_user_id }});
+                const author = await UserModel.findOne({ where: { id: authorRoomUser.user_id }});
+                const isCurrentUser = author.id == userId
+                formattedMessages.push({
+                    message_id: msg.message_id,
+                    author_id: msg.room_user_id,
+                    author_image_url: ImageHelper.getImagePath(req, author.image_url),
+                    content: msg.content,
+                    created_at: msg.created_at,
+                    updated_at: msg.updated_at,
+                    is_current_user: isCurrentUser,
+                    is_replying_to: null, // TODO:
+                    is_replying_to_content: null // TODO:
+                });
+            }
             
             let response = {
                 messages: formattedMessages,

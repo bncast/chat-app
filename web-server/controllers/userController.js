@@ -197,10 +197,19 @@ class UserController {
     }
 
     static async getAccessTokenError(accessToken) {
-        if (!accessToken) return { error: "Access token required" };
+        if (!accessToken) { return { 
+                error: {
+                    code: "401",
+                    message: "Access token required"
+                } 
+            }
+        }
 
         if (!CryptHelper.getInstance().verifyToken(accessToken)) {
-            return { error: "Invalid token signature" };
+            return { error: {
+                code: "401",
+                message: "Invalid token signature"
+            } };
         }
 
         var fetchTokenResult = await UserTokenModel.findOne({ where: { 
@@ -211,23 +220,21 @@ class UserController {
         } });
         
         if (fetchTokenResult == null) {
-            return { error: "Token not found" };
+            return { error:{
+                code: "401",
+                message: "Token not found"
+            } };
         }
 
-        return { result : fetchTokenResult};
+        return { result : fetchTokenResult };
     }
 
     async getUsers(req, res) {
         try {
             const accessToken = req.headers['authorization'];
-            let tokenCheck = await UserController.getAccessTokenError(accessToken)
+            let tokenCheck = await UserController.getAccessTokenError(accessToken);
             if (tokenCheck.error != null) {
-                return res.status(401).json({ 
-                    error: {
-                        code: "401",
-                        message: tokenCheck.error
-                    } 
-                });
+                return res.status(401).json(tokenCheck);
             }
 
             const { device_id, room_id } = req.query;

@@ -48,11 +48,10 @@ class ChatRoomViewModel {
     var details: ChatInfo?
 
     func load() async {
-        guard let deviceId = AppConstant.shared.deviceId,
-              let roomId = details?.roomId,
+        guard let roomId = details?.roomId,
               let roomUserId = details?.currentRoomUserId,
               var messages = try? await GetChatRoomMessagesEntity(
-                deviceId: deviceId, roomId: roomId, roomUserId: roomUserId
+                roomId: roomId, roomUserId: roomUserId
               ).run().messages
         else {
             //TODO: NO DATA
@@ -112,7 +111,7 @@ class ChatRoomViewModel {
             response = try? await UpdateMessageEntity(deviceId: deviceId, message: message, messageId: isEditingMessageId).run()
             self.isEditingMessageId = nil
         } else {
-            response = try? await SendMessageEntity(deviceId: deviceId, message: message, roomUserId: roomUserId, replyToId: isReplyingMessageId).run()
+            response = try? await SendMessageEntity(message: message, roomUserId: roomUserId, replyToId: isReplyingMessageId).run()
 
             self.isReplyingMessageId = nil
         }
@@ -130,13 +129,13 @@ class ChatRoomViewModel {
 
     var request: GetMessageRespondableEntity?
     private func listenToMessages() {
-        guard let details, let deviceId = AppConstant.shared.deviceId else { return }
+        guard let details else { return }
 
         Task { [weak self] in
             guard let self else { return }
 
             do {
-                request = try await GetMessageEntity(deviceId: deviceId, roomId: details.roomId).run()
+                request = try await GetMessageEntity(roomId: details.roomId).run()
                 await load()
             } catch {
                 listenToMessages()

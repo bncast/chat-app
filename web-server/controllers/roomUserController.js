@@ -25,12 +25,7 @@ class RoomUserController {
             const accessToken = req.headers['authorization'];
             let tokenCheck = await UserController.getAccessTokenError(accessToken)
             if (tokenCheck.error != null) {
-                return res.status(401).json({ 
-                    error: {
-                        code: "401",
-                        message: tokenCheck.error
-                    } 
-                });
+                return res.status(401).json(tokenCheck);
             }
 
             let userId = tokenCheck.result.user_id;
@@ -222,12 +217,7 @@ class RoomUserController {
             const accessToken = req.headers['authorization'];
             let tokenCheck = await UserController.getAccessTokenError(accessToken)
             if (tokenCheck.error != null) {
-                return res.status(401).json({ 
-                    error: {
-                        code: "401",
-                        message: tokenCheck.error
-                    } 
-                });
+                return res.status(401).json(tokenCheck);
             }
             let userId = tokenCheck.result.user_id;
 
@@ -305,12 +295,7 @@ class RoomUserController {
             const accessToken = req.headers['authorization'];
             let tokenCheck = await UserController.getAccessTokenError(accessToken)
             if (tokenCheck.error != null) {
-                return res.status(401).json({ 
-                    error: {
-                        code: "401",
-                        message: tokenCheck.error
-                    } 
-                });
+                return res.status(401).json(tokenCheck);
             }
             let userId = tokenCheck.result.user_id;
 
@@ -320,7 +305,6 @@ class RoomUserController {
                 room_id: room_id
             }});
             if (!roomResult) { throw new Error("Room not found."); }
-            
             if (roomResult.password != null && roomResult.password == password) { throw new Error("Password is required.");}
 
             let roomUserResult = await RoomUserModel.create({

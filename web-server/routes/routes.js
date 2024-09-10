@@ -15,8 +15,8 @@ const invitationController = new InvitationController();
 const WAITING_TIME_LIMIT = 60 * 1000;
 var waitingClients = []; // Store waiting client responses
 
-router.get('/api/listen', (req, res) => {
-  const { device_id, room_id } = req.query;
+router.get('/listen', (req, res) => {
+  const { room_id } = req.query;
   
   waitingClients.push({ room_id: room_id, clientRes: res, timestamp: Date.now() });
 });
@@ -33,7 +33,8 @@ router.delete('/api/rooms', (req, res) => roomUserController.deleteChatRoom(req,
 
 router.post('/rooms/join', (req, res) => roomUserController.joinRoom(req, res)); 
 
-router.get('/api/messages', (req, res) => messageController.getMessagesByRoom(req, res));  // TODO:
+router.get('/messages', (req, res) => messageController.getMessagesByRoom(req, res));  
+
 router.delete('/api/messages', (req, res) => {  // TODO:
   removeTimedOutClients();
 
@@ -41,7 +42,6 @@ router.delete('/api/messages', (req, res) => {  // TODO:
     notifyClients(targetRoomId);
   });
 });
-
 router.put('/api/messages', (req, res) => {  // TODO:
   removeTimedOutClients();
 
@@ -50,7 +50,7 @@ router.put('/api/messages', (req, res) => {  // TODO:
   });
 });
 
-router.post('/api/send', (req, res) => {  // TODO:
+router.post('/send', (req, res) => {
   removeTimedOutClients();
 
   messageController.createMessage(req, res, (targetRoomId) => {
