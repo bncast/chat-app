@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const { Op } = require('sequelize');
 const UserModel = require('../models/userModel');
 const UserTokenModel = require('../models/userTokenModel');
+const RoomUserModel = require('../models/roomUserModel');
 const CryptHelper = require('../utils/cryptHelper');
 const ImageHelper = require('../utils/imageHelper');
 
@@ -232,23 +233,24 @@ class UserController {
     async getUsers(req, res) {
         try {
             const accessToken = req.headers['authorization'];
-            let tokenCheck = await UserController.getAccessTokenError(accessToken);
+            let tokenCheck = await UserController.getAccessTokenError(accessToken)
             if (tokenCheck.error != null) {
                 return res.status(401).json(tokenCheck);
             }
 
-            const { device_id, room_id } = req.query;
+            const { room_id } = req.query;
             
+            let roomUserResult = await RoomUserModel.findAll({ where: {room_id: room_id } });
+            let roomUserIds = roomUserResult.map((item) => item.user_id);
+            let usersResult = await UserModel.findAll({ where: { id: { [Op.not]: roomUserIds }}});
 
-            throw new Error("TODO: Create request, get users not in room, move function to room user");
-
-            const formattedResponse = result.map(member => ({
+            const formattedResponse = usersResult.map(member => ({
                 name: member.display_name,  
-                user_image_url: `${req.protocol}://${req.get('host')}/` + member.image_url,  
-                device_id: member.user_id
+                user_image_url: ImageHelper.getImagePath(req, member.image_url), 
+                user_id: member.id
             }));
 
-            if (result) {
+            if (formattedResponse) {
                 res.json({
                     users: formattedResponse,
                     success: 1,

@@ -11,13 +11,7 @@ class GetInvitationsListEntity: RequestableApiEntity {
     typealias ResponseEntity = GetInvitationsListRespondableEntity
 
     static var method: BaseNetworkOperation.Method { .get }
-    var path: String { "invites?device_id=\(AppConstant.shared.deviceId ?? "")" }
-
-    private let deviceId: String
-
-    init() {
-        self.deviceId = AppConstant.shared.deviceId ?? ""
-    }
+    var path: String { "invites" }
 }
 
 // MARK: Defining response
@@ -32,4 +26,5 @@ struct InvitationEntity: Codable {
     let chatImageUrl: String
     let inviterName: String
     let roomId: Int
+    let invitationId: Int
 }

@@ -15,16 +15,14 @@ class SendInvitationEntity: RequestableApiEntity {
     var isIgnoreAccessTokenError: Bool { ignoreError }
     var isIgnoreLogoutErrors: Bool { ignoreError }
     var body: RequestBody? {
-        SendInvitationBody(deviceId: deviceId, inviteeDeviceId: inviteeDeviceId, roomId: roomId)
+        SendInvitationBody(inviteeUserId: inviteeUserId, roomId: roomId)
     }
     private var ignoreError: Bool { false }
-    private let deviceId: String
-    private let inviteeDeviceId: String
+    private let inviteeUserId: Int
     private let roomId: Int
 
-    init(deviceId: String, inviteeDeviceId: String, roomId: Int) {
-        self.deviceId = deviceId
-        self.inviteeDeviceId = inviteeDeviceId
+    init(inviteeDeviceId: Int, roomId: Int) {
+        self.inviteeUserId = inviteeDeviceId
         self.roomId = roomId
     }
 }
@@ -32,8 +30,7 @@ class SendInvitationEntity: RequestableApiEntity {
 struct SendInvitationBody : RequestJsonBody {
     var encoder: JSONEncoder { JSONEncoder.snakeCaseEncoder() }
 
-    let deviceId: String
-    let inviteeDeviceId: String
+    let inviteeUserId: Int
     let roomId: Int
 }
 

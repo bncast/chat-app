@@ -61,9 +61,9 @@ router.post('/send', (req, res) => {
 router.delete('/api/rooms/detail', (req, res) => roomUserController.deleteRoomUser(req, res));  // TODO:
 router.patch('/api/rooms/detail', (req, res) => roomUserController.updateAdminStatus(req, res));  // TODO:
 
-router.get('/api/invites', (req, res) => invitationController.getAll(req, res));  // TODO:
-router.post('/api/invites', (req, res) => invitationController.send(req, res));  // TODO:
-router.post('/api/invites/accept', (req, res) => invitationController.accept(req, res));  // TODO:
+router.get('/invites', (req, res) => invitationController.getAll(req, res));  
+router.post('/invites', (req, res) => invitationController.send(req, res));  
+router.post('/invites/accept', (req, res) => invitationController.accept(req, res)); 
 
 function removeTimedOutClients() {
     const currentTime = Date.now();

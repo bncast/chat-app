@@ -26,7 +26,7 @@ final class UserListViewModel {
             lhs.hashValue == rhs.hashValue
         }
         var name: String
-        var deviceId: String
+        var userId: Int
         var isInvited: Bool = false
     }
 
@@ -45,7 +45,7 @@ final class UserListViewModel {
 
         items = [
             .list: list.compactMap({ item in
-                .user(ItemInfo(name: item.name, deviceId: item.deviceId))
+                .user(ItemInfo(name: item.name, userId: item.userId))
             })
         ]
 
@@ -76,12 +76,11 @@ final class UserListViewModel {
         ]
     }
 
-    func inviteUser(deviceId: String) async throws {
-        guard let inviteeDeviceId = AppConstant.shared.deviceId,
-              let roomId,
+    func inviteUser(userId: Int) async throws {
+        guard let roomId,
               let searchIndex = items[.list]?.firstIndex(where: {
                   if case .user(let itemInfo) = $0 {
-                      return itemInfo.deviceId.contains(deviceId)
+                      return itemInfo.userId == userId
                   }
                   return false
               }),
@@ -90,25 +89,25 @@ final class UserListViewModel {
 
         if case .user(let itemInfo) = searchItem {
             try await SendInvitationEntity(
-                deviceId: inviteeDeviceId, inviteeDeviceId: itemInfo.deviceId, roomId: roomId
+                inviteeDeviceId: itemInfo.userId, roomId: roomId
             ).run()
 
             // update filtered item
             items[.list]?[searchIndex] = .user(
-                ItemInfo(name: itemInfo.name, deviceId: itemInfo.deviceId, isInvited: true)
+                ItemInfo(name: itemInfo.name, userId: itemInfo.userId, isInvited: true)
             )
 
             // update datasource
             guard let datasourceSearchIndex = datasourceItems[.list]?.firstIndex(where: {
                 if case .user(let itemInfo) = $0 {
-                    return itemInfo.deviceId.contains(deviceId)
+                    return itemInfo.userId == userId
                 }
                 return false
             })
             else { return }
 
             datasourceItems[.list]?[datasourceSearchIndex] = .user(
-                ItemInfo(name: itemInfo.name, deviceId: itemInfo.deviceId, isInvited: true)
+                ItemInfo(name: itemInfo.name, userId: itemInfo.userId, isInvited: true)
             )
         }
     }
