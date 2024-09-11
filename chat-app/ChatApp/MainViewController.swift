@@ -11,6 +11,11 @@ class MainViewController: BaseViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        LoginViewController.show(on: self)
+        Task {
+            guard let success = try? await ExtendTokenEntity().run().success, success == 1
+            else { return LoginViewController.show(on: self) }
+
+            ChatRoomListViewController.show(on: self)
+        }
     }
 }

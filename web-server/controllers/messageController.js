@@ -10,10 +10,11 @@ const ImageHelper = require('../utils/imageHelper');
 const { Op } = require('sequelize');
 
 class MessageController {
-    constructor(database) {
-        this.messageModel = new MessageModel(database);
-        this.userModel = new UserModel(database);
-        this.roomUserModel = new RoomUserModel(database);
+    constructor() {
+        this.messageModel = new MessageModel();
+        this.userModel = new UserModel();
+        this.roomUserModel = new RoomUserModel();
+        this.userController = new UserController();
         this.notificationController = new NotificationController();
     }
 
@@ -21,7 +22,7 @@ class MessageController {
     async createMessage(req, res, completion) {
         try {
             const accessToken = req.headers['authorization'];
-            let tokenCheck = await UserController.getAccessTokenError(accessToken);
+            let tokenCheck = await this.userController.getAccessTokenError(accessToken);
             if (tokenCheck.error != null) {
                 return res.status(401).json(tokenCheck);
             }
@@ -72,7 +73,7 @@ class MessageController {
     async getMessagesByRoom(req, res) {
         try {
             const accessToken = req.headers['authorization'];
-            let tokenCheck = await UserController.getAccessTokenError(accessToken);
+            let tokenCheck = await this.userController.getAccessTokenError(accessToken);
             if (tokenCheck.error != null) {
                 return res.status(401).json(tokenCheck);
             }
@@ -112,7 +113,7 @@ class MessageController {
                 }
             };
 
-            res.json(response);
+            res.status(200).json(response);
         } catch (err) {
             res.status(500).json({ error: "Failed to fetch messages" });
         }
@@ -138,7 +139,7 @@ class MessageController {
             let updatedMessage = updatedMessageResult[0];
 
             // Send the response
-            res.json({
+            res.status(200).json({
                 success: 1,
                 error: {
                     code: "000",
@@ -179,7 +180,7 @@ class MessageController {
 
             completion(room.room_id);
 
-            res.json({
+            res.status(200).json({
                 success: 1,
                 error: {
                     code: "000",

@@ -79,6 +79,14 @@ class MenuViewController: BaseViewController {
         viewModel.load()
     }
 
+    func showProfile() async {
+        await ProfileViewController.show(on: self)
+    }
+
+    func showChangePassword() async {
+        await PasswordViewController.show(on: self)
+    }
+
     static func push(on parentViewController: UIViewController) {
         if let navigationController =  parentViewController.navigationController {
             navigationController.pushViewController(Self(), animated: true)
@@ -137,14 +145,10 @@ extension MenuViewController {
             switch item {
             case .profile: await self?.showProfile()
             case .devices: break
-            case .password: break
+            case .password: await self?.showChangePassword()
             case .logout: break
             }
         }
         return cell
-    }
-
-    func showProfile() async {
-        await ProfileViewController.show(on: self)
     }
 }

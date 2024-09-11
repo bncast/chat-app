@@ -22,8 +22,8 @@ class FormTextField: BaseView {
         return label
     }()
 
-    var textField: UITextField = {
-        let textField = UITextField()
+    var textField: BaseTextField = {
+        let textField = BaseTextField()
         textField.borderStyle = .roundedRect
         textField.autocapitalizationType = .none
         textField.autocorrectionType = .no
