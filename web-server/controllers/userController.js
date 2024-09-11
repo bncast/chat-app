@@ -210,6 +210,49 @@ class UserController {
         }
     }
 
+    async setUser(req, res) {
+        try {
+            const accessToken = req.headers['authorization'];
+            let tokenCheck = await this.getAccessTokenError(accessToken)
+            if (tokenCheck.error != null) {
+                return res.status(401).json(tokenCheck);
+            }
+            let userId = tokenCheck.result.user_id;
+
+            const { name } = req.body;
+            
+
+            var result = await UserModel.update( 
+                { display_name: name}, 
+                { where: { id: userId } }
+            );
+            if (result == null) {  throw new Error("Failed to update user."); } 
+ 
+            var fetchUserResult = await UserModel.findOne({ where: {id: userId } });
+
+            res.status(200).json({
+                info: {
+                    display_name: fetchUserResult.display_name,
+                    username: fetchUserResult.username,
+                    image_url: ImageHelper.getImagePath(req, fetchUserResult.image_url)
+                },
+                success: 1,
+                error: {
+                    code: "000",
+                    message: ""
+                }
+            });
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: {
+                    code: "002",
+                    message: err.message || "An error occurred while processing the request"
+                }
+            });    
+        }
+    }
+
     async getUsers(req, res) {
         try {
             const accessToken = req.headers['authorization'];
@@ -281,7 +324,7 @@ class UserController {
     async extend(accessToken) { 
         const accessTokenExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
-        var fetchTokenResult = await UserTokenModel.update({ 
+        await UserTokenModel.update({ 
             access_expiry: accessTokenExpiresAt
         },{ where: { 
             access_token: accessToken
@@ -318,9 +361,7 @@ class UserController {
             } };
         }
 
-        console.log(">>>>>>>>> 1 Extended", fetchTokenResult);
         await this.extend(accessToken);
-        console.log(">>>>>>>>> 2 Extended", fetchTokenResult);
 
         return { result : fetchTokenResult };
     }

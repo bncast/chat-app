@@ -20,6 +20,6 @@ final class ProfileViewModel {
     }
     
     func updateName(name: String) async throws -> String {
-        try await UpdateUserEntity(name: name).run().user.userImageUrl
+        try await UpdateUserEntity(name: name).run().info?.imageUrl ?? ""
     }
 }

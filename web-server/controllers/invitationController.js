@@ -1,20 +1,13 @@
 const UserModel = require('../models/userModel');
-const UserDeviceModel = require('../models/userDeviceModel');
 const RoomUserModel = require('../models/roomUserModel');
 const RoomModel = require('../models/roomModel');
 const InvitationModel = require('../models/invitationModel');
-const MessageModel = require('../models/messageModel');
 const UserController = require('../controllers/userController');
 const ImageHelper = require('../utils/imageHelper');
-const NotificationController = require('../controllers/notificationController');
 
 class InvitationController {
-    constructor(database) {
-        this.invitationModel = new InvitationModel(database);
-        this.userModel = new UserModel(database);
-        this.roomUserModel = new RoomUserModel(database);
-        this.roomModel = new RoomModel(database);
-        this.messageModel = new MessageModel(database);
+    constructor() {
+        this.userController = new UserController();
     }
 
     async getAll(req, res) {

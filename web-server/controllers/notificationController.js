@@ -14,17 +14,18 @@ class NotificationController {
 		  };
 
 	  this.apnProvider = new apn.Provider(options);
+	  this.userController = new UserController();
     }
 
 	async saveDeviceToken(req, res) {
 		try {
             const accessToken = req.headers['authorization'];
-            let tokenCheck = await UserController.getAccessTokenError(accessToken)
+            let tokenCheck = await this.userController.getAccessTokenError(accessToken)
             if (tokenCheck.error != null) {
                 return res.status(401).json(tokenCheck);
             }
 
-            let userId = tokenCheck.result.user_id;
+			let userId = tokenCheck.result.user_id;
 
 			const { device_id, device_token } = req.body;
 
