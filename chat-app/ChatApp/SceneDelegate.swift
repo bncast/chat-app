@@ -26,6 +26,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         self.window = window
 
+        NotificationManager.shared.requestDeviceToken()
+
         window.makeKeyAndVisible()
     }
 

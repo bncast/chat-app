@@ -359,7 +359,7 @@ class AppConstant: NSObject {
          
     @UserDefaultsReadOnly("SERVER_TYPE", default: .manual)
     var serverType: ServerType
-    @UserDefaultsReadOnly("MANUAL_HOST", default: "localhost:3000")
+    @UserDefaultsReadOnly("MANUAL_HOST", default: "localhost:4000")
     var manualHost: String
     @KeychainReadAndWrite("keychainValue", default: nil)
     var keychainValue: String?
@@ -373,6 +373,8 @@ class AppConstant: NSObject {
     var displayName: String?
     @KeychainReadAndWrite("currentUserImageUrlString", default: nil)
     var currentUserImageUrlString: String?
+    @KeychainReadAndWrite("deviceToken", default: nil)
+    var deviceToken: String?
 
     let screen: (Size) -> CGFloat = { size in
         switch size {

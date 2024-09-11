@@ -35,4 +35,46 @@ extension UIViewController {
         navigationItem.compactAppearance = appearance
         navigationItem.scrollEdgeAppearance = appearance
     }
+
+    func dismissAllModalAsync(animated: Bool = true, completionHandler: (() async -> Void)? = nil) async {
+        guard let presentedViewController else {
+            await completionHandler?()
+            return
+        }
+        if let snapshotView = presentedViewController
+            .view.snapshotView(afterScreenUpdates: false) {
+            presentedViewController.view.addSubview(snapshotView)
+            presentedViewController.modalTransitionStyle = .coverVertical
+        }
+        if !isBeingDismissed {
+            await dismissAsync(animated: animated)
+        } else {
+            await completionHandler?()
+        }
+    }
+
+    func dismissAllModal(animated: Bool = true, completionHandler: (() -> Void)? = nil) {
+        guard let presentedViewController else {
+            completionHandler?()
+            return
+        }
+        if let snapshotView = presentedViewController
+            .view.snapshotView(afterScreenUpdates: false) {
+            presentedViewController.view.addSubview(snapshotView)
+            presentedViewController.modalTransitionStyle = .coverVertical
+        }
+        if !isBeingDismissed {
+            dismiss(animated: animated, completion: completionHandler)
+        } else {
+            completionHandler?()
+        }
+    }
+
+    func dismissAsync(animated: Bool) async {
+        await withCheckedContinuation { [weak self] continuation in
+            self?.dismiss(animated: animated) {
+                continuation.resume()
+            }
+        }
+    }
 }

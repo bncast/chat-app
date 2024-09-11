@@ -138,6 +138,7 @@ class LoginViewController: BaseViewController {
 
             await IndicatorController.shared.show()
             if await viewModel.login(username: username, password: password) {
+                await NotificationManager.shared.requestAuthorization()
                 ChatRoomListViewController.show(on: self)
             }
             await IndicatorController.shared.dismiss()
