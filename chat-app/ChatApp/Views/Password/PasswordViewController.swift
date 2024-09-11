@@ -39,22 +39,22 @@ class PasswordViewController: BaseViewController {
 
     private lazy var oldPasswordTextField: FormTextField = {
         let view = FormTextField()
+        view.textField.isSecureTextEntry = true
         view.title = "Old password"
-//        view.textField.delegate = self
         return view
     }()
     
     private lazy var newPasswordTextField: FormTextField = {
         let view = FormTextField()
+        view.textField.isSecureTextEntry = true
         view.title = "New password"
-        //        view.textField.delegate = self
         return view
     }()
 
     private lazy var confirmPasswordTextField: FormTextField = {
         let view = FormTextField()
+        view.textField.isSecureTextEntry = true
         view.title = "Confirm new password"
-        //        view.textField.delegate = self
         return view
     }()
 
@@ -67,7 +67,7 @@ class PasswordViewController: BaseViewController {
     }()
     private lazy var saveButton: BaseButton = {
         let view = BaseButton()
-        view.text = "SAVE"
+        view.text = "UPDATE"
         view.colorStyle = .active
         view.layer.cornerRadius = 8
         return view
@@ -128,39 +128,74 @@ class PasswordViewController: BaseViewController {
     }
 
     override func setupBindings() {
-//        viewModel.$displayName
-//            .receive(on: DispatchQueue.main)
-//            .sink { [weak self] displayName in
-//                self?.nameTextField.text = displayName
-//            }
-//            .store(in: &cancellables)
-//
-//        nameTextField.textPublisher
-//            .sink { [weak self] text in
-//                guard let text else { return }
-//                self?.saveButton.isEnabled = !text.isEmpty
-//            }
-//            .store(in: &cancellables)
+        oldPasswordTextField.textField.textPublisher
+            .sink { [weak self] text in
+                self?.viewModel.oldPassword = text
+            }
+            .store(in: &cancellables)
+
+        newPasswordTextField.textField.textPublisher
+            .sink { [weak self] text in
+                self?.viewModel.newPassword = text
+            }
+            .store(in: &cancellables)
+
+        confirmPasswordTextField.textField.textPublisher
+            .sink { [weak self] text in
+                self?.viewModel.confirmPassword = text
+            }
+            .store(in: &cancellables)
+
+        viewModel.$oldPasswordErrorMessage
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] errorMessage in
+                self?.oldPasswordTextField.message = errorMessage
+            }
+            .store(in: &cancellables)
+
+        viewModel.$newPasswordErrorMessage
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] errorMessage in
+                self?.newPasswordTextField.message = errorMessage
+            }
+            .store(in: &cancellables)
+
+        viewModel.$confirmPasswordErrorMessage
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] errorMessage in
+                self?.confirmPasswordTextField.message = errorMessage
+            }
+            .store(in: &cancellables)
+
+
     }
 
     override func setupActions() {
-        saveButton.tapHandlerAsync = { [weak self] _ in
-//            await self?.updateProfile()
+        oldPasswordTextField.textField.onSubmitAsync = { [weak self] _ in
+            self?.newPasswordTextField.textField.becomeFirstResponder()
         }
 
-//        nameTextField.onSubmitAsync = { [weak self] _ in
-//            await self?.updateProfile()
-//        }
+        newPasswordTextField.textField.onSubmitAsync = { [weak self] _ in
+            self?.confirmPasswordTextField.textField.becomeFirstResponder()
+        }
 
-        keyboardAppear = self
-
+        confirmPasswordTextField.textField.onSubmitAsync = { [weak self] _ in
+            self?.updatePassword()
+        }
+        
+        saveButton.tapHandlerAsync = { [weak self] _ in
+            self?.updatePassword()
+        }
 
         cancelButton.tapHandler = { [weak self] _ in
             self?.dismiss(animated: true)
         }
+
         tapRecognizer.tapHandler = { [weak self] _ in
             self?.dismiss(animated: true)
         }
+
+        keyboardAppear = self
     }
 
     // MARK: - View Controller
@@ -172,25 +207,24 @@ class PasswordViewController: BaseViewController {
 
     // MARK: - Private Methods
 
-    func updateProfile() async {
-        do {
-//            guard let text = nameTextField.text, !text.isEmpty else { return }
-//            let statusBeforeUpdate = AppConstant.shared.deviceId == nil
-//
-//            nameTextField.resignFirstResponder()
-//            await IndicatorController.shared.show()
-////            setNewImage(urlString: try await viewModel.updateName(name: text))
-//            await IndicatorController.shared.dismiss()
-//            viewModel.setDisplayName(name: text)
-//            await IndicatorController.shared.show(
-//                message: "\(statusBeforeUpdate ? "Registered" : "Updated") Successfully!", isDone: true
-//            )
-//            await Task.sleep(seconds: 1)
-//            await IndicatorController.shared.dismiss()
-//            dismiss(animated: true)
-        } catch {
-            print("[ProfileViewController] \(error as! NetworkError)")
-            await IndicatorController.shared.dismiss()
+    func updatePassword() {
+        Task {
+            do {
+                await IndicatorController.shared.show()
+                guard try await viewModel.update() else {
+                    return await IndicatorController.shared.dismiss()
+                }
+                await IndicatorController.shared.dismiss()
+                await IndicatorController.shared.show(
+                    message: "Updated successfully!", isDone: true
+                )
+                await Task.sleep(seconds: 1)
+                await IndicatorController.shared.dismiss()
+                dismiss(animated: true)
+            } catch {
+                print("[ProfileViewController] \(error as! NetworkError)")
+                await IndicatorController.shared.dismiss()
+            }
         }
     }
 }
@@ -203,7 +237,6 @@ extension PasswordViewController {
             profileViewController.modalPresentationStyle = .overFullScreen
             profileViewController.transitioningDelegate = profileViewController.fadeInAnimator
             profileViewController.continuation = continuation
-            profileViewController.viewModel.load()
             parentViewController.present(profileViewController, animated: true)
         }
     }

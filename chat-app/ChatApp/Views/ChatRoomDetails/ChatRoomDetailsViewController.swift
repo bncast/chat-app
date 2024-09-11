@@ -59,7 +59,7 @@ class ChatRoomDetailsViewController: BaseViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationBar?.showCloseButtonOnly = true
+        navigationBar?.hideAllButton = true
         viewModel.load()
     }
 
@@ -121,16 +121,10 @@ class ChatRoomDetailsViewController: BaseViewController {
     }
 
     override func setupActions() {
-        navigationBar?.closeTapHandler = { [weak self] _ in
-            self?.dismiss(animated: true) { [weak self] in
-                self?.continuation?.resume(returning: (false, self?.viewModel.updatedName))
-            }
-        }
-
         inviteButton.tapHandlerAsync = { [weak self] _ in
             guard let self, let roomId = viewModel.details?.roomId else { return }
             
-            UserListViewController.show(on: self, roomId: roomId)
+            UserListViewController.push(on: self, roomId: roomId)
         }
 
         deleteRoomButton.tapHandlerAsync = { [weak self] _ in
@@ -181,19 +175,15 @@ class ChatRoomDetailsViewController: BaseViewController {
 // MARK: - Navigation
 
 extension ChatRoomDetailsViewController {
-    static func show(on parentViewController: UIViewController, using details: ChatInfo) async -> (Bool, String?) {
-        return await withCheckedContinuation { continuation in
+    static func push(on parentViewController: UIViewController, using details: ChatInfo) async -> (Bool, String?) {
+        await withCheckedContinuation { continuation in
             let viewController = Self()
             viewController.viewModel.details = details
             viewController.continuation = continuation
 
-            let navigationController = UINavigationController(navigationBarClass: ChatRoomListNavigationBar.self,
-                                                              toolbarClass: nil)
-            navigationController.modalPresentationStyle = .overFullScreen
-            navigationController.transitioningDelegate = viewController.fadeInAnimator
-            navigationController.viewControllers = [viewController]
-
-            parentViewController.present(navigationController, animated: true)
+            if let navigationController =  parentViewController.navigationController {
+                navigationController.pushViewController(viewController, animated: true)
+            }
         }
     }
 }

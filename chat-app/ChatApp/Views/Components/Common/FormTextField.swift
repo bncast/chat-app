@@ -33,6 +33,7 @@ class FormTextField: BaseView {
     private var messageLabel: UILabel = {
         let label = UILabel()
         label.font = .captionSubtext
+        label.textColor = .systemRed
         return label
     }()
 
@@ -43,22 +44,8 @@ class FormTextField: BaseView {
 
     var message: String? {
         get { messageLabel.text }
+        set { messageLabel.text = newValue }
     }
-
-//    var isSecureTextEntry: Bool {
-//        get { textField.isSecureTextEntry }
-//        set { textField.isSecureTextEntry = newValue}
-//    }
-//
-//    var delegate: UITextFieldDelegate? {
-//        get { textField.delegate }
-//        set { textField.delegate = newValue }
-//    }
-//
-//    var text: String? {
-//        get { textField.text }
-//        set { textField.text = newValue }
-//    }
 
     override func setupLayout() {
         addSubviews([
@@ -77,7 +64,7 @@ class FormTextField: BaseView {
 
         titleLabel.height == 20
         textField.height == 40
-        messageLabel.height == 10
+        messageLabel.height == 20
 
     }
 }

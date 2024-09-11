@@ -26,7 +26,8 @@ router.get('/listen', (req, res) => {
 router.post('/login', (req, res) => userController.login(req, res));
 router.post('/register', (req, res) => userController.register(req, res));
 router.post('/users', (req, res) => userController.setUser(req, res));
-router.get('/users', (req, res) => userController.getUsers(req, res)); 
+router.get('/users', (req, res) => userController.getUsers(req, res));
+router.post('/users/password', (req, res) => userController.setPassword(req, res)); 
 
 router.post('/token', (req, res) => userController.token(req, res));
 router.post('/token/extend', (req, res) => userController.extendToken(req, res));

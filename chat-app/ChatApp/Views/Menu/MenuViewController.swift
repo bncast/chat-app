@@ -41,7 +41,7 @@ class MenuViewController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
 
-        navigationBar?.showCloseButtonOnly = true
+        navigationBar?.hideAllButton = true
         navigationBar?.title = "Menu"
     }
 
