@@ -44,6 +44,9 @@
 		1DD9AD152C73361A00B5E28F /* AppVersionEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD9AD142C73361A00B5E28F /* AppVersionEntity.swift */; };
 		1DE284892C7449680054B79E /* GetMessageEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE284882C7449680054B79E /* GetMessageEntity.swift */; };
 		1DE2848F2C7452780054B79E /* SendMessageEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE2848E2C7452780054B79E /* SendMessageEntity.swift */; };
+		1DE4111C2C919C25007728FC /* UserDeviceListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE4111B2C919C25007728FC /* UserDeviceListViewController.swift */; };
+		1DE411202C919C5C007728FC /* UserDeviceListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE4111F2C919C5C007728FC /* UserDeviceListViewModel.swift */; };
+		1DE411222C919CB3007728FC /* UserDeviceCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE411212C919CB3007728FC /* UserDeviceCollectionViewCell.swift */; };
 		6F07ACEE2C7306730010E21A /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F07ACED2C7306730010E21A /* BaseViewController.swift */; };
 		6F0B7E642C7315C300BFC370 /* BaseNetworkOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B7E632C7315C300BFC370 /* BaseNetworkOperation.swift */; };
 		6F0B7E672C731E7500BFC370 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B7E662C731E7500BFC370 /* NetworkError.swift */; };
@@ -165,6 +168,9 @@
 		1DE284882C7449680054B79E /* GetMessageEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetMessageEntity.swift; sourceTree = "<group>"; };
 		1DE2848A2C744C2D0054B79E /* BaseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseButton.swift; sourceTree = "<group>"; };
 		1DE2848E2C7452780054B79E /* SendMessageEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMessageEntity.swift; sourceTree = "<group>"; };
+		1DE4111B2C919C25007728FC /* UserDeviceListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDeviceListViewController.swift; sourceTree = "<group>"; };
+		1DE4111F2C919C5C007728FC /* UserDeviceListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDeviceListViewModel.swift; sourceTree = "<group>"; };
+		1DE411212C919CB3007728FC /* UserDeviceCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDeviceCollectionViewCell.swift; sourceTree = "<group>"; };
 		6F07ACE82C7304010010E21A /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		6F07ACED2C7306730010E21A /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		6F0B7E632C7315C300BFC370 /* BaseNetworkOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNetworkOperation.swift; sourceTree = "<group>"; };
@@ -403,6 +409,32 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		1DE4111A2C919B8F007728FC /* UserDeviceList */ = {
+			isa = PBXGroup;
+			children = (
+				1DE4111B2C919C25007728FC /* UserDeviceListViewController.swift */,
+				1DE4111E2C919C3C007728FC /* Subviews */,
+				1DE4111D2C919C37007728FC /* ViewModel */,
+			);
+			path = UserDeviceList;
+			sourceTree = "<group>";
+		};
+		1DE4111D2C919C37007728FC /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				1DE4111F2C919C5C007728FC /* UserDeviceListViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		1DE4111E2C919C3C007728FC /* Subviews */ = {
+			isa = PBXGroup;
+			children = (
+				1DE411212C919CB3007728FC /* UserDeviceCollectionViewCell.swift */,
+			);
+			path = Subviews;
+			sourceTree = "<group>";
+		};
 		6F07ACEA2C7306430010E21A /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -416,6 +448,7 @@
 				6F9544942C7C1F72006E8035 /* InvitationList */,
 				A7FB9C512C7C06C8008DE3F3 /* UserList */,
 				1D5FEE332C9091DA00CF406D /* Menu */,
+				1DE4111A2C919B8F007728FC /* UserDeviceList */,
 				1D5FEE3C2C909FEF00CF406D /* Password */,
 				6F4CDE7C2C74237400F310A1 /* Profile */,
 			);
@@ -874,6 +907,7 @@
 				1D5FEE352C9091EF00CF406D /* MenuViewController.swift in Sources */,
 				1D469A5F2C76C9FA00FC044C /* AppFonts.swift in Sources */,
 				1D469A5E2C76C9F500FC044C /* MainViewController.swift in Sources */,
+				1DE411222C919CB3007728FC /* UserDeviceCollectionViewCell.swift in Sources */,
 				A700BF5B2C739BC800B38530 /* StringHelpers.swift in Sources */,
 				A700BF532C736CB700B38530 /* BaseCollectionReusableView.swift in Sources */,
 				A7FB9C542C7C06F1008DE3F3 /* UserListViewController.swift in Sources */,
@@ -881,6 +915,7 @@
 				6F9544992C7C20BF006E8035 /* InvitationListViewModel.swift in Sources */,
 				A700BF4F2C7327D300B38530 /* UIViewHelpers.swift in Sources */,
 				A700BF552C736D5A00B38530 /* ChatRoomListHeaderCollectionReusableView.swift in Sources */,
+				1DE411202C919C5C007728FC /* UserDeviceListViewModel.swift in Sources */,
 				6F9544972C7C1FA3006E8035 /* InvitationListViewController.swift in Sources */,
 				6F07ACEE2C7306730010E21A /* BaseViewController.swift in Sources */,
 				6F4CDE912C7465F100F310A1 /* PaddingLabel.swift in Sources */,
@@ -970,6 +1005,7 @@
 				A7FB9C3C2C75FEEB008DE3F3 /* CreateChatRoomViewModel.swift in Sources */,
 				A700BF432C73176500B38530 /* ChatRoomListViewModel.swift in Sources */,
 				6FB326552C749D9E00F1B2E4 /* FadeInAnimator.swift in Sources */,
+				1DE4111C2C919C25007728FC /* UserDeviceListViewController.swift in Sources */,
 				A7FB9C5C2C7C5D27008DE3F3 /* GetUsersEntity.swift in Sources */,
 				6F9D59C12C78F70D003E8959 /* BaseSwipeCollectionViewCell.swift in Sources */,
 				A7FB9C592C7C15AC008DE3F3 /* UserCollectionViewCell.swift in Sources */,

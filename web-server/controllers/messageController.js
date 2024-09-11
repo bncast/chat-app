@@ -27,11 +27,11 @@ class MessageController {
 
             const { room_user_id, message, reply_to_id } = req.body;
 
-            let messageResult = await MessageModel.create({ 
+            await MessageModel.create({ 
                 room_user_id: room_user_id,
                 content: message,
                 reply_to_id: reply_to_id
-            });//this.messageModel.createMessage(room_user_id, message, reply_to_id);
+            });
             
             let roomUserResult = await RoomUserModel.findOne({ where: { room_user_id: room_user_id}});
             
@@ -60,10 +60,12 @@ class MessageController {
                 }
             });
             
-            completion(roomUserResult.room_id);
+            return roomUserResult.room_id;
         } catch (err) {
             res.status(500).json({ error: "Failed to create message" });
         }
+
+        return null
     }
 
     // Get all messages in a room
