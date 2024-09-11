@@ -253,6 +253,48 @@ class UserController {
         }
     }
 
+
+    async setPassword(req, res) {
+        try {
+            const accessToken = req.headers['authorization'];
+            let tokenCheck = await this.getAccessTokenError(accessToken)
+            if (tokenCheck.error != null) {
+                return res.status(401).json(tokenCheck);
+            }
+            let userId = tokenCheck.result.user_id;
+
+            const { old_password, new_password } = req.body;
+            
+            var result = await UserModel.findOne( 
+                { where: { id: userId, password: old_password } }
+            );
+            if (result == null) {  throw new Error("Old password is incorrect"); } 
+ 
+            var fetchUserResult = await UserModel.update( 
+                { password: new_password },
+                { where: {id: userId } }
+            );
+            if (fetchUserResult == null) {  throw new Error("Failed to update password"); } 
+
+            res.status(200).json({
+                success: 1,
+                error: {
+                    code: "000",
+                    message: ""
+                }
+            });
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: {
+                    code: "002",
+                    message: err.message || "An error occurred while processing the request"
+                }
+            });    
+        }
+    }
+
+
     async getUsers(req, res) {
         try {
             const accessToken = req.headers['authorization'];

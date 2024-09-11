@@ -75,7 +75,7 @@ class InvitationListViewController: BaseViewController {
         setNavigationBarDefaultStyle()
 
         navigationBar?.title = "Invitations"
-        navigationBar?.showInvitationListButtons = true
+        navigationBar?.hideAllButton = true
     }
 
     override func setupConstraints() {
@@ -95,30 +95,26 @@ class InvitationListViewController: BaseViewController {
     }
 
     override func setupActions() {
-        navigationBar?.closeTapHandler = { [weak self] _ in
-            self?.dismiss(animated: true) { [weak self] in
-                self?.continuation?.resume(returning: nil)
-            }
-        }
     }
 }
 
 // MARK: - Navigation
 
 extension InvitationListViewController {
-    static func show(on parentViewController: UIViewController) async -> ChatInfo? {
+    static func push(on parentViewController: UIViewController) async -> ChatInfo? {
         await withCheckedContinuation { continuation in
-            let navController = UINavigationController(navigationBarClass: ChatRoomListNavigationBar.self,
-                                                       toolbarClass: nil)
             let viewController = Self()
             viewController.continuation = continuation
 
-            navController.viewControllers = [viewController]
-            navController.modalPresentationStyle = .overFullScreen
-            navController.transitioningDelegate = viewController.fadeInAnimator
-
-            parentViewController.present(navController, animated: true)
+            if let navigationController =  parentViewController.navigationController {
+                navigationController.pushViewController(viewController, animated: true)
+            }
         }
+    }
+
+    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        super.dismiss(animated: flag, completion: completion)
+        continuation?.resume(returning: nil)
     }
 }
 

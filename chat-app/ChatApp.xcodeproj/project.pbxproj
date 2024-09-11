@@ -20,6 +20,7 @@
 		1D469A5E2C76C9F500FC044C /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F07ACE82C7304010010E21A /* MainViewController.swift */; };
 		1D469A5F2C76C9FA00FC044C /* AppFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBE7BEB2C72E4BC00AE0ACB /* AppFonts.swift */; };
 		1D469A602C76CA0400FC044C /* ChatRoomListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A700BF492C73258700B38530 /* ChatRoomListCollectionViewCell.swift */; };
+		1D4A09FD2C91439D007F3E87 /* ChangePasswordEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4A09FC2C91439D007F3E87 /* ChangePasswordEntity.swift */; };
 		1D5FEE352C9091EF00CF406D /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5FEE342C9091EF00CF406D /* MenuViewController.swift */; };
 		1D5FEE382C90930F00CF406D /* MenuCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5FEE372C90930F00CF406D /* MenuCollectionViewCell.swift */; };
 		1D5FEE3B2C9093B000CF406D /* MenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5FEE3A2C9093B000CF406D /* MenuViewModel.swift */; };
@@ -137,6 +138,7 @@
 		1D3DC6742C7C217A00D64B24 /* DeleteMessageEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteMessageEntity.swift; sourceTree = "<group>"; };
 		1D3DC6792C7C445500D64B24 /* GetInvitationsListEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetInvitationsListEntity.swift; sourceTree = "<group>"; };
 		1D3DC67B2C7C452600D64B24 /* SendInvitationEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendInvitationEntity.swift; sourceTree = "<group>"; };
+		1D4A09FC2C91439D007F3E87 /* ChangePasswordEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordEntity.swift; sourceTree = "<group>"; };
 		1D5FEE342C9091EF00CF406D /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
 		1D5FEE372C90930F00CF406D /* MenuCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCollectionViewCell.swift; sourceTree = "<group>"; };
 		1D5FEE3A2C9093B000CF406D /* MenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewModel.swift; sourceTree = "<group>"; };
@@ -503,6 +505,7 @@
 				1DD910CE2C8EE70800085DBD /* RegisterUserEntity.swift */,
 				6FC419262C8987590061E251 /* SetDeviceTokenEntity.swift */,
 				1D5FEE452C912B7B00CF406D /* ExtendTokenEntity.swift */,
+				1D4A09FC2C91439D007F3E87 /* ChangePasswordEntity.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -896,6 +899,7 @@
 				1D5FEE432C90A03D00CF406D /* PasswordViewModel.swift in Sources */,
 				A700BF4D2C73276B00B38530 /* UIViewControllerHelpers.swift in Sources */,
 				1DD910C82C8EC96A00085DBD /* RegisterViewController.swift in Sources */,
+				1D4A09FD2C91439D007F3E87 /* ChangePasswordEntity.swift in Sources */,
 				6F84CF6F2C7616F300F5C112 /* UpdateChatRoomNameEntity.swift in Sources */,
 				6F7969712C75B9AB0010B427 /* MemberHeaderCollectionReusableView.swift in Sources */,
 				A700BF462C7323EF00B38530 /* ArrayHelpers.swift in Sources */,

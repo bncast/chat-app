@@ -149,7 +149,7 @@ class ChatRoomListViewController: BaseViewController {
             guard let self else { return }
 
             Task { [weak self] in
-                guard let self, let info = await InvitationListViewController.show(on: self) else { return }
+                guard let self, let info = await InvitationListViewController.push(on: self) else { return }
 
                 ChatRoomViewController.push(on: self, using: info)
 
@@ -175,7 +175,7 @@ class ChatRoomListViewController: BaseViewController {
             guard let self else { return }
 
             await dismissAllModalAsync() {
-                guard let info = await InvitationListViewController.show(on: self) else { return }
+                guard let info = await InvitationListViewController.push(on: self) else { return }
 
                 ChatRoomViewController.push(on: self, using: info)
             }

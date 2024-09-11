@@ -67,7 +67,7 @@ class UserListViewController: BaseViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationBar?.showCloseButtonOnly = true
+        navigationBar?.hideAllButton = true
     }
     
     // MARK: - Setups
@@ -113,27 +113,18 @@ class UserListViewController: BaseViewController {
             .store(in: &cancellables)
     }
 
-    override func setupActions() {
-        navigationBar?.closeTapHandler = { [weak self] _ in
-            self?.dismiss(animated: true)
-        }
-    }
 }
 
 // MARK: - Navigation
 
 extension UserListViewController {
-    static func show(on parentViewController: UIViewController, roomId: Int) {
+    static func push(on parentViewController: UIViewController, roomId: Int) {
         let viewController = UserListViewController()
         viewController.viewModel.roomId = roomId
 
-        let navigationController = UINavigationController(navigationBarClass: ChatRoomListNavigationBar.self,
-                                                          toolbarClass: nil)
-        navigationController.modalPresentationStyle = .overFullScreen
-        navigationController.transitioningDelegate = viewController.fadeInAnimator
-        navigationController.viewControllers = [viewController]
-
-        parentViewController.present(navigationController, animated: true)
+        if let navigationController =  parentViewController.navigationController {
+            navigationController.pushViewController(viewController, animated: true)
+        }
     }
 }
 
