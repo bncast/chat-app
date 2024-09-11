@@ -87,6 +87,23 @@ class MenuViewController: BaseViewController {
         await PasswordViewController.show(on: self)
     }
 
+    func logout() async {
+        do {
+            await IndicatorController.shared.show()
+            try await viewModel.logout()
+            await IndicatorController.shared.dismiss()
+            redirectToLogin()
+        } catch {
+
+        }
+    }
+
+    func redirectToLogin() {
+        guard let navigationController = self.navigationController else { return }
+
+        navigationController.dismiss(animated: true)
+    }
+
     static func push(on parentViewController: UIViewController) {
         if let navigationController =  parentViewController.navigationController {
             navigationController.pushViewController(Self(), animated: true)
@@ -146,7 +163,7 @@ extension MenuViewController {
             case .profile: await self?.showProfile()
             case .devices: break
             case .password: await self?.showChangePassword()
-            case .logout: break
+            case .logout: await self?.logout()
             }
         }
         return cell

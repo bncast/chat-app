@@ -18,4 +18,8 @@ class MainViewController: BaseViewController {
             ChatRoomListViewController.show(on: self)
         }
     }
+
+    override func setupLayout() {
+        view.backgroundColor = .white
+    }
 }

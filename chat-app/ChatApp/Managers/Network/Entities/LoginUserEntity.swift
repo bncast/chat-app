@@ -16,7 +16,9 @@ class LoginUserEntity: RequestableApiEntity {
     var isIgnoreAccessTokenError: Bool { ignoreError }
     var isIgnoreLogoutErrors: Bool { ignoreError }
     var body: RequestBody? {
-        LoginUserBody(username: username, password: password, deviceId: deviceId, deviceName: deviceName)
+        LoginUserBody(
+            username: username, password: password, deviceId: deviceId, deviceName: deviceName
+        )
     }
     private var ignoreError: Bool { false }
     private let username: String

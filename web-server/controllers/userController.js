@@ -24,7 +24,8 @@ class UserController {
                 user_id: result.id, 
                 access_expiry: { 
                     [Op.gte]: Date.now()
-                } 
+                },
+                is_invalid: 0 
             } });
 
             let signedAccessToken
@@ -114,7 +115,10 @@ class UserController {
 
 
             if (fetchTokenResult != null) {
-                UserTokenModel.update({ is_invalid: 1 }, { where: { id: fetchTokenResult.id }});
+                UserTokenModel.update(
+                    { is_invalid: 1 }, 
+                    { where: { id: fetchTokenResult.id }}
+                );
 
                 const accessTokenExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
                 const refreshTokenExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
@@ -363,6 +367,36 @@ class UserController {
         }
     }
 
+    async logout(req, res) {
+        try {
+            const accessToken = req.headers['authorization'];
+            let tokenCheck = await this.getAccessTokenError(accessToken)
+            if (tokenCheck.error != null) {
+                return res.status(401).json(tokenCheck);
+            }
+
+            await UserTokenModel.update(
+                { is_invalid: 1},
+                { where: { access_token: accessToken} }
+            );
+
+            res.status(200).json({
+                success: 1,
+                error: {
+                    code: "000",
+                    message: ""
+                }
+            });
+        } catch (err) {
+            res.status(500).json({ 
+                error: {
+                    code: "500",
+                    message: err.message
+                } 
+            });
+        }
+    }
+
     async extend(accessToken) { 
         const accessTokenExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
@@ -393,7 +427,8 @@ class UserController {
             access_token: accessToken, 
             access_expiry: { 
                 [Op.gte]: Date.now()
-            } 
+            },
+            is_invalid: 0
         } });
         
         if (fetchTokenResult == null) {
