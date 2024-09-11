@@ -6,11 +6,12 @@ const UserController = require('../controllers/userController');
 const ImageHelper = require('../utils/imageHelper');
 
 class RoomUserController {
-    constructor(database) {
-        this.roomModel = new RoomModel(database);
-        this.roomUserModel = new RoomUserModel(database);
-        this.userModel = new UserModel(database);
-        this.messageModel = new MessageModel(database);
+    constructor() {
+        this.roomModel = new RoomModel();
+        this.roomUserModel = new RoomUserModel();
+        this.userModel = new UserModel();
+        this.messageModel = new MessageModel();
+        this.userController = new UserController();
     }
 
     async getRandomChatImageUrl(req) {
@@ -23,7 +24,7 @@ class RoomUserController {
     async createChatRoom(req, res) {
         try {
             const accessToken = req.headers['authorization'];
-            let tokenCheck = await UserController.getAccessTokenError(accessToken)
+            let tokenCheck = await this.userController.getAccessTokenError(accessToken)
             if (tokenCheck.error != null) {
                 return res.status(401).json(tokenCheck);
             }
@@ -79,7 +80,7 @@ class RoomUserController {
                 }
             }
 
-            res.json(response);
+            res.status(200).json(response);
         } catch (err) {
             res.status(500).json({
                 success: 0,
@@ -162,7 +163,7 @@ class RoomUserController {
                 }
             }
 
-            res.json(response);
+            res.status(200).json(response);
         } catch (err) {
             res.status(500).json({
                 success: 0,
@@ -200,7 +201,7 @@ class RoomUserController {
                 }
             }
 
-            res.json(response);
+            res.status(200).json(response);
         } catch (err) {
             res.status(500).json({
                 success: 0,
@@ -215,7 +216,7 @@ class RoomUserController {
     async getChatRooms(req, res) {
         try {
             const accessToken = req.headers['authorization'];
-            let tokenCheck = await UserController.getAccessTokenError(accessToken);
+            let tokenCheck = await this.userController.getAccessTokenError(accessToken);
             if (tokenCheck.error != null) {
                 return res.status(401).json(tokenCheck);
             }
@@ -279,8 +280,7 @@ class RoomUserController {
                     message: ""
                 }
             }
-            console.log(response);
-            res.json(response);
+            res.status(200).json(response);
         } catch (err) {
             res.status(500).json({
                 error: {
@@ -294,7 +294,7 @@ class RoomUserController {
     async joinRoom(req, res) {
         try {
             const accessToken = req.headers['authorization'];
-            let tokenCheck = await UserController.getAccessTokenError(accessToken)
+            let tokenCheck = await this.userController.getAccessTokenError(accessToken)
             if (tokenCheck.error != null) {
                 return res.status(401).json(tokenCheck);
             }
@@ -366,7 +366,7 @@ class RoomUserController {
                 }
             }
 
-            res.json(response);
+            res.status(200).json(response);
         } catch (err) {
             res.status(500).json({
                 error: {
@@ -389,7 +389,7 @@ class RoomUserController {
             const result = await this.roomUserModel.updateAdminStatus(room_user_id, is_admin);
             
             if (result.affectedRows > 0) {
-                res.json({
+                res.status(200).json({
                     success: 1,
                     error: {
                         code: "000",
@@ -427,7 +427,7 @@ class RoomUserController {
     
             const result = await this.roomUserModel.removeUserFromRoom(room_user_id);
             if (result.affectedRows > 0) {
-                res.json({
+                res.status(200).json({
                     success: 1,
                     error: {
                         code: "000",

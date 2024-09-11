@@ -66,7 +66,7 @@ class UserController {
                 if (userDeviceResult == null) { throw new Error("Failed to create user device."); }
             }
 
-            res.json({
+            res.status(200).json({
                 info: {
                     display_name: result.display_name,
                     username: result.username,
@@ -132,7 +132,7 @@ class UserController {
                 });
                 if (tokenResult == null) { throw new Error("Failed to create token."); }
 
-                res.json({
+                res.status(200).json({
                     access_token: signedAccessToken, 
                     refresh_token: signedRefreshToken,
                     success: 1,
@@ -185,7 +185,7 @@ class UserController {
             });
             if (tokenResult == null) { throw new Error("Failed to create token."); }
  
-            res.json({
+            res.status(200).json({
                 info: {
                     display_name: result.display_name,
                     username: result.username,
@@ -210,7 +210,85 @@ class UserController {
         }
     }
 
-    static async getAccessTokenError(accessToken) {
+    async getUsers(req, res) {
+        try {
+            const accessToken = req.headers['authorization'];
+            let tokenCheck = await this.getAccessTokenError(accessToken)
+            if (tokenCheck.error != null) {
+                return res.status(401).json(tokenCheck);
+            }
+
+            const { room_id } = req.query;
+            
+            let roomUserResult = await RoomUserModel.findAll({ where: {room_id: room_id } });
+            let roomUserIds = roomUserResult.map((item) => item.user_id);
+            let usersResult = await UserModel.findAll({ where: { id: { [Op.not]: roomUserIds }}});
+
+            const formattedResponse = usersResult.map(member => ({
+                name: member.display_name,  
+                user_image_url: ImageHelper.getImagePath(req, member.image_url), 
+                user_id: member.id
+            }));
+
+            if (formattedResponse) {
+                res.status(200).json({
+                    users: formattedResponse,
+                    success: 1,
+                    error: {
+                        code: "000",
+                        message: ""
+                    }
+                });
+            } else {
+                throw new Error("No result.")
+            }
+            
+        } catch (err) {
+            res.status(500).json({ 
+                error: {
+                    code: "500",
+                    message: err.message
+                } 
+            });
+        }
+    }
+
+    async extendToken(req, res) {
+        try {
+            const accessToken = req.headers['authorization'];
+            let tokenCheck = await this.getAccessTokenError(accessToken)
+            if (tokenCheck.error != null) {
+                return res.status(401).json(tokenCheck);
+            }
+
+            res.status(200).json({
+                success: 1,
+                error: {
+                    code: "000",
+                    message: ""
+                }
+            });
+        } catch (err) {
+            res.status(500).json({ 
+                error: {
+                    code: "500",
+                    message: err.message
+                } 
+            });
+        }
+    }
+
+    async extend(accessToken) { 
+        const accessTokenExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
+        var fetchTokenResult = await UserTokenModel.update({ 
+            access_expiry: accessTokenExpiresAt
+        },{ where: { 
+            access_token: accessToken
+        } });
+    }
+
+    async getAccessTokenError(accessToken) {
         if (!accessToken) { return { 
                 error: {
                     code: "401",
@@ -240,50 +318,11 @@ class UserController {
             } };
         }
 
+        console.log(">>>>>>>>> 1 Extended", fetchTokenResult);
+        await this.extend(accessToken);
+        console.log(">>>>>>>>> 2 Extended", fetchTokenResult);
+
         return { result : fetchTokenResult };
-    }
-
-    async getUsers(req, res) {
-        try {
-            const accessToken = req.headers['authorization'];
-            let tokenCheck = await UserController.getAccessTokenError(accessToken)
-            if (tokenCheck.error != null) {
-                return res.status(401).json(tokenCheck);
-            }
-
-            const { room_id } = req.query;
-            
-            let roomUserResult = await RoomUserModel.findAll({ where: {room_id: room_id } });
-            let roomUserIds = roomUserResult.map((item) => item.user_id);
-            let usersResult = await UserModel.findAll({ where: { id: { [Op.not]: roomUserIds }}});
-
-            const formattedResponse = usersResult.map(member => ({
-                name: member.display_name,  
-                user_image_url: ImageHelper.getImagePath(req, member.image_url), 
-                user_id: member.id
-            }));
-
-            if (formattedResponse) {
-                res.json({
-                    users: formattedResponse,
-                    success: 1,
-                    error: {
-                        code: "000",
-                        message: ""
-                    }
-                });
-            } else {
-                throw new Error("No result.")
-            }
-            
-        } catch (err) {
-            res.status(500).json({ 
-                error: {
-                    code: "500",
-                    message: err.message
-                } 
-            });
-        }
     }
 }
 
