@@ -11,9 +11,6 @@ const { Op } = require('sequelize');
 
 class MessageController {
     constructor() {
-        this.messageModel = new MessageModel();
-        this.userModel = new UserModel();
-        this.roomUserModel = new RoomUserModel();
         this.userController = new UserController();
         this.notificationController = new NotificationController();
     }

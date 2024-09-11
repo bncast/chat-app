@@ -36,6 +36,7 @@ class LoginViewModel {
 
             AppConstant.shared.accessToken = result.accessToken
             AppConstant.shared.refreshToken = result.refreshToken
+            AppConstant.shared.displayName = result.info?.displayName
 
             if let imageUrl = result.info?.imageUrl {
                 AppConstant.shared.currentUserImageUrlString = imageUrl

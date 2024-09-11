@@ -1,16 +1,11 @@
 const RoomUserModel = require('../models/roomUserModel');
 const RoomModel = require('../models/roomModel');
 const UserModel = require('../models/userModel');
-const MessageModel = require('../models/messageModel');
 const UserController = require('../controllers/userController');
 const ImageHelper = require('../utils/imageHelper');
 
 class RoomUserController {
     constructor() {
-        this.roomModel = new RoomModel();
-        this.roomUserModel = new RoomUserModel();
-        this.userModel = new UserModel();
-        this.messageModel = new MessageModel();
         this.userController = new UserController();
     }
 

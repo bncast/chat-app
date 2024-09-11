@@ -25,7 +25,8 @@ router.get('/listen', (req, res) => {
 
 router.post('/login', (req, res) => userController.login(req, res));
 router.post('/register', (req, res) => userController.register(req, res));
-router.get('/users', (req, res) => userController.getUsers(req, res));  // TODO:
+router.post('/users', (req, res) => userController.setUser(req, res));
+router.get('/users', (req, res) => userController.getUsers(req, res)); 
 
 router.post('/token', (req, res) => userController.token(req, res));
 router.post('/token/extend', (req, res) => userController.extendToken(req, res));
@@ -69,9 +70,7 @@ router.get('/invites', (req, res) => invitationController.getAll(req, res));
 router.post('/invites', (req, res) => invitationController.send(req, res));  
 router.post('/invites/accept', (req, res) => invitationController.accept(req, res)); 
 
-router.post('/notification', (req, res) => {
-  notificationController.saveDeviceToken(req, res);
-});
+router.post('/notification', (req, res) => notificationController.saveDeviceToken(req, res));
 
 function removeTimedOutClients() {
     const currentTime = Date.now();
