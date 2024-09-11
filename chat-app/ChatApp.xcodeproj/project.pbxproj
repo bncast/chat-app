@@ -23,6 +23,8 @@
 		1D5FEE352C9091EF00CF406D /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5FEE342C9091EF00CF406D /* MenuViewController.swift */; };
 		1D5FEE382C90930F00CF406D /* MenuCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5FEE372C90930F00CF406D /* MenuCollectionViewCell.swift */; };
 		1D5FEE3B2C9093B000CF406D /* MenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5FEE3A2C9093B000CF406D /* MenuViewModel.swift */; };
+		1D5FEE3E2C90A00600CF406D /* PasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5FEE3D2C90A00600CF406D /* PasswordViewController.swift */; };
+		1D5FEE432C90A03D00CF406D /* PasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5FEE422C90A03D00CF406D /* PasswordViewModel.swift */; };
 		1D5FF7B02C7D68E20047765F /* AcceptInvitationEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5FF7AF2C7D68E20047765F /* AcceptInvitationEntity.swift */; };
 		1D7235BC2C72CE37003B419B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D7235BB2C72CE37003B419B /* AppDelegate.swift */; };
 		1D7235BE2C72CE37003B419B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D7235BD2C72CE37003B419B /* SceneDelegate.swift */; };
@@ -137,6 +139,8 @@
 		1D5FEE342C9091EF00CF406D /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
 		1D5FEE372C90930F00CF406D /* MenuCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCollectionViewCell.swift; sourceTree = "<group>"; };
 		1D5FEE3A2C9093B000CF406D /* MenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewModel.swift; sourceTree = "<group>"; };
+		1D5FEE3D2C90A00600CF406D /* PasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordViewController.swift; sourceTree = "<group>"; };
+		1D5FEE422C90A03D00CF406D /* PasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordViewModel.swift; sourceTree = "<group>"; };
 		1D5FF7AF2C7D68E20047765F /* AcceptInvitationEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptInvitationEntity.swift; sourceTree = "<group>"; };
 		1D7235BB2C72CE37003B419B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1D7235BD2C72CE37003B419B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -312,6 +316,23 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		1D5FEE3C2C909FEF00CF406D /* Password */ = {
+			isa = PBXGroup;
+			children = (
+				1D5FEE3D2C90A00600CF406D /* PasswordViewController.swift */,
+				1D5FEE412C90A02500CF406D /* ViewModel */,
+			);
+			path = Password;
+			sourceTree = "<group>";
+		};
+		1D5FEE412C90A02500CF406D /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				1D5FEE422C90A03D00CF406D /* PasswordViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		1D7235AF2C72CE37003B419B = {
 			isa = PBXGroup;
 			children = (
@@ -379,17 +400,18 @@
 		6F07ACEA2C7306430010E21A /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1D5FEE332C9091DA00CF406D /* Menu */,
-				1DD910C62C8EC95A00085DBD /* Register */,
-				1DD910BE2C8E91EE00085DBD /* Login */,
-				A7FB9C512C7C06C8008DE3F3 /* UserList */,
 				6F07ACEB2C73064B0010E21A /* Components */,
-				A7FB9C3B2C75FEEB008DE3F3 /* CreateChatRoom */,
-				1D1293472C75E8090079C48C /* ChatRoom */,
-				6F4CDE7C2C74237400F310A1 /* Profile */,
+				1DD910BE2C8E91EE00085DBD /* Login */,
+				1DD910C62C8EC95A00085DBD /* Register */,
 				A700BF3D2C73156400B38530 /* ChatRoomList */,
-				6F9544942C7C1F72006E8035 /* InvitationList */,
+				1D1293472C75E8090079C48C /* ChatRoom */,
+				A7FB9C3B2C75FEEB008DE3F3 /* CreateChatRoom */,
 				6F7969692C75B8EA0010B427 /* ChatRoomDetails */,
+				6F9544942C7C1F72006E8035 /* InvitationList */,
+				A7FB9C512C7C06C8008DE3F3 /* UserList */,
+				1D5FEE332C9091DA00CF406D /* Menu */,
+				1D5FEE3C2C909FEF00CF406D /* Password */,
+				6F4CDE7C2C74237400F310A1 /* Profile */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -868,6 +890,7 @@
 				A7FB9C2E2C7589E6008DE3F3 /* JoinChatRoomEntity.swift in Sources */,
 				6F79696F2C75B99A0010B427 /* MemberWithStatusCollectionViewCell.swift in Sources */,
 				1D5FEE382C90930F00CF406D /* MenuCollectionViewCell.swift in Sources */,
+				1D5FEE432C90A03D00CF406D /* PasswordViewModel.swift in Sources */,
 				A700BF4D2C73276B00B38530 /* UIViewControllerHelpers.swift in Sources */,
 				1DD910C82C8EC96A00085DBD /* RegisterViewController.swift in Sources */,
 				6F84CF6F2C7616F300F5C112 /* UpdateChatRoomNameEntity.swift in Sources */,
@@ -916,6 +939,7 @@
 				1D5FF7B02C7D68E20047765F /* AcceptInvitationEntity.swift in Sources */,
 				6F4CDE892C745A1500F310A1 /* UpdateUserEntity.swift in Sources */,
 				6F0B7E822C73291300BFC370 /* IntHelpers.swift in Sources */,
+				1D5FEE3E2C90A00600CF406D /* PasswordViewController.swift in Sources */,
 				6FD7677B2C773EBD00DAA989 /* BaseLongPressGestureRecognizer.swift in Sources */,
 				6F0B7E672C731E7500BFC370 /* NetworkError.swift in Sources */,
 				6F0B7E772C73263400BFC370 /* AppServerOperation.swift in Sources */,
