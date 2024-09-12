@@ -31,6 +31,17 @@ class UserDeviceCollectionViewCell: BaseCollectionViewCell {
         return view
     }()
 
+    private(set) lazy var deleteButton: BaseButton = {
+        let configuration = UIImage.SymbolConfiguration(pointSize: 25)
+        let image = UIImage(systemName: "trash", withConfiguration: configuration)?
+            .withRenderingMode(.alwaysTemplate)
+
+        let view = BaseButton(image: image)
+        view.tintColor = .background(.main).withAlphaComponent(0.6)
+        view.setBackgroundColor(.clear, for: .normal)
+        return view
+    }()
+
     var title: String? {
         get { titleLabel.text }
         set { titleLabel.text = newValue }
@@ -42,13 +53,16 @@ class UserDeviceCollectionViewCell: BaseCollectionViewCell {
         separatorView.isHidden = true
     } }
 
+    var deleteTapHandlerAsync: ((BaseButton) async -> ())?
+
     // MARK: - Setups
 
     override func setupLayout() {
         contentView.addSubviews([
             backView.addSubviews([
                 separatorView,
-                titleLabel
+                titleLabel,
+                deleteButton
             ])
         ])
     }
@@ -65,9 +79,13 @@ class UserDeviceCollectionViewCell: BaseCollectionViewCell {
         titleLabel.right == backView.right - 24
         titleLabel.centerY == centerY
 
+        deleteButton.right == backView.right - 24
+        deleteButton.centerY == backView.centerY
     }
 
     override func setupActions() {
-        selectionBackView = backView
+        deleteButton.tapHandlerAsync = { [weak self] button in
+            await self?.deleteTapHandlerAsync?(button)
+        }
     }
 }

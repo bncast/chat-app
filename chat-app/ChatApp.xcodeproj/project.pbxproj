@@ -47,6 +47,8 @@
 		1DE4111C2C919C25007728FC /* UserDeviceListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE4111B2C919C25007728FC /* UserDeviceListViewController.swift */; };
 		1DE411202C919C5C007728FC /* UserDeviceListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE4111F2C919C5C007728FC /* UserDeviceListViewModel.swift */; };
 		1DE411222C919CB3007728FC /* UserDeviceCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE411212C919CB3007728FC /* UserDeviceCollectionViewCell.swift */; };
+		1DE411242C927AA7007728FC /* GetUserDeviceListEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE411232C927AA7007728FC /* GetUserDeviceListEntity.swift */; };
+		1DE411262C9282D2007728FC /* RemoveUserDeviceEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE411252C9282D2007728FC /* RemoveUserDeviceEntity.swift */; };
 		6F07ACEE2C7306730010E21A /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F07ACED2C7306730010E21A /* BaseViewController.swift */; };
 		6F0B7E642C7315C300BFC370 /* BaseNetworkOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B7E632C7315C300BFC370 /* BaseNetworkOperation.swift */; };
 		6F0B7E672C731E7500BFC370 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B7E662C731E7500BFC370 /* NetworkError.swift */; };
@@ -171,6 +173,8 @@
 		1DE4111B2C919C25007728FC /* UserDeviceListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDeviceListViewController.swift; sourceTree = "<group>"; };
 		1DE4111F2C919C5C007728FC /* UserDeviceListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDeviceListViewModel.swift; sourceTree = "<group>"; };
 		1DE411212C919CB3007728FC /* UserDeviceCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDeviceCollectionViewCell.swift; sourceTree = "<group>"; };
+		1DE411232C927AA7007728FC /* GetUserDeviceListEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetUserDeviceListEntity.swift; sourceTree = "<group>"; };
+		1DE411252C9282D2007728FC /* RemoveUserDeviceEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveUserDeviceEntity.swift; sourceTree = "<group>"; };
 		6F07ACE82C7304010010E21A /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		6F07ACED2C7306730010E21A /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		6F0B7E632C7315C300BFC370 /* BaseNetworkOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNetworkOperation.swift; sourceTree = "<group>"; };
@@ -542,6 +546,8 @@
 				1D5FEE452C912B7B00CF406D /* ExtendTokenEntity.swift */,
 				1D4A09FC2C91439D007F3E87 /* ChangePasswordEntity.swift */,
 				1D42A6B92C9177CC0031AF0E /* LogoutUserEntity.swift */,
+				1DE411232C927AA7007728FC /* GetUserDeviceListEntity.swift */,
+				1DE411252C9282D2007728FC /* RemoveUserDeviceEntity.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -917,6 +923,7 @@
 				A700BF552C736D5A00B38530 /* ChatRoomListHeaderCollectionReusableView.swift in Sources */,
 				1DE411202C919C5C007728FC /* UserDeviceListViewModel.swift in Sources */,
 				6F9544972C7C1FA3006E8035 /* InvitationListViewController.swift in Sources */,
+				1DE411262C9282D2007728FC /* RemoveUserDeviceEntity.swift in Sources */,
 				6F07ACEE2C7306730010E21A /* BaseViewController.swift in Sources */,
 				6F4CDE912C7465F100F310A1 /* PaddingLabel.swift in Sources */,
 				6F0B7E6E2C73249C00BFC370 /* DataHelpers.swift in Sources */,
@@ -947,6 +954,7 @@
 				A700BF592C73982D00B38530 /* BaseButton.swift in Sources */,
 				1D3DA0152C7875C400D4C980 /* UICollectionViewHelper.swift in Sources */,
 				1DD910CA2C8ECA9B00085DBD /* FormTextField.swift in Sources */,
+				1DE411242C927AA7007728FC /* GetUserDeviceListEntity.swift in Sources */,
 				1D3DC6752C7C217A00D64B24 /* DeleteMessageEntity.swift in Sources */,
 				1D1293512C7632420079C48C /* ChatRoomMessageHeaderCollectionReusableView.swift in Sources */,
 				6FCC10F22C7706DF00BF2D9A /* SetIsAdminEntity.swift in Sources */,

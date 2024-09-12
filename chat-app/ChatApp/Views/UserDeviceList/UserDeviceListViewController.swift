@@ -81,7 +81,28 @@ class UserDeviceListViewController: BaseViewController {
             viewController.viewModel.load()
             navigationController.pushViewController(viewController, animated: true)
         }
-    }}
+    }
+
+    func remove(_ id: Int) async {
+        guard await showDeleteAlert(in: self) == true else { return }
+
+        await IndicatorController.shared.show()
+        await viewModel.remove(userDeviceId: id)
+        viewModel.load()
+        await IndicatorController.shared.dismiss()
+    }
+
+    @MainActor
+    private func showDeleteAlert(in viewController: UIViewController) async -> Bool? {
+        return await AsyncAlertController<Bool>(
+            title: "Delete confirmation",
+            message: "Are you sure you want to delete this device?"
+        )
+        .addButton(title: "Yes, I want to delete this device", style: .destructive, returnValue: true)
+        .addButton(title: "Cancel", returnValue: false)
+        .register(in: viewController)
+    }
+}
 
 // MARK: - Collection Layout
 
@@ -130,8 +151,8 @@ extension UserDeviceListViewController {
         let cell = UserDeviceCollectionViewCell.dequeueCell(from: collectionView, for: indexPath)
         cell.title = item.name
         cell.isFirst = indexPath.row == 0
-        cell.tapHandlerAsync = { [weak self] _ in
-            // TODO:
+        cell.deleteTapHandlerAsync = { [weak self] _ in
+            await self?.remove(item.id)
         }
         return cell
     }
