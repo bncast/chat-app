@@ -16,14 +16,12 @@ class DeleteMessageEntity: RequestableApiEntity {
     var isIgnoreAccessTokenError: Bool { ignoreError }
     var isIgnoreLogoutErrors: Bool { ignoreError }
     var body: RequestBody? {
-        DeleteMessageBody(deviceId: deviceId, messageId: messageId)
+        DeleteMessageBody(messageId: messageId)
     }
     private var ignoreError: Bool { false }
-    private let deviceId: String
     private let messageId: Int
 
-    init(deviceId: String, messageId: Int) {
-        self.deviceId = deviceId
+    init(messageId: Int) {
         self.messageId = messageId
     }
 }
@@ -31,6 +29,5 @@ class DeleteMessageEntity: RequestableApiEntity {
 struct DeleteMessageBody : RequestJsonBody {
     var encoder: JSONEncoder { JSONEncoder.snakeCaseEncoder() }
 
-    let deviceId: String
     let messageId: Int
 }

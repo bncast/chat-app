@@ -33,7 +33,6 @@ class MenuViewModel {
         AppConstant.shared.accessToken = nil
         AppConstant.shared.refreshToken = nil
         AppConstant.shared.currentUserImageUrlString = nil
-        AppConstant.shared.deviceToken = nil
         AppConstant.shared.displayName = nil
     }
 }

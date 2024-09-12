@@ -56,7 +56,10 @@ class UserController {
             let findResult = await UserDeviceModel.findOne({ where: { device_id : device_id, user_id: result.id }});
 
             if (findResult) {
-                let userDeviceResult = await UserDeviceModel.update({ device_name: device_name }, { where: { device_id: device_id }});
+                let userDeviceResult = await UserDeviceModel.update(
+                    { device_name: device_name, updated_at: Date.now() }, 
+                    { where: { device_id: device_id }}
+                );
 			    if (userDeviceResult == null) { throw new Error("Failed to update user device."); }
             } else {
                 var userDeviceResult = await UserDeviceModel.create({
@@ -116,7 +119,7 @@ class UserController {
 
             if (fetchTokenResult != null) {
                 UserTokenModel.update(
-                    { is_invalid: 1 }, 
+                    { is_invalid: 1, updated_at: Date.now() }, 
                     { where: { id: fetchTokenResult.id }}
                 );
 
@@ -227,7 +230,7 @@ class UserController {
             
 
             var result = await UserModel.update( 
-                { display_name: name}, 
+                { display_name: name, updated_at: Date.now() }, 
                 { where: { id: userId } }
             );
             if (result == null) {  throw new Error("Failed to update user."); } 
@@ -275,7 +278,7 @@ class UserController {
             if (result == null) {  throw new Error("Old password is incorrect"); } 
  
             var fetchUserResult = await UserModel.update( 
-                { password: new_password },
+                { password: new_password, updated_at: Date.now() },
                 { where: {id: userId } }
             );
             if (fetchUserResult == null) {  throw new Error("Failed to update password"); } 
@@ -396,7 +399,7 @@ class UserController {
             const { user_device_id } = req.body;
             
             var result = await UserDeviceModel.update(
-                { is_invalid: 1 }, 
+                { is_invalid: 1, updated_at: Date.now() }, 
                 { where: { id: user_device_id } }
             );
             if (result == null) {  throw new Error("Failed to remove device"); } 
@@ -446,14 +449,10 @@ class UserController {
     async logout(req, res) {
         try {
             const accessToken = req.headers['authorization'];
-            let tokenCheck = await this.getAccessTokenError(accessToken)
-            if (tokenCheck.error != null) {
-                return res.status(401).json(tokenCheck);
-            }
-
+            
             await UserTokenModel.update(
-                { is_invalid: 1},
-                { where: { access_token: accessToken} }
+                { is_invalid: 1, updated_at: Date.now() },
+                { where: { access_token: accessToken } }
             );
 
             res.status(200).json({
@@ -476,11 +475,10 @@ class UserController {
     async extend(accessToken) { 
         const accessTokenExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
-        await UserTokenModel.update({ 
-            access_expiry: accessTokenExpiresAt
-        },{ where: { 
-            access_token: accessToken
-        } });
+        await UserTokenModel.update(
+            { access_expiry: accessTokenExpiresAt, updated_at: Date.now() },
+            { where: { access_token: accessToken} 
+        });
     }
 
     async getAccessTokenError(accessToken) {

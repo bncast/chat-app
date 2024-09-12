@@ -3,6 +3,7 @@ const RoomModel = require('../models/roomModel');
 const UserModel = require('../models/userModel');
 const UserController = require('../controllers/userController');
 const ImageHelper = require('../utils/imageHelper');
+const MessageModel = require('../models/messageModel');
 
 class RoomUserController {
     constructor() {
@@ -14,6 +15,55 @@ class RoomUserController {
         const imageName = `group${randomNumber}.png`;
         const imageUrl = `public/images/${imageName}`;
         return imageUrl;
+    }
+
+    async getChatRoomDetails(req, roomResult, userId){
+        var memberDetails = [];
+        const members = await RoomUserModel.findAll({ where: { room_id: roomResult.room_id, is_deleted: 0 }});
+        
+        for await (const member of members) {
+            const user = await UserModel.findOne({ where: { id: member.user_id }});
+            memberDetails.push({
+                name: user.display_name,  
+                is_admin: member.is_admin == 1,
+                user_image_url: ImageHelper.getImagePath(req, user.image_url),  
+                room_user_id: member.room_user_id
+            });
+        }    
+        
+        const creator = await UserModel.findOne({ where: { id: roomResult.creator_id }});
+        const creatorName = creator.display_name || "Unknown";
+
+        const currentUser = members.find(member => member.user_id === userId);
+        const roomUserId = currentUser?.room_user_id || null;
+
+        const roomUserIds = members.map((item) => item.room_user_id);
+        const lastMessage = await MessageModel.findOne({ 
+            where: { 
+                room_user_id: roomUserIds,  
+                deleted_at: null
+            }, 
+            order: [['created_at', 'DESC']]
+        });
+        
+        var preview = "Say hello...";
+        if (lastMessage != undefined) {
+            const lastSender = memberDetails.find(x => x.room_user_id === lastMessage.room_user_id)?.name || "Unknown";
+            preview = lastSender + " : " + lastMessage.content;
+        }
+
+        return {
+            room_id: roomResult.room_id,
+            author_id: roomResult.creator_id,  
+            author_name: creatorName, 
+            preview: preview,
+            is_joined: roomUserId != null,
+            current_room_user_id: roomUserId,
+            has_password: roomResult.password != null,
+            chat_name: roomResult.room_name,
+            chat_image_url: ImageHelper.getImagePath(req, roomResult.image_url),
+            member_details: memberDetails
+        };
     }
 
     async createChatRoom(req, res) {
@@ -28,16 +78,8 @@ class RoomUserController {
 
             const { name, password } = req.body;
 
-            let authorName;
-
-            let userResult = await UserModel.findOne({ where: { id: userId }});
-            if (userResult != null) {
-                authorName = userResult.display_name;
-            } else {
-                throw new Error("User not found.");
-            }
-            
             let imageUrl = await this.getRandomChatImageUrl(req);
+
             let createResult = await RoomModel.create({
                 room_name: name,
                 creator_id: userId,
@@ -53,21 +95,10 @@ class RoomUserController {
             });
             if (!roomUserResult) { throw new Error("Failed to create room user"); } 
 
-            let roomUserId = roomUserResult.room_user_id;
-            
+            let chatRoomDetails = await this.getChatRoomDetails(req, createResult, userId);
+
             let response = {
-                chatroom : {
-                    room_id: createResult.room_id,
-                    author_id: userId,
-                    author_name: authorName,
-                    preview: "Say hello...",
-                    is_joined: true,
-                    current_room_user_id: roomUserId,
-                    has_password: password != null,
-                    chat_name: name,
-                    chat_image_url: ImageHelper.getImagePath(req, imageUrl),
-                    member_details: []
-                },
+                chatroom: chatRoomDetails,
                 success: 1,
                 error: {
                     code: "000",
@@ -90,67 +121,29 @@ class RoomUserController {
 
     async updateChatRoom(req, res) {
         try {
-            const { device_id, room_user_id, name } = req.body;
-
-            let userResult = await this.userModel.getUserById(device_id);
-            if (userResult.length <= 0) {
-                throw new Error("User not found.");
+            const accessToken = req.headers['authorization'];
+            let tokenCheck = await this.userController.getAccessTokenError(accessToken);
+            if (tokenCheck.error != null) {
+                return res.status(401).json(tokenCheck);
             }
-            
-            let roomUserResult = await this.roomUserModel.getRoomUserForRoomUserId(room_user_id);
-            if (!roomUserResult) { throw new Error("Failed to fetch room user"); } 
+            let userId = tokenCheck.result.user_id;
 
-            let roomUser = roomUserResult[0];
-            let roomId = roomUser.room_id;
-            let userId = roomUser.user_id;
+            const { room_user_id, name } = req.body;
 
-            let otherUserResult = await this.userModel.getUserById(userId);
-            if (!otherUserResult) { throw new Error("Failed to fetch user"); } 
+            let roomUserResult = await RoomUserModel.findOne({ where: { room_user_id: room_user_id } });
+            if (!roomUserResult) { throw new Error("Failed to fetch room"); }
 
-            let otherUser = otherUserResult[0];
-            let userDisplayName = otherUser.display_name;
+            let updateResult = await RoomModel.update(
+                { room_name: name, updated_at: Date.now() },
+                { where: { room_id: roomUserResult.room_id }}
+            );
+            if (!updateResult) { throw new Error("Failed to update room"); }
 
-
-            let updateRoomResult = await this.roomModel.updateNameById(name, userId, roomId);
-            if (!updateRoomResult) { throw new Error("Failed to create room"); } 
-
-            let roomResult = await this.roomModel.getByIdByPassed(roomId);
-            let room = roomResult[0];
-            let hasPassword = room.hasPassword != null;
-            let newName = room.room_name;
-            
-            const members = await this.roomUserModel.getUsersInRoom(room.room_id);
-
-            const memberDetails = members.map(member => ({
-                name: member.name,  
-                is_admin: member.is_admin == 1,
-                user_image_url: `${req.protocol}://${req.get('host')}/` + member.image_url,
-                room_user_id: member.room_user_id
-            }));
-
-            let roomImagePath = `${req.protocol}://${req.get('host')}/` + room.image_url;
-            
-            let previewResult = await this.messageModel.getLatestMessage(roomId);
-            let lastMessage = previewResult[0];
-            
-            var preview = "Say hello...";
-            if (lastMessage != undefined && lastMessage.display_name != undefined && lastMessage.content != undefined) {
-                preview = lastMessage.display_name + " : " + lastMessage.content;
-            }
+            let roomResult = await RoomModel.findOne({ where: { room_id: roomUserResult.room_id } });
+            let chatRoomDetails = await this.getChatRoomDetails(req, roomResult, userId);
 
             let response = {
-                chatrooms : {
-                    room_id: roomId,
-                    author_id: room.creator_id,
-                    author_name: userDisplayName,
-                    preview: preview,
-                    is_joined: true,
-                    current_room_user_id: room_user_id,
-                    has_password: hasPassword,
-                    chat_name: newName,
-                    chat_image_url: roomImagePath,
-                    member_details: memberDetails
-                },
+                chatroom : chatRoomDetails,
                 success: 1,
                 error: {
                     code: "000",
@@ -172,21 +165,22 @@ class RoomUserController {
 
     async deleteChatRoom(req, res) {
         try {
-            const { device_id, room_user_id } = req.body;
-
-            let userResult = await this.userModel.getUserById(device_id);
-            if (userResult.length <= 0) {
-                throw new Error("User not found.");
+            const accessToken = req.headers['authorization'];
+            let tokenCheck = await this.userController.getAccessTokenError(accessToken);
+            if (tokenCheck.error != null) {
+                return res.status(401).json(tokenCheck);
             }
-            
-            let roomUserResult = await this.roomUserModel.getRoomUserForRoomUserId(room_user_id);
-            if (!roomUserResult) { throw new Error("Failed to fetch room user"); } 
 
-            let roomUser = roomUserResult[0];
-            let roomId = roomUser.room_id;
-            
-            let roomResult = await this.roomModel.deleteById(roomId);
-            if (!roomResult) { throw new Error("Failed to create room"); } 
+            const { room_user_id } = req.body;
+
+            let roomUserResult = await RoomUserModel.findOne({ where: { room_user_id: room_user_id } });
+            if (!roomUserResult) { throw new Error("Failed to fetch room"); }
+
+            let updateResult = await RoomModel.update(
+                { is_deleted: 1, updated_at: Date.now() },
+                { where: { room_id: roomUserResult.room_id }}
+            );
+            if (!updateResult) { throw new Error("Failed to delete room"); }
 
             let response = {
                 success: 1,
@@ -217,54 +211,12 @@ class RoomUserController {
             }
             let userId = tokenCheck.result.user_id;
 
-            const allRooms = await RoomModel.findAll();
+            const allRooms = await RoomModel.findAll({ where: { is_deleted: 0 } });
             const chatRooms = [];
     
             for (const room of allRooms) {
-                const members = await RoomUserModel.findAll({ where: {
-                    room_id: room.room_id
-                }});
-
-                var memberDetails = [];
-                
-                for await (const member of members) {
-                    const user = await UserModel.findOne({ where: { id: member.user_id }});
-                    memberDetails.push({
-                        name: user.display_name,  
-                        is_admin: member.is_admin == 1,
-                        user_image_url: ImageHelper.getImagePath(req, user.image_url),  
-                        room_user_id: member.room_user_id
-                    });
-                }    
-
-                const creator = await UserModel.findOne({ where: { id: room.creator_id }});
-                const creatorName = creator.display_name;
-
-                const currentUser = members.find(member => member.user_id === userId);
-                const roomUserId = currentUser?.room_user_id || null;
-
-                let previewResult = null;//await this.messageModel.getLatestMessage(room.room_id);
-                let lastMessage = null;
-                
-                var preview = "Say hello...";
-                if (lastMessage != undefined && lastMessage.display_name != undefined && lastMessage.content != undefined) {
-                    preview = lastMessage.display_name + " : " + lastMessage.content;
-                }
-
-                const chatRoom = {
-                    room_id: room.room_id,
-                    author_id: room.creator_id,  
-                    author_name: creatorName || "Unknown", 
-                    preview: preview,
-                    is_joined: roomUserId != null,
-                    current_room_user_id: roomUserId,
-                    has_password: room.password != null,
-                    chat_name: room.room_name,
-                    chat_image_url: ImageHelper.getImagePath(req, room.image_url),
-                    member_details: memberDetails
-                };
-    
-                chatRooms.push(chatRoom);
+                let chatRoomDetails = await this.getChatRoomDetails(req, room, userId);
+                chatRooms.push(chatRoomDetails);
             }
             
             let response = {
@@ -301,59 +253,18 @@ class RoomUserController {
                 room_id: room_id
             }});
             if (!roomResult) { throw new Error("Room not found."); }
-            if (roomResult.password != null && roomResult.password == password) { throw new Error("Password is required.");}
+            if (roomResult.password != null && roomResult.password != password) { throw new Error("Incorrect password");}
 
             let roomUserResult = await RoomUserModel.create({
                 room_id: room_id,
                 user_id: userId
-            });//this.roomUserModel.createRoomUser(room_id, device_id);
+            });
             if (!roomUserResult) { throw new Error("Failed to create room"); } 
         
-            const members = await RoomUserModel.findAll({ where: {
-                room_id: room_id
-            }});
+            let chatRoomDetails = await this.getChatRoomDetails(req, roomResult, userId);
 
-            var memberDetails = [];
-            
-            for await (const member of members) {
-                const user = await UserModel.findOne({ where: { id: member.user_id }});
-                memberDetails.push({
-                    name: user.display_name,  
-                    is_admin: member.is_admin == 1,
-                    user_image_url: ImageHelper.getImagePath(req, user.image_url),  
-                    room_user_id: member.room_user_id
-                });
-            }    
-
-            const creator = await UserModel.findOne({ where: { id: roomResult.creator_id }});
-            const creatorName = creator.display_name;
-
-            const currentUser = members.find(member => member.user_id === userId);
-            const roomUserId = currentUser?.room_user_id || null;
-
-            let previewResult = null;//await this.messageModel.getLatestMessage(room.room_id);
-            let lastMessage = null;
-            
-            var preview = "Say hello...";
-            if (lastMessage != undefined && lastMessage.display_name != undefined && lastMessage.content != undefined) {
-                preview = lastMessage.display_name + " : " + lastMessage.content;
-            }
-
-            const chatRoom = {
-                room_id: room_id,
-                author_id: roomResult.creator_id,  
-                author_name: creatorName || "Unknown", 
-                preview: preview,
-                is_joined: roomUserId != null,
-                current_room_user_id: roomUserId,
-                has_password: roomResult.password != null,
-                chat_name: roomResult.room_name,
-                chat_image_url: ImageHelper.getImagePath(req, roomResult.image_url),
-                member_details: memberDetails
-            };
-    
             let response = {
-                chat_room: chatRoom,
+                chat_room: chatRoomDetails,
                 success: 1,
                 error: {
                     code: "000",
@@ -374,32 +285,27 @@ class RoomUserController {
 
     async updateAdminStatus(req, res) {
         try {
-            const { device_id, room_user_id, is_admin } = req.body;
-            
-            let userResult = await this.userModel.getUserById(device_id);
-            if (userResult.length <= 0) {
-                throw new Error("User not found.");
+            const accessToken = req.headers['authorization'];
+            let tokenCheck = await this.userController.getAccessTokenError(accessToken)
+            if (tokenCheck.error != null) {
+                return res.status(401).json(tokenCheck);
             }
-    
-            const result = await this.roomUserModel.updateAdminStatus(room_user_id, is_admin);
             
-            if (result.affectedRows > 0) {
-                res.status(200).json({
-                    success: 1,
-                    error: {
-                        code: "000",
-                        message: ""
-                    }
-                });
-            } else {
-                res.status(404).json({
-                    success: 0,
-                    error: {
-                        code: "404",
-                        message: "Room user not found or already deleted"
-                    }
-                });
-            }
+            const { room_user_id, is_admin } = req.body;
+            
+            let result = await RoomUserModel.update(
+                { is_admin: is_admin },
+                { where: { room_user_id: room_user_id } }
+            );
+            if (!result) { throw new Error("Failed to update user status"); }
+
+            res.status(200).json({
+                success: 1,
+                error: {
+                    code: "000",
+                    message: ""
+                }
+            });
         } catch (err) {
             res.status(500).json({
                 success: 0,
@@ -413,31 +319,27 @@ class RoomUserController {
 
     async deleteRoomUser(req, res) {
         try {
-            const { device_id, room_user_id } = req.body;
-
-            let userResult = await this.userModel.getUserById(device_id);
-            if (userResult.length <= 0) {
-                throw new Error("User not found.");
+            const accessToken = req.headers['authorization'];
+            let tokenCheck = await this.userController.getAccessTokenError(accessToken)
+            if (tokenCheck.error != null) {
+                return res.status(401).json(tokenCheck);
             }
-    
-            const result = await this.roomUserModel.removeUserFromRoom(room_user_id);
-            if (result.affectedRows > 0) {
-                res.status(200).json({
-                    success: 1,
-                    error: {
-                        code: "000",
-                        message: ""
-                    }
-                });
-            } else {
-                res.status(404).json({
-                    success: 0,
-                    error: {
-                        code: "404",
-                        message: "Room user not found or already deleted"
-                    }
-                });
-            }
+            
+            const { room_user_id } = req.body;
+            
+            let result = await RoomUserModel.update(
+                { is_deleted: 1 },
+                { where: { room_user_id: room_user_id } }
+            );
+            if (!result) { throw new Error("Failed to update user status"); }
+            
+            res.status(200).json({
+                success: 1,
+                error: {
+                    code: "000",
+                    message: ""
+                }
+            });
         } catch (err) {
             res.status(500).json({
                 success: 0,

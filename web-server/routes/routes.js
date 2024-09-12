@@ -1,6 +1,5 @@
 const Express = require('express');
 
-const Database = require('../config/database');
 const UserController = require('../controllers/userController');
 const RoomUserController = require('../controllers/roomUserController');
 const MessageController = require('../controllers/messageController');
@@ -33,13 +32,13 @@ router.post('/token/extend', (req, res) => userController.extendToken(req, res))
 
 router.get('/rooms', (req, res) => roomUserController.getChatRooms(req, res));   
 router.post('/rooms', (req, res) => roomUserController.createChatRoom(req, res));  
-router.put('/api/rooms', (req, res) => roomUserController.updateChatRoom(req, res));  // TODO:
-router.delete('/api/rooms', (req, res) => roomUserController.deleteChatRoom(req, res));  // TODO:
+router.put('/rooms', (req, res) => roomUserController.updateChatRoom(req, res));
+router.delete('/rooms', (req, res) => roomUserController.deleteChatRoom(req, res)); 
 
 router.post('/rooms/join', (req, res) => roomUserController.joinRoom(req, res)); 
 
-router.delete('/api/rooms/detail', (req, res) => roomUserController.deleteRoomUser(req, res));  // TODO:
-router.patch('/api/rooms/detail', (req, res) => roomUserController.updateAdminStatus(req, res));  // TODO:
+router.delete('/rooms/detail', (req, res) => roomUserController.deleteRoomUser(req, res));  
+router.patch('/rooms/detail', (req, res) => roomUserController.updateAdminStatus(req, res)); 
 
 router.get('/invites', (req, res) => invitationController.getAll(req, res));  
 router.post('/invites', (req, res) => invitationController.send(req, res));  
@@ -49,17 +48,15 @@ router.post('/notification', (req, res) => notificationController.saveDeviceToke
 
 router.get('/messages', (req, res) => messageController.getMessagesByRoom(req, res));  
 
-router.delete('/api/messages', (req, res) => {  // TODO:
+router.delete('/messages', async (req, res) => { 
   removeTimedOutClients();
-  messageController.deleteMessage(req, res, (targetRoomId) => {
-    notifyClients(targetRoomId);
-  });
+  let targetRoomId = await messageController.deleteMessage(req, res);
+  notifyClients(targetRoomId)
 });
-router.put('/api/messages', (req, res) => {  // TODO:
+router.put('/messages', async (req, res) => { 
   removeTimedOutClients();
-  messageController.updateMessage(req, res, (targetRoomId) => {
-    notifyClients(targetRoomId);
-  });
+  let targetRoomId = await messageController.updateMessage(req, res);
+  notifyClients(targetRoomId);
 });
 
 router.post('/send', async (req, res) => {

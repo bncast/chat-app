@@ -16,7 +16,7 @@ class MessageController {
     }
 
     // Create a new message
-    async createMessage(req, res, completion) {
+    async createMessage(req, res) {
         try {
             const accessToken = req.headers['authorization'];
             let tokenCheck = await this.userController.getAccessTokenError(accessToken);
@@ -78,11 +78,16 @@ class MessageController {
             }
             let userId = tokenCheck.result.user_id;
 
-            const { room_id, room_user_id } = req.query
+            const { room_id } = req.query
 
             const roomUsers = await RoomUserModel.findAll({ where: { room_id: room_id }});
             const roomUserIds = roomUsers.map((item) => item.room_user_id);
-            const messages = await MessageModel.findAll({ where: { room_user_id: roomUserIds }});
+            const messages = await MessageModel.findAll({ 
+                where: { 
+                    room_user_id: roomUserIds,  
+                    deleted_at: null
+                }
+            });
 
             var formattedMessages = [];
 
@@ -119,76 +124,75 @@ class MessageController {
     }
 
     // Update a message
-    async updateMessage(req, res, completion) {
+    async updateMessage(req, res) {
         try {
-            const { device_id, message_id, message } = req.body
-
-            let userResult = await this.userModel.getUserById(device_id);
-            if (userResult.length <= 0) {
-                throw new Error("User not found.");
+            const accessToken = req.headers['authorization'];
+            let tokenCheck = await this.userController.getAccessTokenError(accessToken);
+            if (tokenCheck.error != null) {
+                return res.status(401).json(tokenCheck);
             }
 
-                // Retrieve the updated message details
-            const updateResult = await this.messageModel.updateMessage(message_id, message);
-            if (updateResult.length <= 0) {
-                return res.status(404).json({ error: "Message not found after update" });
-            }
+            const { message_id, message } = req.body;
 
-            const updatedMessageResult = await this.messageModel.getMessageById(message_id);
-            let updatedMessage = updatedMessageResult[0];
+            let result = await MessageModel.update(
+                { content: message, updated_at: Date.now() },
+                { where: { message_id: message_id } }
+            );
+            if (!result) { throw new Error("Failed to delete message"); }
 
-            // Send the response
-            res.status(200).json({
+            let messageResult = await MessageModel.findOne({ where: { message_id: message_id } });
+            let roomUserResult = await RoomUserModel.findOne({ where: { room_user_id: messageResult.room_user_id } } );
+            
+            res.status(200).json({ 
                 success: 1,
                 error: {
                     code: "000",
                     message: ""
                 }
             });
-
-            let roomUserResult = await this.roomUserModel.getRoomUserForRoomUserId(updatedMessage.room_user_id);
-            let room = await roomUserResult.pop();
-
-            completion(room.room_id);
+            
+            return roomUserResult.room_id;
         } catch (err) {
-            res.status(500).json({ error: "Failed to update message" });
+            res.status(500).json({ error: "Failed to create message" });
         }
+
+        return null
     }
 
     // Soft delete a message
-    async deleteMessage(req, res, completion) {
+    async deleteMessage(req, res) {
         try {
-            const { device_id, message_id } = req.body
-
-            let userResult = await this.userModel.getUserById(device_id);
-            if (userResult.length <= 0) {
-                throw new Error("User not found.");
+            const accessToken = req.headers['authorization'];
+            let tokenCheck = await this.userController.getAccessTokenError(accessToken);
+            if (tokenCheck.error != null) {
+                return res.status(401).json(tokenCheck);
             }
 
-            // Retrieve the updated message details
-            const updateResult = await this.messageModel.deleteMessage(message_id);
-            if (updateResult.length <= 0) {
-                return res.status(404).json({ error: "Message not found after update" });
-            }
+            const { message_id } = req.body;
 
-            const updatedMessageResult = await this.messageModel.getMessageById(message_id);
-            let updatedMessage = updatedMessageResult[0];
+            let result = await MessageModel.update(
+                { deleted_at: Date.now(), updated_at: Date.now() },
+                { where: { message_id: message_id } }
+            );
+            if (!result) { throw new Error("Failed to delete message"); }
+
+            let messageResult = await MessageModel.findOne({ where: { message_id: message_id } });
+            let roomUserResult = await RoomUserModel.findOne({ where: { room_user_id: messageResult.room_user_id } } );
             
-            let roomUserResult = await this.roomUserModel.getRoomUserForRoomUserId(updatedMessage.room_user_id);
-            let room = await roomUserResult[0];
-
-            completion(room.room_id);
-
-            res.status(200).json({
+            res.status(200).json({ 
                 success: 1,
                 error: {
                     code: "000",
                     message: ""
                 }
             });
+            
+            return roomUserResult.room_id;
         } catch (err) {
-            res.status(500).json({ error: "Failed to delete message" });
+            res.status(500).json({ error: "Failed to create message" });
         }
+
+        return null
     }
 }
 

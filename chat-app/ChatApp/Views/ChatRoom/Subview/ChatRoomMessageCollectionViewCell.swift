@@ -260,7 +260,9 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
     override func setupActions() {
         selectionBackView = backView
 
-        longPressRecognizer.longPressHandler = { [weak self] _ in
+        longPressRecognizer.longPressHandler = { [weak self] gesture in
+            guard gesture.state == .began else { return }
+
             Task {
                 let generator = UIImpactFeedbackGenerator(style: .medium)
                 generator.prepare()

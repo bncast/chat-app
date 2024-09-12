@@ -108,15 +108,15 @@ class ChatRoomViewController: BaseViewController {
         super.viewWillAppear(true)
 
         navigationBar?.showChatRoomMessageButtons = true
+
+        guard let details = viewModel.details else { return }
+        navigationBar?.title = details.name
     }
 
     // MARK: - Setups
 
     override func setupNavigation() {
-        guard let details = viewModel.details else { return }
-
         setNavigationBarDefaultStyle()
-        navigationBar?.title = details.name
     }
 
     override func setupLayout() {
@@ -202,7 +202,7 @@ class ChatRoomViewController: BaseViewController {
 
             let (isRemovedChatRoom, newName) = await ChatRoomDetailsViewController.push(on: self, using: details)
             if isRemovedChatRoom {
-                navigationController?.popViewController(animated: true)
+                navigationController?.popToRootViewController(animated: true)
             } else if let newName {
                 navigationBar?.title = newName
             }

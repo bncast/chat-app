@@ -132,7 +132,10 @@ class InvitationController {
             if (invitation) {
                 // If invitation exists, set it to invalid
 
-                const result = await InvitationModel.update({ is_invalid: 1 }, { where: { invitation_id: invitation_id } } );
+                const result = await InvitationModel.update(
+                    { is_invalid: 1, updated_at: Date.now() },
+                    { where: { invitation_id: invitation_id } } 
+                );
                 if (!result) {
                     return res.status(500).json({
                         success: 0,

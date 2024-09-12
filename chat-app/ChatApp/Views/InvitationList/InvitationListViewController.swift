@@ -183,7 +183,7 @@ extension InvitationListViewController {
                 await IndicatorController.shared.dismiss()
 
                 self?.continuation?.resume(returning: chatInfo)
-                self?.dismiss(animated: true) 
+                self?.navigationController?.popViewController(animated: true)
             } catch {
                 print("[UserListViewController] Error! \(error as! NetworkError)")
                 await IndicatorController.shared.dismiss()

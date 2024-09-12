@@ -16,15 +16,13 @@ class UpdateMessageEntity: RequestableApiEntity {
     var isIgnoreAccessTokenError: Bool { ignoreError }
     var isIgnoreLogoutErrors: Bool { ignoreError }
     var body: RequestBody? {
-        UpdateMessageBody(deviceId: deviceId, message: message, messageId: messageId)
+        UpdateMessageBody(message: message, messageId: messageId)
     }
     private var ignoreError: Bool { false }
-    private let deviceId: String
     private let message: String
     private let messageId: Int
 
-    init(deviceId: String, message: String, messageId: Int) {
-        self.deviceId = deviceId
+    init(message: String, messageId: Int) {
         self.message = message
         self.messageId = messageId
     }
@@ -33,7 +31,6 @@ class UpdateMessageEntity: RequestableApiEntity {
 struct UpdateMessageBody : RequestJsonBody {
     var encoder: JSONEncoder { JSONEncoder.snakeCaseEncoder() }
 
-    let deviceId: String
     let message: String
     let messageId: Int
 }

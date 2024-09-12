@@ -103,12 +103,10 @@ class ChatRoomViewModel {
     @discardableResult
     func sendMessage(_ message: String) async -> Bool{
         guard let details, let roomUserId = details.currentRoomUserId else { return false }
-        let deviceId = AppConstant.shared.deviceId ?? ""
-
         let response: RespondableApiEntity?
 
         if let isEditingMessageId {
-            response = try? await UpdateMessageEntity(deviceId: deviceId, message: message, messageId: isEditingMessageId).run()
+            response = try? await UpdateMessageEntity(message: message, messageId: isEditingMessageId).run()
             self.isEditingMessageId = nil
         } else {
             response = try? await SendMessageEntity(message: message, roomUserId: roomUserId, replyToId: isReplyingMessageId).run()
@@ -120,11 +118,7 @@ class ChatRoomViewModel {
     }
 
     func deleteMessage(_ messageId: Int) {
-        guard let deviceId = AppConstant.shared.deviceId else { return }
-
-        Task {
-            let _ = try? await DeleteMessageEntity(deviceId: deviceId, messageId: messageId).run()
-        }
+        Task { let _ = try? await DeleteMessageEntity(messageId: messageId).run() }
     }
 
     var request: GetMessageRespondableEntity?
