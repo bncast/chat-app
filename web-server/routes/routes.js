@@ -24,7 +24,9 @@ router.get('/listen', (req, res) => {
 });
 
 router.post('/login', (req, res) => userController.login(req, res));
+router.post('/logout', (req, res) => userController.logout(req, res));
 router.post('/register', (req, res) => userController.register(req, res));
+
 router.post('/users', (req, res) => userController.setUser(req, res));
 router.get('/users', (req, res) => userController.getUsers(req, res));
 router.post('/users/password', (req, res) => userController.setPassword(req, res)); 

@@ -26,4 +26,14 @@ class MenuViewModel {
     func load() {
         items = [.list: [.profile, .password, .devices, .logout]]
     }
+
+    func logout() async throws {
+        try await LogoutUserEntity().run()
+
+        AppConstant.shared.accessToken = nil
+        AppConstant.shared.refreshToken = nil
+        AppConstant.shared.currentUserImageUrlString = nil
+        AppConstant.shared.deviceToken = nil
+        AppConstant.shared.displayName = nil
+    }
 }

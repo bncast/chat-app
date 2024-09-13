@@ -43,11 +43,10 @@ class LoginViewModel {
             }
 
             if let currentDeviceTokenU = AppConstant.shared.deviceToken {
-                try await SetDeviceTokenEntity(deviceId: AppConstant.shared.deviceId ?? "",
+                try? await SetDeviceTokenEntity(deviceId: AppConstant.shared.deviceId ?? "",
                                                deviceToken: currentDeviceTokenU).run()
             }
-
-
+            
             return true
         } catch {
             if let networkError = NetworkError(error) {

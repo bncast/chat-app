@@ -25,21 +25,20 @@ class NotificationController {
                 return res.status(401).json(tokenCheck);
             }
 
-			let userId = tokenCheck.result.user_id;
-
 			const { device_id, device_token } = req.body;
-
+			
 			let userDeviceResult = await UserDeviceModel.update({ device_push_token: device_token }, { where: { device_id: device_id }});
 			if (userDeviceResult == null) { throw new Error("Failed to update push token."); }
 
 			let response = {
-					success: 1,
-					error: {
-						code: "000",
-						message: ""
-					}
+				success: 1,
+				error: {
+					code: "000",
+					message: ""
 				}
-			res.json(response);
+			}
+			
+			res.status(200).json(response);
 		} catch (err) {
             res.status(500).json({
                 success: 0,
