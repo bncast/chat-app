@@ -78,7 +78,6 @@ class ProfileViewController: BaseViewController {
     }()
 
     private let viewModel = ProfileViewModel()
-    private var continuation: CheckedContinuation<Void, Never>?
 
     // MARK: - Setups
 
@@ -173,13 +172,6 @@ class ProfileViewController: BaseViewController {
         }
     }
 
-    // MARK: - View Controller
-
-    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-        super.dismiss(animated: flag, completion: completion)
-        continuation?.resume()
-    }
-
     // MARK: - Private Methods
 
     func updateProfile() async {
@@ -212,15 +204,12 @@ class ProfileViewController: BaseViewController {
 
 // MARK: - Navigation
 extension ProfileViewController {
-    static func show(on parentViewController: UIViewController) async {
-        await withCheckedContinuation { continuation in
-            let profileViewController = Self()
-            profileViewController.modalPresentationStyle = .overFullScreen
-            profileViewController.transitioningDelegate = profileViewController.fadeInAnimator
-            profileViewController.continuation = continuation
-            profileViewController.viewModel.load()
-            parentViewController.present(profileViewController, animated: true)
-        }
+    static func show(on parentViewController: UIViewController) {
+        let profileViewController = Self()
+        profileViewController.modalPresentationStyle = .overFullScreen
+        profileViewController.transitioningDelegate = profileViewController.fadeInAnimator
+        profileViewController.viewModel.load()
+        parentViewController.present(profileViewController, animated: true)
     }
 }
 

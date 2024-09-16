@@ -1,16 +1,16 @@
 //
-//  MenuViewController.swift
+//  UserDeviceListViewController.swift
 //  ChatApp
 //
-//  Created by Niño Castorico on 9/10/24.
+//  Created by Niño Castorico on 9/11/24.
 //
 
 import UIKit
 import SuperEasyLayout
 
-class MenuViewController: BaseViewController {
-    private typealias Section = MenuViewModel.Section
-    private typealias Item = MenuViewModel.Item
+class UserDeviceListViewController: BaseViewController {
+    private typealias Section = UserDeviceListViewModel.Section
+    private typealias Item = UserDeviceListViewModel.ItemInfo
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, Item>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Item>
     private var dataSource: DataSource?
@@ -26,7 +26,7 @@ class MenuViewController: BaseViewController {
         view.backgroundView = nil
         view.backgroundColor = .white
 
-        MenuCollectionViewCell.registerCell(to: view)
+        UserDeviceCollectionViewCell.registerCell(to: view)
         return view
     }()
 
@@ -34,7 +34,7 @@ class MenuViewController: BaseViewController {
         navigationController?.navigationBar as? ChatRoomListNavigationBar
     }
 
-    private let viewModel = MenuViewModel()
+    private let viewModel = UserDeviceListViewModel()
 
     // MARK: - Life Cycle
 
@@ -42,7 +42,7 @@ class MenuViewController: BaseViewController {
         super.viewWillAppear(true)
 
         navigationBar?.hideAllButton = true
-        navigationBar?.title = "Menu"
+        navigationBar?.title = "Devices"
     }
 
     // MARK: - Setups
@@ -75,52 +75,17 @@ class MenuViewController: BaseViewController {
             .store(in: &cancellables)
     }
 
-    override func setupActions() {
-        viewModel.load()
-    }
-
-    func showProfile() async {
-        ProfileViewController.show(on: self)
-    }
-
-    func showChangePassword() async {
-        await PasswordViewController.show(on: self)
-    }
-
-    func showDevices() {
-        UserDeviceListViewController.push(on: self)
-    }
-
-
-    func logout() async {
-        do {
-            await IndicatorController.shared.show()
-            try await viewModel.logout()
-            await IndicatorController.shared.dismiss()
-            redirectToLogin()
-        } catch {
-
-        }
-    }
-
-    func redirectToLogin() {
-        guard let navigationController = self.navigationController else { return }
-
-        navigationController.dismiss(animated: true)
-    }
-
     static func push(on parentViewController: UIViewController) {
         let viewController = Self()
         if let navigationController =  parentViewController.navigationController {
             viewController.viewModel.load()
             navigationController.pushViewController(viewController, animated: true)
         }
-    }
-}
+    }}
 
 // MARK: - Collection Layout
 
-extension MenuViewController {
+extension UserDeviceListViewController {
     private func getSectionLayout() -> NSCollectionLayoutSection {
         let unitSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1), heightDimension: .absolute(60)
@@ -134,7 +99,7 @@ extension MenuViewController {
 
 // MARK: - Set View Based on Data
 
-extension MenuViewController {
+extension UserDeviceListViewController {
     private func apply(_ items: [Section: [Item]]) {
         guard !items.isEmpty else { return }
 
@@ -161,17 +126,12 @@ extension MenuViewController {
         }
     }
 
-    private func getCell(at indexPath: IndexPath, item: Item) -> MenuCollectionViewCell {
-        let cell = MenuCollectionViewCell.dequeueCell(from: collectionView, for: indexPath)
-        cell.title = item.rawValue
-        cell.isFirst = item.isFirst
+    private func getCell(at indexPath: IndexPath, item: Item) -> UserDeviceCollectionViewCell {
+        let cell = UserDeviceCollectionViewCell.dequeueCell(from: collectionView, for: indexPath)
+        cell.title = item.name
+        cell.isFirst = indexPath.row == 0
         cell.tapHandlerAsync = { [weak self] _ in
-            switch item {
-            case .profile: await self?.showProfile()
-            case .devices: self?.showDevices()
-            case .password: await self?.showChangePassword()
-            case .logout: await self?.logout()
-            }
+            // TODO:
         }
         return cell
     }

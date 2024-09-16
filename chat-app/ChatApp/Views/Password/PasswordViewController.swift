@@ -81,7 +81,6 @@ class PasswordViewController: BaseViewController {
     }()
 
     private let viewModel = PasswordViewModel()
-    private var continuation: CheckedContinuation<Void, Never>?
 
     // MARK: - Setups
 
@@ -198,13 +197,6 @@ class PasswordViewController: BaseViewController {
         keyboardAppear = self
     }
 
-    // MARK: - View Controller
-
-    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-        super.dismiss(animated: flag, completion: completion)
-        continuation?.resume()
-    }
-
     // MARK: - Private Methods
 
     func updatePassword() {
@@ -232,13 +224,10 @@ class PasswordViewController: BaseViewController {
 // MARK: - Navigation
 extension PasswordViewController {
     static func show(on parentViewController: UIViewController) async {
-        await withCheckedContinuation { continuation in
-            let profileViewController = Self()
-            profileViewController.modalPresentationStyle = .overFullScreen
-            profileViewController.transitioningDelegate = profileViewController.fadeInAnimator
-            profileViewController.continuation = continuation
-            parentViewController.present(profileViewController, animated: true)
-        }
+        let profileViewController = Self()
+        profileViewController.modalPresentationStyle = .overFullScreen
+        profileViewController.transitioningDelegate = profileViewController.fadeInAnimator
+        parentViewController.present(profileViewController, animated: true)
     }
 }
 
