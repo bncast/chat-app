@@ -25,9 +25,6 @@ router.post('/users', (req, res) => userController.setUser(req, res));
 router.get('/users', (req, res) => userController.getUsers(req, res));
 router.post('/users/password', (req, res) => userController.setPassword(req, res)); 
 
-router.get('/devices', (req, res) => userController.getDevices(req, res)); 
-router.delete('/devices', (req, res) => userController.deleteDevice(req, res)); 
-
 router.post('/token', (req, res) => userController.token(req, res));
 router.post('/token/extend', (req, res) => userController.extendToken(req, res));
 

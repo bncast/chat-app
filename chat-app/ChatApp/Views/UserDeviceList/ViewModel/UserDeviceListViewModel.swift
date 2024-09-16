@@ -14,31 +14,18 @@ class UserDeviceListViewModel {
 
     struct ItemInfo: Hashable {
         let id: Int
-        let deviceId: String
         let name: String
     }
 
     @Published var items: [Section: [ItemInfo]] = [:]
 
     func load() {
-        Task {
-            do {
-                let devices = try await GetUserDeviceListEntity().run().devices
+        items = [.list: [
+            ItemInfo(id: 1, name: "Nino iPhone"),
+            ItemInfo(id: 2, name: "Nezuko iPhone")
+        ] ]
 
-                items[.list] = devices.map {
-                    ItemInfo(id: $0.id, deviceId: $0.deviceId, name: $0.deviceName)
-                }
-            } catch {
-                print("[UserDeviceListViewModel]", error.localizedDescription)
-            }
-        }
+        // TODO:
     }
 
-    func remove(userDeviceId: Int) async {
-        do {
-            try await RemoveUserDeviceEntity(userDeviceId: userDeviceId).run()
-        } catch {
-            print("[UserDeviceListViewModel]", error.localizedDescription)
-        }
-    }
 }
