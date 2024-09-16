@@ -27,6 +27,14 @@ class ChatRoomListCollectionViewCell: BaseSwipeCollectionViewCell {
         return view
     }()
 
+    private lazy var muteImageView: UIImageView = {
+        let view = UIImageView(image: UIImage(systemName: "bell.slash.fill")?.withRenderingMode(.alwaysTemplate))
+        view.contentMode = .scaleAspectFit
+        view.tintColor = .subtextLight
+        view.isHidden = true
+        return view
+    }()
+
     private lazy var horizontalStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .horizontal
@@ -86,6 +94,11 @@ class ChatRoomListCollectionViewCell: BaseSwipeCollectionViewCell {
         imageView.setImage(from: imageUrlString)
     } }
 
+    var isMuted: Bool? { didSet {
+        guard let isMuted else { return }
+        muteImageView.isHidden = !isMuted
+    } }
+
     // MARK: - Setups
 
     override func setupLayout() {
@@ -96,7 +109,8 @@ class ChatRoomListCollectionViewCell: BaseSwipeCollectionViewCell {
                     verticalStackView.addArrangedSubviews([
                         nameTextLabel,
                         previewTextLabel
-                    ])
+                    ]),
+                    muteImageView
                 ])
             ])
         ])
@@ -117,6 +131,8 @@ class ChatRoomListCollectionViewCell: BaseSwipeCollectionViewCell {
 
         imageView.width == 50
         imageView.height == 50
+
+        muteImageView.height == 50
     }
 
     override func setupActions() {

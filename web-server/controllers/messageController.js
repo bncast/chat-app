@@ -35,7 +35,7 @@ class MessageController {
             
             let roomUserResult = await RoomUserModel.findOne({ where: { room_user_id: room_user_id}});
             
-            const roomUsers = await RoomUserModel.findAll({ where: { room_id: roomUserResult.room_id, user_id: { [Op.not] : [userId]} } });
+            const roomUsers = await RoomUserModel.findAll({ where: { room_id: roomUserResult.room_id, is_muted: false, user_id: { [Op.not] : [userId]} } });
             const userIds = roomUsers.map((item) => item.user_id);
             const userDeviceResult = await UserDeviceModel.findAll({ where: { user_id: userIds }});
             
@@ -46,7 +46,7 @@ class MessageController {
 
                 await this.notificationController.sendNotification(deviceToken,
                     senderResult.display_name,
-                    "sent a message in " + roomResult.room_name,
+                    message,
                     "NEW_MESSAGE",
                     {"roomId" : roomUserResult.room_id}
                 );

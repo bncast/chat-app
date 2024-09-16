@@ -329,6 +329,7 @@ extension ChatRoomListViewController {
         let cell = ChatRoomListCollectionViewCell.dequeueCell(from: collectionView, for: indexPath)
         if case .myRooms = dataSource?.snapshot().sectionIdentifiers[indexPath.section] {
             cell.delegate = self
+            cell.isMuted = item.isMuted
         }
         cell.name = item.name
         cell.preview = item.hasPassword ? "Private Chat - Password Protected" : item.preview
@@ -374,15 +375,30 @@ extension ChatRoomListViewController {
 extension ChatRoomListViewController: SwipeCollectionViewCellDelegate {
     func collectionView(_ collectionView: UICollectionView, editActionsForItemAt indexPath: IndexPath, for orientation: SwipeCellKit.SwipeActionsOrientation) -> [SwipeCellKit.SwipeAction]? {
         guard orientation == .right else { return nil }
-
-        let muteAction = SwipeAction(
-            style: .default, title: "Mute"
-        ) { [weak self] action, indexPath in
-            Task { [weak self] in
-                guard let self else { return }
+        var isMuted = true
+        var roomUserId: Int?
+        if case .room(let info) = dataSource?.snapshot().itemIdentifiers[indexPath.row] {
+            isMuted = info.isMuted
+            if let chatInfo = self.viewModel.details(for: info) {
+                roomUserId = chatInfo.currentRoomUserId
             }
         }
-        muteAction.image = UIImage(systemName: "bell.slash.fill")
+        
+        let muteAction = SwipeAction(
+            style: .default, title: isMuted ? "Unmute": "Mute"
+        ) { [weak self] action, indexPath in
+            Task { [weak self] in
+                guard let self, let roomUserId else { return }
+                do {
+                    try await UpdateChatRoomMuteEntity(roomUserId: roomUserId).run()
+                    await load()
+                } catch {
+                    await IndicatorController.shared.dismiss()
+                    print("Error setting un/mute:\(error)")
+                }
+            }
+        }
+        muteAction.image = UIImage(systemName: isMuted ? "bell.fill" : "bell.slash.fill")
         muteAction.font = .caption
         muteAction.backgroundColor = .purple
         return [muteAction]

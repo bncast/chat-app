@@ -90,6 +90,7 @@
 		6F99EF612C8FECC60052B7B6 /* QRScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 6F99EF602C8FECC60052B7B6 /* QRScanner */; };
 		6F9D59BF2C78F6E9003E8959 /* SwipeCellKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6F9D59BE2C78F6E9003E8959 /* SwipeCellKit */; };
 		6F9D59C12C78F70D003E8959 /* BaseSwipeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9D59C02C78F70D003E8959 /* BaseSwipeCollectionViewCell.swift */; };
+		6FA1B1B52C97E77500DF0E02 /* UpdateChatRoomMuteEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA1B1B42C97E77500DF0E02 /* UpdateChatRoomMuteEntity.swift */; };
 		6FA430C62C74F4810086B62C /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA430C52C74F4810086B62C /* BaseView.swift */; };
 		6FA44ED82C737C1A00013866 /* DictionaryHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA44ED72C737C1A00013866 /* DictionaryHelpers.swift */; };
 		6FA4753B2C7838BD005D5750 /* checkingAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 6FA4753A2C7838BD005D5750 /* checkingAnimation.json */; };
@@ -220,6 +221,7 @@
 		6F95449B2C7C2BE7006E8035 /* InvitationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationCollectionViewCell.swift; sourceTree = "<group>"; };
 		6F9894E72C733E9D00F20D1E /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		6F9D59C02C78F70D003E8959 /* BaseSwipeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSwipeCollectionViewCell.swift; sourceTree = "<group>"; };
+		6FA1B1B42C97E77500DF0E02 /* UpdateChatRoomMuteEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateChatRoomMuteEntity.swift; sourceTree = "<group>"; };
 		6FA430C52C74F4810086B62C /* BaseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
 		6FA44ED72C737C1A00013866 /* DictionaryHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryHelpers.swift; sourceTree = "<group>"; };
 		6FA4753A2C7838BD005D5750 /* checkingAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = checkingAnimation.json; sourceTree = "<group>"; };
@@ -543,6 +545,7 @@
 				1D3A9FB42C75BBB200AC3AD6 /* GetChatRoomMessagesEntity.swift */,
 				A7FB9C422C76D1CA008DE3F3 /* CreateChatRoomEntity.swift */,
 				6F84CF6E2C7616F300F5C112 /* UpdateChatRoomNameEntity.swift */,
+				6FA1B1B42C97E77500DF0E02 /* UpdateChatRoomMuteEntity.swift */,
 				A7FB9C462C782B8F008DE3F3 /* RemoveChatRoomEntity.swift */,
 				6FCC10F12C7706DF00BF2D9A /* SetIsAdminEntity.swift */,
 				A7FB9C442C781A9B008DE3F3 /* RemoveMemberFromChatRoomEntity.swift */,
@@ -1042,6 +1045,7 @@
 				6F0B7E822C73291300BFC370 /* IntHelpers.swift in Sources */,
 				1D5FEE3E2C90A00600CF406D /* PasswordViewController.swift in Sources */,
 				6FD7677B2C773EBD00DAA989 /* BaseLongPressGestureRecognizer.swift in Sources */,
+				6FA1B1B52C97E77500DF0E02 /* UpdateChatRoomMuteEntity.swift in Sources */,
 				1D5FEE462C912B7B00CF406D /* ExtendTokenEntity.swift in Sources */,
 				6F0B7E672C731E7500BFC370 /* NetworkError.swift in Sources */,
 				6F0B7E772C73263400BFC370 /* AppServerOperation.swift in Sources */,

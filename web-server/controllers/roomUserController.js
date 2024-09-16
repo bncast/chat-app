@@ -52,12 +52,19 @@ class RoomUserController {
             preview = lastSender + " : " + lastMessage.content;
         }
 
+        var isMuted = true;
+        if (roomUserId != null) {
+            let roomUserCurrent = await RoomUserModel.findOne({ where: { room_user_id: roomUserId, is_deleted: 0}});
+            isMuted = roomUserCurrent.is_muted;
+        }
+
         return {
             room_id: roomResult.room_id,
             author_id: roomResult.creator_id,  
             author_name: creatorName, 
             preview: preview,
             is_joined: roomUserId != null,
+            is_muted: isMuted,
             current_room_user_id: roomUserId,
             has_password: roomResult.password != null,
             chat_name: roomResult.room_name,
@@ -118,6 +125,45 @@ class RoomUserController {
         }
     }
 
+    async muteChatRoom(req, res) {
+        try {
+            const accessToken = req.headers['authorization'];
+            let tokenCheck = await this.userController.getAccessTokenError(accessToken);
+            if (tokenCheck.error != null) {
+                return res.status(401).json(tokenCheck);
+            }
+            let userId = tokenCheck.result.user_id;
+
+            const { room_user_id } = req.body;
+
+            let roomUserResult = await RoomUserModel.findOne({ where: { room_user_id: room_user_id } });
+            if (!roomUserResult) { throw new Error("Failed to fetch roomUser"); }
+
+            let updateResult = await RoomUserModel.update(
+                { is_muted: !roomUserResult.is_muted },
+                { where: { room_user_id: room_user_id }}
+            );
+            if (!updateResult) { throw new Error("Failed to update roomUser"); }
+
+            let response = {
+                success: 1,
+                error: {
+                    code: "000",
+                    message: ""
+                }
+            }
+
+            res.status(200).json(response);
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: {
+                    code: "002",
+                    message: err.message || "An error occurred while processing the request"
+                }
+            });    
+        }
+    }
 
     async updateChatRoom(req, res) {
         try {

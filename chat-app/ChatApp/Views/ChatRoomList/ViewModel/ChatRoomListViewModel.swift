@@ -30,6 +30,7 @@ final class ChatRoomListViewModel {
 
         var roomId: Int
         var name: String
+        var isMuted: Bool
         var preview: String
         var hasPassword: Bool
         var imageUrlString: String
@@ -60,12 +61,14 @@ final class ChatRoomListViewModel {
         items = [
             .myRooms: groupedItems[.myRooms]?.compactMap { room in
                 Item.room(ItemInfo(
-                    roomId: room.roomId, name: room.chatName, preview: room.preview, hasPassword: false, imageUrlString: room.chatImageUrl
+                    roomId: room.roomId, name: room.chatName, isMuted: room.isMuted,
+                    preview: room.preview, hasPassword: false, imageUrlString: room.chatImageUrl
                 ))
             } ?? [],
             .otherRooms: groupedItems[.otherRooms]?.compactMap { room in
                 Item.room(ItemInfo(
-                    roomId: room.roomId, name: room.chatName, preview: room.preview, hasPassword: room.hasPassword, imageUrlString: room.chatImageUrl
+                    roomId: room.roomId, name: room.chatName, isMuted: room.isMuted,
+                    preview: room.preview, hasPassword: room.hasPassword, imageUrlString: room.chatImageUrl
                 ))
             } ?? []
         ]
