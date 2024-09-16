@@ -139,7 +139,6 @@ class ChatRoomDetailsViewController: BaseViewController {
             do {
                 try await viewModel.removeChatRoom(roomUserId: roomUserId)
                 await IndicatorController.shared.dismiss()
-                dismiss(animated: true)
                 continuation?.resume(returning: (isDeleteChatRoom, nil))
             } catch {
                 print("[ChatRoomDetailsViewController] Error! \(error as! NetworkError)")

@@ -12,15 +12,13 @@ class SetIsAdminEntity: RequestableApiEntity {
 
     static var method: BaseNetworkOperation.Method { .patch }
     var path: String { "rooms/detail" }
-    var body: RequestBody? { SetIsAdminRequestBody(isAdmin: isAdmin, deviceId: deviceId, roomUserId: roomUserId) }
+    var body: RequestBody? { SetIsAdminRequestBody(isAdmin: isAdmin, roomUserId: roomUserId) }
 
     private let isAdmin: Bool
-    private let deviceId: String
     private let roomUserId: Int
 
     init(isAdmin: Bool, roomUserId: Int) {
         self.isAdmin = isAdmin
-        self.deviceId = AppConstant.shared.deviceId ?? ""
         self.roomUserId = roomUserId
     }
 }
@@ -30,7 +28,6 @@ struct SetIsAdminRequestBody: RequestJsonBody {
     var encoder: JSONEncoder { JSONEncoder.snakeCaseEncoder() }
 
     var isAdmin: Bool
-    var deviceId: String
     var roomUserId: Int
 }
 

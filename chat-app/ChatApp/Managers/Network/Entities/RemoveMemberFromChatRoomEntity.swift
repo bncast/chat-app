@@ -12,16 +12,12 @@ class RemoveMemberFromChatRoomEntity: RequestableApiEntity {
 
     static var method: BaseNetworkOperation.Method { .delete }
     var path: String { "rooms/detail" }
-    var body: RequestBody? { RemoveMemberFromChatRoomRequestBody(roomUserId: roomUserId, deviceId: deviceId) }
+    var body: RequestBody? { RemoveMemberFromChatRoomRequestBody(roomUserId: roomUserId) }
 
     private let roomUserId: Int
-    private let deviceId: String
 
     init(roomUserId: Int) {
-        guard let deviceId = AppConstant.shared.deviceId else { fatalError() }
-
         self.roomUserId = roomUserId
-        self.deviceId = deviceId
     }
 }
 
@@ -30,7 +26,6 @@ struct RemoveMemberFromChatRoomRequestBody: RequestJsonBody {
     var encoder: JSONEncoder { JSONEncoder.snakeCaseEncoder() }
 
     var roomUserId: Int
-    var deviceId: String
 }
 
 // MARK: Defining response

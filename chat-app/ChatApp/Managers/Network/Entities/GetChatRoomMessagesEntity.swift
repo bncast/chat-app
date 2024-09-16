@@ -13,17 +13,15 @@ class GetChatRoomMessagesEntity: RequestableApiEntity {
     static var method: BaseNetworkOperation.Method { .get }
     var path: String {
         """
-        messages?room_id=\(roomId)&room_user_id=\(roomUserId)\(lastMessageId != nil ? "&lastMessageId=\(lastMessageId ?? "")" : "")
+        messages?room_id=\(roomId)&\(lastMessageId != nil ? "&lastMessageId=\(lastMessageId ?? "")" : "")
         """
     }
 
     var roomId: Int
-    var roomUserId: Int
     var lastMessageId: String?
 
     init(roomId: Int, roomUserId: Int, lastMessageId: String? = nil) {
         self.roomId = roomId
-        self.roomUserId = roomUserId
         self.lastMessageId = lastMessageId
     }
 }

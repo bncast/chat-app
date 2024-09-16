@@ -125,7 +125,7 @@
 		A7FB9C3D2C75FEEB008DE3F3 /* CreateChatRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C3A2C75FEEB008DE3F3 /* CreateChatRoomViewController.swift */; };
 		A7FB9C432C76D1CA008DE3F3 /* CreateChatRoomEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C422C76D1CA008DE3F3 /* CreateChatRoomEntity.swift */; };
 		A7FB9C452C781A9B008DE3F3 /* RemoveMemberFromChatRoomEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C442C781A9B008DE3F3 /* RemoveMemberFromChatRoomEntity.swift */; };
-		A7FB9C472C782B8F008DE3F3 /* RemoveFromChatRoomEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C462C782B8F008DE3F3 /* RemoveFromChatRoomEntity.swift */; };
+		A7FB9C472C782B8F008DE3F3 /* RemoveChatRoomEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C462C782B8F008DE3F3 /* RemoveChatRoomEntity.swift */; };
 		A7FB9C542C7C06F1008DE3F3 /* UserListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C532C7C06F1008DE3F3 /* UserListViewController.swift */; };
 		A7FB9C562C7C0701008DE3F3 /* UserListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C552C7C0701008DE3F3 /* UserListViewModel.swift */; };
 		A7FB9C592C7C15AC008DE3F3 /* UserCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB9C582C7C15AC008DE3F3 /* UserCollectionViewCell.swift */; };
@@ -255,7 +255,7 @@
 		A7FB9C3A2C75FEEB008DE3F3 /* CreateChatRoomViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateChatRoomViewController.swift; sourceTree = "<group>"; };
 		A7FB9C422C76D1CA008DE3F3 /* CreateChatRoomEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChatRoomEntity.swift; sourceTree = "<group>"; };
 		A7FB9C442C781A9B008DE3F3 /* RemoveMemberFromChatRoomEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveMemberFromChatRoomEntity.swift; sourceTree = "<group>"; };
-		A7FB9C462C782B8F008DE3F3 /* RemoveFromChatRoomEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveFromChatRoomEntity.swift; sourceTree = "<group>"; };
+		A7FB9C462C782B8F008DE3F3 /* RemoveChatRoomEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveChatRoomEntity.swift; sourceTree = "<group>"; };
 		A7FB9C532C7C06F1008DE3F3 /* UserListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewController.swift; sourceTree = "<group>"; };
 		A7FB9C552C7C0701008DE3F3 /* UserListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewModel.swift; sourceTree = "<group>"; };
 		A7FB9C582C7C15AC008DE3F3 /* UserCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -531,7 +531,7 @@
 				1D3A9FB42C75BBB200AC3AD6 /* GetChatRoomMessagesEntity.swift */,
 				A7FB9C422C76D1CA008DE3F3 /* CreateChatRoomEntity.swift */,
 				6F84CF6E2C7616F300F5C112 /* UpdateChatRoomNameEntity.swift */,
-				A7FB9C462C782B8F008DE3F3 /* RemoveFromChatRoomEntity.swift */,
+				A7FB9C462C782B8F008DE3F3 /* RemoveChatRoomEntity.swift */,
 				6FCC10F12C7706DF00BF2D9A /* SetIsAdminEntity.swift */,
 				A7FB9C442C781A9B008DE3F3 /* RemoveMemberFromChatRoomEntity.swift */,
 				1D3DC6722C7C15C200D64B24 /* UpdateMessageEntity.swift */,
@@ -980,7 +980,7 @@
 				1D3DC67A2C7C445500D64B24 /* GetInvitationsListEntity.swift in Sources */,
 				1D3DC6732C7C15C200D64B24 /* UpdateMessageEntity.swift in Sources */,
 				A7FB9C222C746199008DE3F3 /* NoDataCollectionViewCell.swift in Sources */,
-				A7FB9C472C782B8F008DE3F3 /* RemoveFromChatRoomEntity.swift in Sources */,
+				A7FB9C472C782B8F008DE3F3 /* RemoveChatRoomEntity.swift in Sources */,
 				6FA430C62C74F4810086B62C /* BaseView.swift in Sources */,
 				1D3DC67C2C7C452600D64B24 /* SendInvitationEntity.swift in Sources */,
 				6F4CDE7F2C74253A00F310A1 /* ProfileViewController.swift in Sources */,

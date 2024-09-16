@@ -12,15 +12,13 @@ class UpdateChatRoomNameEntity: RequestableApiEntity {
 
     static var method: BaseNetworkOperation.Method { .put }
     var path: String { "rooms" }
-    var body: RequestBody? { UpdateChatRoomNameRequestBody(name: name, deviceId: deviceId, roomUserId: roomUserId) }
+    var body: RequestBody? { UpdateChatRoomNameRequestBody(name: name, roomUserId: roomUserId) }
 
     private let name: String
-    private let deviceId: String
     private let roomUserId: Int
 
     init(name: String, roomUserId: Int) {
         self.name = name
-        self.deviceId = AppConstant.shared.deviceId ?? ""
         self.roomUserId = roomUserId
     }
 }
@@ -30,7 +28,6 @@ struct UpdateChatRoomNameRequestBody: RequestJsonBody {
     var encoder: JSONEncoder { JSONEncoder.snakeCaseEncoder() }
 
     var name: String
-    var deviceId: String
     var roomUserId: Int
 }
 
@@ -38,5 +35,5 @@ struct UpdateChatRoomNameRequestBody: RequestJsonBody {
 struct UpdateChatRoomNameRespondableEntity: RespondableApiEntity {
     var success: Int
     var error: ErrorMessage?
-    var chatrooms: ChatRoomEntity
+    var chatroom: ChatRoomEntity
 }
