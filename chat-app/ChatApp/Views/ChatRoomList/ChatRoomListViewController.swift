@@ -7,6 +7,7 @@
 
 import UIKit
 import SuperEasyLayout
+import SwipeCellKit
 
 class ChatRoomListViewController: BaseViewController {
     private typealias Section = ChatRoomListViewModel.Section
@@ -327,6 +328,9 @@ extension ChatRoomListViewController {
 
     private func getRoomCell(at indexPath: IndexPath, item: ItemInfo) -> ChatRoomListCollectionViewCell {
         let cell = ChatRoomListCollectionViewCell.dequeueCell(from: collectionView, for: indexPath)
+        if case .myRooms = dataSource?.snapshot().sectionIdentifiers[indexPath.section] {
+            cell.delegate = self
+        }
         cell.name = item.name
         cell.preview = item.hasPassword ? "Private Chat - Password Protected" : item.preview
         cell.imageUrlString = item.imageUrlString
@@ -365,5 +369,23 @@ extension ChatRoomListViewController {
 
     private func getNoDataCell(at indexPath: IndexPath) -> NoDataCollectionViewCell {
         NoDataCollectionViewCell.dequeueCell(from: collectionView, for: indexPath)
+    }
+}
+
+extension ChatRoomListViewController: SwipeCollectionViewCellDelegate {
+    func collectionView(_ collectionView: UICollectionView, editActionsForItemAt indexPath: IndexPath, for orientation: SwipeCellKit.SwipeActionsOrientation) -> [SwipeCellKit.SwipeAction]? {
+        guard orientation == .right else { return nil }
+
+        let muteAction = SwipeAction(
+            style: .default, title: "Mute"
+        ) { [weak self] action, indexPath in
+            Task { [weak self] in
+                guard let self else { return }
+            }
+        }
+        muteAction.image = UIImage(systemName: "bell.slash.fill")
+        muteAction.font = .caption
+        muteAction.backgroundColor = .purple
+        return [muteAction]
     }
 }

@@ -8,7 +8,7 @@
 import UIKit
 import SuperEasyLayout
 
-class ChatRoomListCollectionViewCell: BaseCollectionViewCell {
+class ChatRoomListCollectionViewCell: BaseSwipeCollectionViewCell {
     private lazy var backView: BaseView = {
         let view = BaseView()
         view.backgroundColor = .clear
