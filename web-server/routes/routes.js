@@ -65,6 +65,12 @@ router.post('/send', async (req, res) => {
   notifyClients(targetRoomId);
 });
 
+router.post('/messages/typing', async (req, res) => {
+  removeTimedOutClients();
+  let result = await roomUserController.isTypingInRoom(req, res);
+  notifyClients(result.roomId, result.displayNames);
+});
+
 router.get('/listen', (req, res) => {
   const { room_id } = req.query;
   waitingClients.push({ room_id: room_id, clientRes: res, timestamp: Date.now() });
@@ -77,16 +83,16 @@ function removeTimedOutClients() {
     });
 }
   
-function notifyClients(roomId) {
+function notifyClients(roomId, displayNames = null) {
     if (!roomId) { return }
 
     const clientsToNotify = waitingClients.filter(client => client.room_id == roomId);
   
     clientsToNotify.forEach(client => {
-        client.clientRes.status(200).json({ success: 1 });
+        client.clientRes.status(200).json({ success: 1, display_names: displayNames });
     });
   
     waitingClients = waitingClients.filter(client => client.room_id != roomId);
-}  
+}
 
 module.exports = router;

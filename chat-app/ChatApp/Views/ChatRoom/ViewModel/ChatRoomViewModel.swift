@@ -121,6 +121,17 @@ class ChatRoomViewModel {
         Task { let _ = try? await DeleteMessageEntity(messageId: messageId).run() }
     }
 
+    func setTyping(isTyping: Bool) {
+        guard let roomUserId = details?.currentRoomUserId else { return }
+        Task {
+            do {
+                try await SetTypingEntity(roomUserId: roomUserId, isTyping: isTyping).run()
+            } catch {
+                print(error)
+            }
+        }
+    }
+
     var request: GetMessageRespondableEntity?
     private func listenToMessages() {
         guard let details else { return }

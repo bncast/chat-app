@@ -4,6 +4,7 @@ const UserModel = require('../models/userModel');
 const UserController = require('../controllers/userController');
 const ImageHelper = require('../utils/imageHelper');
 const MessageModel = require('../models/messageModel');
+const { Op } = require('sequelize');
 
 class RoomUserController {
     constructor() {
@@ -340,6 +341,49 @@ class RoomUserController {
                     message: ""
                 }
             });
+        } catch (err) {
+            res.status(500).json({
+                success: 0,
+                error: {
+                    code: "500",
+                    message: err.message
+                }
+            });
+        }
+    }
+    async isTypingInRoom(req, res) {
+        try {
+            const accessToken = req.headers['authorization'];
+            let tokenCheck = await this.userController.getAccessTokenError(accessToken)
+            if (tokenCheck.error != null) {
+                return res.status(401).json(tokenCheck);
+            }
+
+            let userId = tokenCheck.result.user_id;
+            
+            const { room_user_id, is_typing } = req.body;
+            
+            let result = await RoomUserModel.update(
+                { is_typing: is_typing ? 1 : 0 },
+                { where: { room_user_id: room_user_id } }
+            );
+            if (!result) { throw new Error("Failed to update user typing status"); }
+            
+            const roomUserRoom = await RoomUserModel.findOne({ where: { room_user_id: room_user_id }});
+            const roomUsers = await RoomUserModel.findAll({ where: { room_id: roomUserRoom.room_id, is_typing: is_typing } });
+            const userIds = roomUsers.map((item) => item.user_id);
+            const userResult = await UserModel.findAll({ where: { id: userIds }});
+            const userDisplayNames = userResult.map((item) => item.display_name);
+
+            res.status(200).json({
+                success: 1,
+                error: {
+                    code: "000",
+                    message: ""
+                }
+            });
+            
+            return {roomId: roomUserRoom.room_id, displayNames: userDisplayNames}
         } catch (err) {
             res.status(500).json({
                 success: 0,
