@@ -219,6 +219,10 @@ class ChatRoomViewController: BaseViewController {
             self?.removeReplyingOrEditingIndicator()
         }
 
+        appWillResignActiveHandler = { _ in
+            self.viewModel.setTyping(isTyping: false)
+        }
+
         keyboardAppear = self
 
         Task { await viewModel.load() }
@@ -378,6 +382,7 @@ extension ChatRoomViewController {
 extension ChatRoomViewController: ViewControllerKeyboardAppear {
     func willShowKeyboard(frame: CGRect, duration: TimeInterval, curve: UIView.AnimationCurve) {
         bottomViewBottomConstraint?.constant =  -(frame.height - AppConstant.safeAreaInsets.bottom)
+        self.viewModel.setTyping(isTyping: true)
         UIView.animate(withDuration: duration, delay: 0, options: curve.animationOptions) { [weak self] in
             guard let self else { return }
 
@@ -393,6 +398,7 @@ extension ChatRoomViewController: ViewControllerKeyboardAppear {
 
     func willHideKeyboard(frame: CGRect, duration: TimeInterval, curve: UIView.AnimationCurve) {
         bottomViewBottomConstraint?.constant = 0
+        self.viewModel.setTyping(isTyping: false)
         UIView.animate(withDuration: duration, delay: 0, options: curve.animationOptions) { [weak self] in
             self?.view.layoutIfNeeded()
         }

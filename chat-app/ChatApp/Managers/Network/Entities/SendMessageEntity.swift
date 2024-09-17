@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 class SendMessageEntity: RequestableApiEntity {
     typealias ResponseEntity = SendMessageRespondableEntity
 

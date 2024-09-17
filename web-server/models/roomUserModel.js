@@ -39,6 +39,10 @@ RoomUserModel.init({
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
+    is_typing: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
 }, {
     timestamps: false,
     tableName: 'RoomUser',
