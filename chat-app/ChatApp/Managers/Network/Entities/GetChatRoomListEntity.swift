@@ -34,6 +34,7 @@ struct ChatRoomEntity: Codable {
     var authorName: String
     var preview: String
     var isJoined: Bool
+    var isMuted: Bool
     var currentRoomUserId: Int?
     var hasPassword: Bool
     var chatName: String

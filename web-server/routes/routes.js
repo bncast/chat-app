@@ -38,6 +38,8 @@ router.delete('/rooms', (req, res) => roomUserController.deleteChatRoom(req, res
 
 router.post('/rooms/join', (req, res) => roomUserController.joinRoom(req, res)); 
 
+router.put('/rooms/mute', (req, res) => roomUserController.muteChatRoom(req, res));
+
 router.delete('/rooms/detail', (req, res) => roomUserController.deleteRoomUser(req, res));  
 router.patch('/rooms/detail', (req, res) => roomUserController.updateAdminStatus(req, res)); 
 
