@@ -416,7 +416,7 @@ class RoomUserController {
             if (!result) { throw new Error("Failed to update user typing status"); }
             
             const roomUserRoom = await RoomUserModel.findOne({ where: { room_user_id: room_user_id }});
-            const roomUsers = await RoomUserModel.findAll({ where: { room_id: roomUserRoom.room_id, is_typing: is_typing } });
+            const roomUsers = await RoomUserModel.findAll({ where: { room_id: roomUserRoom.room_id, is_typing: 1 } });
             const userIds = roomUsers.map((item) => item.user_id);
             const userResult = await UserModel.findAll({ where: { id: userIds }});
             const userDisplayNames = userResult.map((item) => item.display_name);

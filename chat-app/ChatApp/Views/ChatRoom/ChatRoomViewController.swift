@@ -37,6 +37,23 @@ class ChatRoomViewController: BaseViewController {
         return recognizer
     }()
 
+    private lazy var isTypingView: BaseView = {
+        let view = BaseView()
+        view.alpha = 0
+        view.backgroundColor = .mainBackground
+        view.clipsToBounds = true
+        view.layer.cornerRadius = 8
+        view.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
+        return view
+    }()
+
+    private lazy var isTypingLabel: UILabel = {
+        let view = UILabel()
+        view.font = .captionSubtext.semibold()
+        view.textColor = .subtext
+        return view
+    }()
+
     private lazy var replyingToView: BaseView = {
         let view = BaseView()
         view.backgroundColor = .mainBackground
@@ -124,6 +141,9 @@ class ChatRoomViewController: BaseViewController {
 
         addSubviews([
             collectionView,
+            isTypingView.addSubviews([
+                isTypingLabel
+            ]),
             replyingToView.addSubviews([
                 replyingToLabel,
                 closeReplyingToButton,
@@ -141,6 +161,14 @@ class ChatRoomViewController: BaseViewController {
         collectionView.right == view.right
         collectionView.top == view.top + 8
         collectionView.bottom == replyingToView.top - 5
+
+        isTypingView.left == view.left
+        isTypingView.bottom == bottomView.top
+
+        isTypingLabel.left == isTypingView.left + 8
+        isTypingLabel.right == isTypingView.right - 8
+        isTypingLabel.top == isTypingView.top + 4
+        isTypingLabel.bottom == isTypingView.bottom - 4
 
         replyingToView.left == view.left
         replyingToView.right == view.right
@@ -182,6 +210,15 @@ class ChatRoomViewController: BaseViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] items in
                 self?.apply(items)
+            }
+            .store(in: &cancellables)
+        viewModel.$typingString
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] typingString in
+                self?.isTypingLabel.text = typingString
+                UIView.animate(withDuration: 0.1) {
+                    self?.isTypingView.alpha = typingString.isEmpty ? 0 : 1
+                }
             }
             .store(in: &cancellables)
     }
@@ -406,7 +443,16 @@ extension ChatRoomViewController: ViewControllerKeyboardAppear {
 }
 
 extension ChatRoomViewController: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        self.viewModel.setTyping(isTyping: true)
+    }
+
+    func textViewDidEndEditing(_ textView: UITextView) {
+        self.viewModel.setTyping(isTyping: false)
+    }
+
     func textViewDidChange(_ textView: UITextView) {
+        self.viewModel.setTyping(isTyping: true)
         guard let bottomViewHeightConstraint else { return }
         let textViewHeight = getTextViewContentHeight()
         if textViewHeight < 117 {
