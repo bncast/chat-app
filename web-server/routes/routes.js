@@ -5,6 +5,8 @@ const RoomUserController = require('../controllers/roomUserController');
 const MessageController = require('../controllers/messageController');
 const InvitationController = require('../controllers/invitationController');
 const NotificationController = require('../controllers/notificationController');
+const UserTokenModel = require('../models/userTokenModel');
+const { Op } = require('sequelize');
 
 const router = Express.Router();
 const userController = new UserController();
@@ -88,9 +90,21 @@ router.post('/messages/typing', async (req, res) => {
   notifyChatClients(result.roomId, result.displayNames);
 });
 
-router.get('/listen', (req, res) => {
+router.get('/listen', async (req, res) => {
   const { room_id } = req.query;
-  chatRoomClients.push({ room_id: room_id, clientRes: res, timestamp: Date.now() });
+  const accessToken = req.headers['authorization'];
+  var fetchTokenResult = await UserTokenModel.findOne({ where: { 
+      access_token: accessToken, 
+      access_expiry: { 
+          [Op.gte]: Date.now()
+      },
+      is_invalid: 0
+  } });
+  var user_id = null;
+  if (fetchTokenResult != null) {
+    user_id = fetchTokenResult.user_id
+  }
+  chatRoomClients.push({ room_id: room_id, clientRes: res, timestamp: Date.now(), user_id: user_id});
 });
 
 router.get('/updates', (req, res) => {
@@ -106,13 +120,24 @@ function notifyChatClients(roomId, displayNames = null) {
     removeTimedOutClients();
 
     if (!roomId) { return }
+    
+    var uniqueIds = new Set();
 
-    const clientsToNotify = chatRoomClients.filter(client => client.room_id == roomId);
+    const clientsToNotify = chatRoomClients.filter((client, index) =>  client.room_id == roomId);
+
+    const activeUsers = clientsToNotify.filter((client) => {
+      if (!uniqueIds.has(client.user_id)) {
+        uniqueIds.add(client.user_id)
+        return true
+      }
+      return false
+    }) ;
+
     clientsToNotify.forEach(client => {
-        client.clientRes.status(200).json({ success: 1, display_names: displayNames });
+        client.clientRes.status(200).json({ success: 1, display_names: displayNames, number_in_room: activeUsers.length});
     });
-  
-    chatRoomClients = chatRoomClients.filter(client => client.room_id != roomId);
+
+    chatRoomClients = clientsToNotify.filter((client, index) =>  client.room_id != roomId);
 }  
 
 function notifyHomeClients() {

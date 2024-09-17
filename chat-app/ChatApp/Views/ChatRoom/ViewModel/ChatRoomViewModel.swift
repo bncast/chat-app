@@ -43,6 +43,7 @@ class ChatRoomViewModel {
 
     @Published var items: [Section: [Item]] = [:]
     @Published var typingString: String = String()
+    @Published var peopleCountString: String = String()
 
     var isEditingMessageId: Int?
     var isReplyingMessageId: Int?
@@ -157,19 +158,31 @@ class ChatRoomViewModel {
             do {
                 request = try await GetMessageEntity(roomId: details.roomId).run()
                 await load()
-                guard let request, let displayNames = request.displayNames else { return }
+                guard let request else { return }
 
-                var displayNamesCopy = displayNames
-                displayNamesCopy.removeAll { $0 == AppConstant.shared.displayName }
-                switch displayNamesCopy.count {
-                case .zero: typingString = String()
-                case 1: guard let firstTypingUser = displayNamesCopy.first else { return }
+                if let displayNames = request.displayNames {
+                    var displayNamesCopy = displayNames
+                    displayNamesCopy.removeAll { $0 == AppConstant.shared.displayName }
+                    switch displayNamesCopy.count {
+                    case .zero: typingString = String()
+                    case 1: guard let firstTypingUser = displayNamesCopy.first else { return }
 
-                    typingString = "\(firstTypingUser) is typing..."
-                default: guard let firstTypingUser = displayNamesCopy.first else { return }
+                        typingString = "\(firstTypingUser) is typing..."
+                    default: guard let firstTypingUser = displayNamesCopy.first else { return }
 
-                    typingString = "\(firstTypingUser), and +\(displayNamesCopy.count - 1) are typing..."
+                        typingString = "\(firstTypingUser), and +\(displayNamesCopy.count - 1) are typing..."
+                    }
                 }
+
+                if let numberInRoom = request.numberInRoom {
+                    guard numberInRoom > 1 else {
+                        peopleCountString = ""
+                        return
+                    }
+
+                    peopleCountString = "\(numberInRoom) people in here"
+                }
+
             } catch {
                 listenToMessages()
             }
