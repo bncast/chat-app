@@ -37,4 +37,5 @@ struct GetMessageRespondableEntity: RespondableApiEntity {
     var success: Int
     var error: ErrorMessage?
     var displayNames: [String]?
+    var numberInRoom: Int?
 }

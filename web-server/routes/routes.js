@@ -90,7 +90,8 @@ router.post('/messages/typing', async (req, res) => {
 
 router.get('/listen', (req, res) => {
   const { room_id } = req.query;
-  chatRoomClients.push({ room_id: room_id, clientRes: res, timestamp: Date.now() });
+  const accessToken = req.headers['authorization'];
+  chatRoomClients.push({ room_id: room_id, clientRes: res, timestamp: Date.now(), accessToken: accessToken});
 });
 
 router.get('/updates', (req, res) => {
@@ -107,9 +108,12 @@ function notifyChatClients(roomId, displayNames = null) {
 
     if (!roomId) { return }
 
-    const clientsToNotify = chatRoomClients.filter(client => client.room_id == roomId);
+    const clientsToNotify = chatRoomClients.filter((client, index) => 
+      client.room_id == roomId && chatRoomClients.indexOf(client) == index
+    );
+    
     clientsToNotify.forEach(client => {
-        client.clientRes.status(200).json({ success: 1, display_names: displayNames });
+        client.clientRes.status(200).json({ success: 1, display_names: displayNames, number_in_room: clientsToNotify.length});
     });
   
     chatRoomClients = chatRoomClients.filter(client => client.room_id != roomId);
