@@ -48,16 +48,21 @@ class ChatRoomViewModel {
     var isReplyingMessageId: Int?
     var details: ChatInfo?
 
-    func load() async {
+    private var fromDate: Date?
+    var isLoaded = false
+
+    func load(_ date: Date? = nil) async {
         guard let roomId = details?.roomId,
-              let roomUserId = details?.currentRoomUserId,
-              var messages = try? await GetChatRoomMessagesEntity(
-                roomId: roomId, roomUserId: roomUserId
-              ).run().messages
+              let result = try? await GetChatRoomMessagesEntity(
+                roomId: roomId, lastMessageDate: date
+              ).run()
+
         else {
-            //TODO: NO DATA
-            return
+            return //TODO: NO DATA
         }
+
+        var messages = result.messages
+        fromDate = result.fromDate
 
         var items: [Section: [Item]] = [:]
         var sections = [Date]()
@@ -99,6 +104,11 @@ class ChatRoomViewModel {
         self.items = items
 
         listenToMessages()
+    }
+
+    func loadMore() {
+        guard let fromDate else { return }
+        Task { await load(fromDate) }
     }
 
     @discardableResult

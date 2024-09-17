@@ -3,11 +3,13 @@ const RoomUserModel = require('../models/roomUserModel');
 const RoomModel = require('../models/roomModel');
 const InvitationModel = require('../models/invitationModel');
 const UserController = require('../controllers/userController');
+const RoomUserController = require('../controllers/roomUserController');
 const ImageHelper = require('../utils/imageHelper');
 
 class InvitationController {
     constructor() {
         this.userController = new UserController();
+        this.roomUserController = new RoomUserController();
     }
 
     async getAll(req, res) {
@@ -150,52 +152,12 @@ class InvitationController {
                     user_id: userId
                 });
                 if (!roomUserResult) { throw new Error("Failed to create room"); } 
-            
-                const members = await RoomUserModel.findAll({ where: {
-                    room_id: room_id
-                }});
-    
-                var memberDetails = [];
-                
-                for await (const member of members) {
-                    const user = await UserModel.findOne({ where: { id: member.user_id }});
-                    memberDetails.push({
-                        name: user.display_name,  
-                        is_admin: member.is_admin == 1,
-                        user_image_url: ImageHelper.getImagePath(req, user.image_url),  
-                        room_user_id: member.room_user_id
-                    });
-                }    
-    
+
                 const roomResult = await RoomModel.findOne({ where: {
                     room_id: room_id
                 }});
-                const creator = await UserModel.findOne({ where: { id: roomResult.creator_id }});
-                const creatorName = creator.display_name;
-    
-                const currentUser = members.find(member => member.user_id === userId);
-                const roomUserId = currentUser?.room_user_id || null;
-    
-                let previewResult = null;
-                let lastMessage = null;
-                
-                var preview = "Say hello...";
-                if (lastMessage != undefined && lastMessage.display_name != undefined && lastMessage.content != undefined) {
-                    preview = lastMessage.display_name + " : " + lastMessage.content;
-                }
-    
-                const chatRoom = {
-                    room_id: room_id,
-                    author_id: roomResult.creator_id,  
-                    author_name: creatorName || "Unknown", 
-                    preview: preview,
-                    is_joined: roomUserId != null,
-                    current_room_user_id: roomUserId,
-                    has_password: roomResult.password != null,
-                    chat_name: roomResult.room_name,
-                    chat_image_url: ImageHelper.getImagePath(req, roomResult.image_url),
-                    member_details: memberDetails
-                };
+            
+                const chatRoom = await this.roomUserController.getChatRoomDetails(req, roomResult, userId);
         
                 let response = {
                     chat_room: chatRoom,
