@@ -363,6 +363,10 @@ class AppConstant: NSObject {
     var hostAddress: String
     @UserDefaultsReadAndWrite("port", default: "4000")
     var port: String
+    @UserDefaultsReadOnly("MANUAL_HOST", default: "localhost:4000")
+    var manualHost: String
+    @UserDefaultsReadAndWrite("lastInvitationDate", default: nil)
+    var lastInvitationDate: Date?
     @KeychainReadAndWrite("keychainValue", default: nil)
     var keychainValue: String?
     @KeychainReadAndWrite("deviceId", default: nil)
@@ -432,6 +436,22 @@ extension AppConstant {
             defaults.removeObject(forKey: $0)
         }
     }
+
+    static func getDeviceId() -> String {
+        if let deviceId = AppConstant.shared.deviceId {
+            return deviceId
+        }
+
+        let key = (0..<20).map { _ in
+            guard let randomElement = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".randomElement()
+            else { return "" }
+            return "\(randomElement)"
+        }.joined()
+
+        AppConstant.shared.deviceId = key
+        return key
+    }
+
 }
 
 

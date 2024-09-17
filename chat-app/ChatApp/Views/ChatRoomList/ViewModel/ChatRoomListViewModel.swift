@@ -37,14 +37,27 @@ final class ChatRoomListViewModel {
     }
 
     @Published var items: [Section: [Item]] = [:]
+    @Published var hasNewInvitation: Bool = false
 
     private var itemsDataSource: [Section: [Item]] = [:]
     private var chatInfos: [ChatInfo] = []
+    private var newInvitationDate: Date?
+    private var request: GetMessageRespondableEntity?
 
     func load() async {
-        guard let chatRooms = try? await GetChatRoomListEntity().run().chatRooms else {
+        let result = try? await GetChatRoomListEntity().run()
+        guard let chatRooms = result?.chatRooms else {
             await loadEmptyRooms()
             return
+        }
+
+        if let lastInviteDate = result?.lastInvitationDate {
+            newInvitationDate = lastInviteDate
+            hasNewInvitation = if let savedDate = AppConstant.shared.lastInvitationDate {
+                savedDate < lastInviteDate
+            } else {
+                true
+            }
         }
 
         let groupedItems = Dictionary(
@@ -74,6 +87,8 @@ final class ChatRoomListViewModel {
         ]
 
         itemsDataSource = items
+
+        listenForUpdates()
     }
 
     func filterByName(searchKey: String) {
@@ -122,6 +137,26 @@ final class ChatRoomListViewModel {
 
     func requestNotification() async {
         await NotificationManager.shared.requestAuthorization()
+    }
+    
+    func saveLastInvitation() {
+        guard let newInvitationDate else { return }
+        
+        hasNewInvitation = false
+        AppConstant.shared.lastInvitationDate = newInvitationDate
+    }
+
+    private func listenForUpdates() {
+        Task { [weak self] in
+            guard let self else { return }
+
+            do {
+                request = try await GetUpdatesEntity().run()
+                await load()
+            } catch {
+                listenForUpdates()
+            }
+        }
     }
 }
 

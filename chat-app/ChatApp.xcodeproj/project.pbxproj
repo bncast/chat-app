@@ -49,6 +49,7 @@
 		1DE411222C919CB3007728FC /* UserDeviceCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE411212C919CB3007728FC /* UserDeviceCollectionViewCell.swift */; };
 		1DE411242C927AA7007728FC /* GetUserDeviceListEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE411232C927AA7007728FC /* GetUserDeviceListEntity.swift */; };
 		1DE411262C9282D2007728FC /* RemoveUserDeviceEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE411252C9282D2007728FC /* RemoveUserDeviceEntity.swift */; };
+		1DE411282C941F0C007728FC /* GetUpdatesEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE411272C941F0C007728FC /* GetUpdatesEntity.swift */; };
 		6F07ACEE2C7306730010E21A /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F07ACED2C7306730010E21A /* BaseViewController.swift */; };
 		6F0B7E642C7315C300BFC370 /* BaseNetworkOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B7E632C7315C300BFC370 /* BaseNetworkOperation.swift */; };
 		6F0B7E672C731E7500BFC370 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B7E662C731E7500BFC370 /* NetworkError.swift */; };
@@ -183,6 +184,7 @@
 		1DE411212C919CB3007728FC /* UserDeviceCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDeviceCollectionViewCell.swift; sourceTree = "<group>"; };
 		1DE411232C927AA7007728FC /* GetUserDeviceListEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetUserDeviceListEntity.swift; sourceTree = "<group>"; };
 		1DE411252C9282D2007728FC /* RemoveUserDeviceEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveUserDeviceEntity.swift; sourceTree = "<group>"; };
+		1DE411272C941F0C007728FC /* GetUpdatesEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetUpdatesEntity.swift; sourceTree = "<group>"; };
 		6F07ACE82C7304010010E21A /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		6F07ACED2C7306730010E21A /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		6F0B7E632C7315C300BFC370 /* BaseNetworkOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNetworkOperation.swift; sourceTree = "<group>"; };
@@ -566,6 +568,7 @@
 				1DE411232C927AA7007728FC /* GetUserDeviceListEntity.swift */,
 				1DE411252C9282D2007728FC /* RemoveUserDeviceEntity.swift */,
 				6FC419262C8987590061E251 /* SetDeviceTokenEntity.swift */,
+				1DE411272C941F0C007728FC /* GetUpdatesEntity.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -1025,6 +1028,7 @@
 				6F0B7E6B2C7323D400BFC370 /* RespondableEntity.swift in Sources */,
 				6FD425A32C7350F2004F9820 /* GetChatRoomListEntity.swift in Sources */,
 				6F0B7E792C73268100BFC370 /* RequestableApiEntity.swift in Sources */,
+				1DE411282C941F0C007728FC /* GetUpdatesEntity.swift in Sources */,
 				6FD767792C77310E00DAA989 /* ChatRoomMessageOptionsViewController.swift in Sources */,
 				1D12934C2C7615CA0079C48C /* ChatRoomViewModel.swift in Sources */,
 				6F95449C2C7C2BE7006E8035 /* InvitationCollectionViewCell.swift in Sources */,

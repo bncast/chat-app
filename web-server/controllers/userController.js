@@ -19,9 +19,10 @@ class UserController {
             
             var result = await UserModel.findOne({ where: { username: username, password: password }});
             if (result == null) { throw new Error("User not found"); }
-            
+
             var fetchTokenResult = await UserTokenModel.findOne({ where: { 
                 user_id: result.id, 
+                device_Id: device_id,
                 access_expiry: { 
                     [Op.gte]: Date.now()
                 },
@@ -43,6 +44,7 @@ class UserController {
                     access_token: signedAccessToken,
                     refresh_token: signedRefreshToken,
                     user_id: result.id,
+                    device_id: device_id,
                     access_expiry: accessTokenExpiresAt,
                     refresh_expiry: refreshTokenExpiresAt
                 });
@@ -53,7 +55,7 @@ class UserController {
                 signedRefreshToken = fetchTokenResult.refresh_token;
             }
             
-            let findResult = await UserDeviceModel.findOne({ where: { device_id : device_id, user_id: result.id }});
+            let findResult = await UserDeviceModel.findOne({ where: { device_id : device_id, user_id: result.id, is_invalid: 0 }});
 
             if (findResult) {
                 let userDeviceResult = await UserDeviceModel.update(
@@ -62,6 +64,14 @@ class UserController {
                 );
 			    if (userDeviceResult == null) { throw new Error("Failed to update user device."); }
             } else {
+                let existingResult = await UserDeviceModel.findOne({ where: { device_id : device_id, is_invalid: 0 }});
+                if (existingResult) {
+                    await UserDeviceModel.update(
+                        { is_invalid: 1, updated_at: Date.now() }, 
+                        { where: { device_id: device_id } }
+                    );
+                }
+
                 var userDeviceResult = await UserDeviceModel.create({
                     user_id: result.id,
                     device_name: device_name,
@@ -165,7 +175,7 @@ class UserController {
 
     async register(req, res) {
         try {
-            const { username, display_name, password } = req.body;
+            const { username, display_name, password, device_id } = req.body;
 
             var result = await UserModel.findOne({ where: { username: username }});
             let imageUrl = ImageHelper.getRandomProfileImageUrl(req);
@@ -187,6 +197,7 @@ class UserController {
                 access_token: signedAccessToken,
                 refresh_token: signedRefreshToken,
                 user_id: result.id,
+                device_id: device_id,
                 access_expiry: accessTokenExpiresAt,
                 refresh_expiry: refreshTokenExpiresAt
             });
@@ -403,6 +414,14 @@ class UserController {
                 { where: { id: user_device_id } }
             );
             if (result == null) {  throw new Error("Failed to remove device"); } 
+
+            var fetchResult = await UserDeviceModel.findOne({ where: { id: user_device_id }});
+            if (fetchResult) {
+                await UserTokenModel.update(
+                    { is_invalid: 1, updated_at: Date.now() },
+                    { where: { device_id: fetchResult.device_id } }
+                );
+            }
  
             res.status(200).json({
                 success: 1,
@@ -454,6 +473,14 @@ class UserController {
                 { is_invalid: 1, updated_at: Date.now() },
                 { where: { access_token: accessToken } }
             );
+            
+            const { device_id } = req.body;
+
+            await UserDeviceModel.update(
+                { is_invalid: 1, updated_at: Date.now() }, 
+                { where: { device_id: device_id } }
+            );
+        
 
             res.status(200).json({
                 success: 1,

@@ -18,6 +18,10 @@ UserTokenModel.init({
             key: 'id',
         },
     },
+    device_id: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     access_expiry: {
         type: DataTypes.DATE,
         allowNull: false,

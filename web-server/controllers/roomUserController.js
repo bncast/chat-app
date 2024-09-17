@@ -4,7 +4,7 @@ const UserModel = require('../models/userModel');
 const UserController = require('../controllers/userController');
 const ImageHelper = require('../utils/imageHelper');
 const MessageModel = require('../models/messageModel');
-const { Op } = require('sequelize');
+const InvitationModel = require('../models/invitationModel');
 
 class RoomUserController {
     constructor() {
@@ -266,8 +266,16 @@ class RoomUserController {
                 chatRooms.push(chatRoomDetails);
             }
             
+            let createdAt = null;
+            let lastInvitationResult = await InvitationModel.findOne({ 
+                where: { user_id: userId, is_invalid: 0 },
+                order: [['created_at', 'DESC']]
+            });
+            if (lastInvitationResult) { createdAt = lastInvitationResult.created_at }
+
             let response = {
                 chat_rooms: chatRooms,
+                last_invitation_date: createdAt || null, 
                 success: 1,
                 error: {
                     code: "000",
@@ -404,8 +412,6 @@ class RoomUserController {
             if (tokenCheck.error != null) {
                 return res.status(401).json(tokenCheck);
             }
-
-            let userId = tokenCheck.result.user_id;
             
             const { room_user_id, is_typing } = req.body;
             
@@ -429,7 +435,7 @@ class RoomUserController {
                 }
             });
             
-            return {roomId: roomUserRoom.room_id, displayNames: userDisplayNames}
+            return { roomId: roomUserRoom.room_id, displayNames: userDisplayNames }
         } catch (err) {
             res.status(500).json({
                 success: 0,
