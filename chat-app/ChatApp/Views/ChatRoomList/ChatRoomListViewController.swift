@@ -150,9 +150,6 @@ class ChatRoomListViewController: BaseViewController {
 
             Task { [weak self] in
                 guard let self, let info = await InvitationListViewController.push(on: self) else { return }
-
-                ChatRoomViewController.push(on: self, using: info)
-
             }
         }
         navigationBar?.menuTapHandlerAsync = { [weak self] _ in
@@ -194,6 +191,8 @@ class ChatRoomListViewController: BaseViewController {
         }
 
         refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
+
+        Task{ await viewModel.requestNotification() }
     }
 
     private func getRoomItemInfo(_ roomId: Int) -> ChatRoomListViewModel.ItemInfo? {
@@ -229,7 +228,7 @@ class ChatRoomListViewController: BaseViewController {
             message: "Please enter the password."
         )
         .addButton(title: "Ok")
-        .register(in: viewController)
+        .register(in: viewController) as? String
     }
 
     static func show(on parentViewController: UIViewController) {

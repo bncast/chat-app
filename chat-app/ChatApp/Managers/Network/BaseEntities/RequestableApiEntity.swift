@@ -15,13 +15,12 @@ protocol RequestableApiEntity: RequestableEntity {
 
 extension RequestableApiEntity {
     var scheme: String? { nil }
-    var host: String? { nil }
+    var host: String? { AppConstant.shared.appServerHost }
 
     var requestURL: URL {
         let scheme = scheme ?? AppConstant.shared.appServerScheme
-        let host = host ?? AppConstant.shared.appServerHost
 
-        let baseUrl = "\(scheme)://\(host)"
+        let baseUrl = "\(scheme)://\(host ?? "")"
         guard let url = URL(string: "\(baseUrl)/api/\(path)") else {
             fatalError("Failed to make url=> \(self)")
         }

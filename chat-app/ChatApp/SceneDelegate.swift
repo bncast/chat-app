@@ -59,6 +59,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
+    typealias ServerInfo = ServerListViewModel.ServerInfo
 
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let contextURL = URLContexts.first else { return }
+        guard let components = URLComponents(url: contextURL.url, resolvingAgainstBaseURL: true),
+              let queryItems = components.queryItems,
+              let q0Value = queryItems[0].value,
+              let q1Value = queryItems[1].value,
+              let q2Value = queryItems[2].value
+        else { return }
+
+        guard let window,
+              let rootVC = window.rootViewController,
+              let presentedViewController = rootVC.presentedViewController
+        else { return }
+
+        ServerListViewController.show(on: presentedViewController,
+                                      ServerInfo(name: q0Value,address: q1Value, port: q2Value))
+    }
 }
 
