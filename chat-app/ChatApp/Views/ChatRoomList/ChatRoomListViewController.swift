@@ -80,6 +80,7 @@ class ChatRoomListViewController: BaseViewController {
 
         navigationBar?.showChatRoomListButtons = true
         navigationBar?.title = "Chat Rooms"
+        navigationBar?.hasNewInvite = viewModel.hasNewInvitation
 
         Task {
             if AppConstant.shared.deviceId != nil {
@@ -136,6 +137,12 @@ class ChatRoomListViewController: BaseViewController {
                 self?.apply(items)
             }
             .store(in: &cancellables)
+        viewModel.$hasNewInvitation
+            .receive(on: DispatchQueue.main)
+            .sink{ [ weak self] hasNewInvitation in
+                self?.navigationBar?.hasNewInvite = hasNewInvitation
+            }
+            .store(in: &cancellables)
 
         searchBarView.textPublisher
             .sink { [weak self] text in
@@ -148,7 +155,7 @@ class ChatRoomListViewController: BaseViewController {
     override func setupActions() {
         navigationBar?.invitationTapHandler = { [weak self] _ in
             guard let self else { return }
-
+            viewModel.saveLastInvitation()
             Task { [weak self] in
                 guard let self, let info = await InvitationListViewController.push(on: self) else { return }
             }

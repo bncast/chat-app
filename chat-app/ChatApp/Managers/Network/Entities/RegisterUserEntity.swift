@@ -22,12 +22,14 @@ class RegisterUserEntity: RequestableApiEntity {
     private let displayName: String
     private let username: String
     private let password: String
+    private let deviceId: String
 
 
     init(displayName: String, username: String, password: String) {
         self.displayName = displayName
         self.username = username
         self.password = password
+        self.deviceId = AppConstant.shared.deviceId ?? AppConstant.getDeviceId()
     }
 }
 

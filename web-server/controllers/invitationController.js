@@ -54,7 +54,7 @@ class InvitationController {
     }
 
     // Send a new invitation
-    async send(req, res, device_token) {
+    async send(req, res) {
         try {
             const accessToken = req.headers['authorization'];
             let tokenCheck = await this.userController.getAccessTokenError(accessToken)

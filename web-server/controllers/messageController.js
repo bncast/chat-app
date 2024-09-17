@@ -37,10 +37,10 @@ class MessageController {
             
             const roomUsers = await RoomUserModel.findAll({ where: { room_id: roomUserResult.room_id, is_muted: false, user_id: { [Op.not] : [userId]} } });
             const userIds = roomUsers.map((item) => item.user_id);
-            const userDeviceResult = await UserDeviceModel.findAll({ where: { user_id: userIds }});
+            const userDeviceResult = await UserDeviceModel.findAll({ where: { user_id: userIds, is_invalid: 0 }});
             
+            let senderResult = await UserModel.findOne({ where: { id: userId }});
             for await(const result of userDeviceResult) {
-                let senderResult = await UserModel.findOne({ where: { id: result.user_id }});
                 let roomResult = await RoomModel.findOne({ where: { room_id: roomUserResult.room_id }});
                 let deviceToken = result.device_push_token;
 
@@ -95,6 +95,15 @@ class MessageController {
                 const authorRoomUser = await RoomUserModel.findOne({ where: { room_user_id: msg.room_user_id }});
                 const author = await UserModel.findOne({ where: { id: authorRoomUser.user_id }});
                 const isCurrentUser = author.id == userId
+
+                let replyToUser = null;
+                let replyToMessage = null;
+                if (msg.reply_to_id) {
+                    const replyingToMessage = await MessageModel.findOne({ where: { message_id: msg.reply_to_id } });
+                    replyToMessage = replyingToMessage.content;
+                    replyToUser = replyingToMessage.room_user_id;
+                }
+
                 formattedMessages.push({
                     message_id: msg.message_id,
                     author_id: msg.room_user_id,
@@ -103,8 +112,8 @@ class MessageController {
                     created_at: msg.created_at,
                     updated_at: msg.updated_at,
                     is_current_user: isCurrentUser,
-                    is_replying_to: null, // TODO:
-                    is_replying_to_content: null // TODO:
+                    is_replying_to: replyToUser || null, 
+                    is_replying_to_content: replyToMessage || null
                 });
             }
             

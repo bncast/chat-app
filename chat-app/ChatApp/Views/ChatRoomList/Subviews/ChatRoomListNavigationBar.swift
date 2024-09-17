@@ -31,6 +31,15 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         return view
     }()
 
+    private(set) lazy var invitationButtonIndicator: BaseView = {
+        let view = BaseView()
+        view.backgroundColor = .systemRed
+        view.layer.cornerRadius = 7
+        view.clipsToBounds = true
+        view.isHidden = true
+        return view
+    }()
+
     private(set) lazy var menuButton: BaseButton = {
         let configuration = UIImage.SymbolConfiguration(pointSize: iconPointSize)
         let image = UIImage(systemName: "gearshape", withConfiguration: configuration)?
@@ -122,10 +131,16 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         moreButton.isHidden = true
         invitationButton.isHidden = true
         closeButton.isHidden = true
+        invitationButtonIndicator.isHidden = true
     } }
 
     var title: String = "" { didSet {
         titleLabel.text = title
+    } }
+
+    var hasNewInvite: Bool = false { didSet {
+        let showButton = invitationButton.isHidden == false && hasNewInvite
+        invitationButtonIndicator.isHidden =  !showButton
     } }
 
     var invitationTapHandler: ((BaseButton) -> Void)?
@@ -148,7 +163,9 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
             menuButton,
             invitationButton,
             moreButton,
-            closeButton
+            closeButton,
+            invitationButtonIndicator,
+            moreButton
         ])
 
         titleTextAttributes = [NSAttributedString.Key.backgroundColor: UIColor.background(.mainLight),
@@ -171,6 +188,11 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
         invitationButton.width == 44
         invitationButton.centerY == centerY
         invitationButton.height == 44
+
+        invitationButtonIndicator.right == invitationButton.right
+        invitationButtonIndicator.top == invitationButton.top + 3
+        invitationButtonIndicator.width == 14
+        invitationButtonIndicator.height == 14
 
         moreButton.right == right - 18
         moreButton.width == 44

@@ -20,12 +20,17 @@ struct GetChatRoomListRespondableEntity: RespondableApiEntity {
     static var decoder: JSONDecoder {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let formatter = Date.utcDateFormatter
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        decoder.dateDecodingStrategy = .formatted(formatter)
+
         return decoder
     }
 
     var success: Int
     var error: ErrorMessage?
     var chatRooms: [ChatRoomEntity]
+    var lastInvitationDate: Date?
 }
 
 struct ChatRoomEntity: Codable {
