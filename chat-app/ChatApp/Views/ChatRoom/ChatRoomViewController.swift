@@ -392,6 +392,12 @@ extension ChatRoomViewController {
         viewModel.isLoadingMore = false
         loadMoreIndicator.stopAnimating()
 
+        guard !viewModel.isLoaded else {
+            guard collectionView.isOnBottom() else { return }
+            collectionView.scrollToBottom()
+            return
+        }
+
         collectionView.scrollToBottom()
         removeReplyingOrEditingIndicator()
 
@@ -472,7 +478,6 @@ extension ChatRoomViewController {
 extension ChatRoomViewController: ViewControllerKeyboardAppear {
     func willShowKeyboard(frame: CGRect, duration: TimeInterval, curve: UIView.AnimationCurve) {
         bottomViewBottomConstraint?.constant =  -(frame.height - AppConstant.safeAreaInsets.bottom)
-        self.viewModel.setTyping(isTyping: true)
         UIView.animate(withDuration: duration, delay: 0, options: curve.animationOptions) { [weak self] in
             guard let self else { return }
 
@@ -496,16 +501,14 @@ extension ChatRoomViewController: ViewControllerKeyboardAppear {
 }
 
 extension ChatRoomViewController: UITextViewDelegate {
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        self.viewModel.setTyping(isTyping: true)
-    }
-
     func textViewDidEndEditing(_ textView: UITextView) {
         self.viewModel.setTyping(isTyping: false)
     }
 
     func textViewDidChange(_ textView: UITextView) {
-        self.viewModel.setTyping(isTyping: true)
+        self.viewModel.setTyping(isTyping:
+                                    !(textView.text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) == "")
+        )
         guard let bottomViewHeightConstraint else { return }
         let textViewHeight = getTextViewContentHeight()
         if textViewHeight < 117 {

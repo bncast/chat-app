@@ -92,18 +92,21 @@ class InvitationController {
             });
             
             if (result) {
-                const userDeviceResult = await UserDeviceModel.findOne({ where: { user_id: invitee_user_id }});
+                const userDevicesResult = await UserDeviceModel.findAll({ where: { user_id: invitee_user_id, is_invalid: 0 }});
                 let senderResult = await UserModel.findOne({ where: { id: userId }});
                 let roomResult = await RoomModel.findOne({ where: { room_id: room_id }});
-                await this.notificationController.sendNotification(userDeviceResult.device_push_token,
-                    senderResult.display_name,
-                    "invited you to join " + roomResult.room_name,
-                    "ROOM_INVITATION",
-                    {
-                        "roomId" : room_id,
-                        "invitationId": result.invitation_id
-                    }
-                );
+
+                for await (const userDeviceResult of userDevicesResult) {
+                    await this.notificationController.sendNotification(userDeviceResult.device_push_token,
+                        senderResult.display_name,
+                        "invited you to join " + roomResult.room_name,
+                        "ROOM_INVITATION",
+                        {
+                            "roomId" : room_id,
+                            "invitationId": result.invitation_id
+                        }
+                    );
+                }
 
                 res.json({
                     success: 1,

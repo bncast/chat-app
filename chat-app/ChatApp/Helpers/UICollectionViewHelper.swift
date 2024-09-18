@@ -14,4 +14,8 @@ extension UICollectionView {
         let indexPath = IndexPath(row: lastRow - 1, section: lastSection)
         scrollToItem(at: indexPath, at: .bottom, animated: true)
     }
+
+    func isOnBottom() -> Bool {
+        return self.contentOffset.y > self.contentSize.height - self.frame.size.height * 1.5
+    }
 }
