@@ -78,9 +78,9 @@ class ChatRoomListViewController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
 
+        navigationBar?.hasNewInvite = viewModel.hasNewInvitation
         navigationBar?.showChatRoomListButtons = true
         navigationBar?.title = "Chat Rooms"
-        navigationBar?.hasNewInvite = viewModel.hasNewInvitation
 
         Task {
             if AppConstant.shared.deviceId != nil {
