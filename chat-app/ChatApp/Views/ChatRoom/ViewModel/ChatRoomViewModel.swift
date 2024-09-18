@@ -50,14 +50,18 @@ class ChatRoomViewModel {
 
     private var fromDate: Date?
     var isLoaded = false
+    var isLoading = true
+    var shouldLoadMore = false
 
     func load(_ date: Date? = nil) async {
+        isLoading = true
         guard let roomId = details?.roomId,
               let result = try? await GetChatRoomMessagesEntity(
                 roomId: roomId, lastMessageDate: date
               ).run()
 
         else {
+            isLoading = false
             return //TODO: NO DATA
         }
 

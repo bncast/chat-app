@@ -16,12 +16,6 @@ class ChatRoomViewController: BaseViewController {
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Item>
     private var dataSource: DataSource?
 
-    private let refreshControl = {
-        let view = UIRefreshControl()
-        view.tintColor = .background(.main)
-        return view
-    }()
-
     private lazy var layout: UICollectionViewCompositionalLayout = {
         UICollectionViewCompositionalLayout { [weak self] _, _ in
             self?.getSectionLayout()
@@ -32,10 +26,16 @@ class ChatRoomViewController: BaseViewController {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundView = nil
         view.backgroundColor = .white
-        view.refreshControl = refreshControl
-        
+        view.delegate = self
+
         ChatRoomMessageCollectionViewCell.registerCell(to: view)
         ChatRoomMessageHeaderCollectionReusableView.registerView(to: view)
+        return view
+    }()
+
+    private lazy var loadMoreIndicator: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView(style: .medium)
+        view.hidesWhenStopped = false
         return view
     }()
 
@@ -147,7 +147,9 @@ class ChatRoomViewController: BaseViewController {
         view.backgroundColor = .white
 
         addSubviews([
-            collectionView,
+            collectionView.addSubviews([
+                loadMoreIndicator
+            ]),
             isTypingView.addSubviews([
                 isTypingLabel
             ]),
@@ -168,6 +170,11 @@ class ChatRoomViewController: BaseViewController {
         collectionView.right == view.right
         collectionView.top == view.top + 8
         collectionView.bottom == replyingToView.top - 5
+
+        loadMoreIndicator.width == 40
+        loadMoreIndicator.height == 40
+        loadMoreIndicator.centerX == collectionView.centerX
+        loadMoreIndicator.bottom == collectionView.top
 
         isTypingView.left == view.left
         isTypingView.bottom == bottomView.top
@@ -267,17 +274,14 @@ class ChatRoomViewController: BaseViewController {
             self.viewModel.setTyping(isTyping: false)
         }
 
-        refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
-
         keyboardAppear = self
 
         Task { await viewModel.load() }
     }
 
-    @objc
-    private func didPullToRefresh(_ sender: UIRefreshControl) {
+    private func loadMore() {
+        viewModel.isLoading = true
         viewModel.loadMore()
-        refreshControl.endRefreshing()
     }
 
     private func removeReplyingOrEditingIndicator() {
@@ -358,12 +362,18 @@ extension ChatRoomViewController {
                 dataSource?.apply(snapshot)
             }
         }
-        
+
+        viewModel.isLoading = false
+        loadMoreIndicator.stopAnimating()
+
         guard !viewModel.isLoaded else { return }
         collectionView.scrollToBottom()
         removeReplyingOrEditingIndicator()
 
-        viewModel.isLoaded = true
+        Task { 
+            await Task.sleep(seconds: 0.3)
+            viewModel.isLoaded = true
+        }
     }
 
     private func getHeader(at indexPath: IndexPath) -> ChatRoomMessageHeaderCollectionReusableView {
@@ -489,5 +499,21 @@ extension ChatRoomViewController: UITextViewDelegate {
         let contentHeight = sizeThatFits.height + textView.textContainerInset.top
 
         return contentHeight
+    }
+}
+
+extension ChatRoomViewController: UICollectionViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y <= -130 && !viewModel.isLoading && viewModel.isLoaded {
+            viewModel.shouldLoadMore = true
+            loadMoreIndicator.startAnimating()
+        }
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        guard viewModel.shouldLoadMore  else { return }
+    
+        viewModel.shouldLoadMore = false
+        loadMore()
     }
 }
