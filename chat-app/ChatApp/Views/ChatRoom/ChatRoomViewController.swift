@@ -16,6 +16,12 @@ class ChatRoomViewController: BaseViewController {
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Item>
     private var dataSource: DataSource?
 
+    private let refreshControl = {
+        let view = UIRefreshControl()
+        view.tintColor = .background(.main)
+        return view
+    }()
+
     private lazy var layout: UICollectionViewCompositionalLayout = {
         UICollectionViewCompositionalLayout { [weak self] _, _ in
             self?.getSectionLayout()
@@ -26,7 +32,8 @@ class ChatRoomViewController: BaseViewController {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundView = nil
         view.backgroundColor = .white
-
+        view.refreshControl = refreshControl
+        
         ChatRoomMessageCollectionViewCell.registerCell(to: view)
         ChatRoomMessageHeaderCollectionReusableView.registerView(to: view)
         return view
@@ -260,9 +267,17 @@ class ChatRoomViewController: BaseViewController {
             self.viewModel.setTyping(isTyping: false)
         }
 
+        refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
+
         keyboardAppear = self
 
         Task { await viewModel.load() }
+    }
+
+    @objc
+    private func didPullToRefresh(_ sender: UIRefreshControl) {
+        viewModel.loadMore()
+        refreshControl.endRefreshing()
     }
 
     private func removeReplyingOrEditingIndicator() {
@@ -343,9 +358,12 @@ extension ChatRoomViewController {
                 dataSource?.apply(snapshot)
             }
         }
-
+        
+        guard !viewModel.isLoaded else { return }
         collectionView.scrollToBottom()
         removeReplyingOrEditingIndicator()
+
+        viewModel.isLoaded = true
     }
 
     private func getHeader(at indexPath: IndexPath) -> ChatRoomMessageHeaderCollectionReusableView {

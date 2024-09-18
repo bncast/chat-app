@@ -78,17 +78,63 @@ class MessageController {
             }
             let userId = tokenCheck.result.user_id;
 
-            const { room_id } = req.query
+            const { room_id, last_message_date } = req.query
 
             const roomUsers = await RoomUserModel.findAll({ where: { room_id: room_id }});
             const roomUserIds = roomUsers.map((item) => item.room_user_id);
+
+            var fromDate = null;
+            var toDate = null;
+
+            const latestMessage = await MessageModel.findOne({
+                where: {
+                    room_user_id: roomUserIds,
+                    deleted_at: null
+                },
+                order: [['created_at', 'DESC']]
+            });
+            if (latestMessage) {
+                const latestDate = latestMessage.created_at;
+                const threeDaysAgo = new Date(latestDate);
+                threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+                toDate = new Date(latestDate);
+            }
+            
+            if (last_message_date) {
+                const previousDate = new Date(last_message_date);
+                previousDate.setDate(previousDate.getDate() - 3); 
+                        
+                fromDate = previousDate;
+            } else {
+                const latestMessage = await MessageModel.findOne({
+                    where: {
+                        room_user_id: roomUserIds,
+                        deleted_at: null
+                    },
+                    order: [['created_at', 'DESC']]
+                });
+                if (latestMessage) {
+                    const latestDate = latestMessage.created_at;
+                    const threeDaysAgo = new Date(latestDate);
+                    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+                    fromDate = threeDaysAgo;
+                }
+            }
+
             const messages = await MessageModel.findAll({ 
                 where: { 
                     room_user_id: roomUserIds,  
-                    deleted_at: null
-                }
+                    deleted_at: null,
+                    created_at: {
+                        [Op.between] : [fromDate, toDate]
+                    }
+                },
+                order: [['created_at', 'ASC']]
             });
 
+            
             var formattedMessages = [];
 
             for await (const msg of messages) {
@@ -118,6 +164,7 @@ class MessageController {
             }
             
             let response = {
+                from_date: fromDate,
                 messages: formattedMessages,
                 success: 1,
                 error: {

@@ -13,16 +13,16 @@ class GetChatRoomMessagesEntity: RequestableApiEntity {
     static var method: BaseNetworkOperation.Method { .get }
     var path: String {
         """
-        messages?room_id=\(roomId)&\(lastMessageId != nil ? "&lastMessageId=\(lastMessageId ?? "")" : "")
+        messages?room_id=\(roomId)\(lastMessageDateString != nil ? "&last_message_date=\(lastMessageDateString ?? "")" : "")
         """
     }
 
     var roomId: Int
-    var lastMessageId: String?
+    var lastMessageDateString: String?
 
-    init(roomId: Int, roomUserId: Int, lastMessageId: String? = nil) {
+    init(roomId: Int, lastMessageDate: Date? = nil) {
         self.roomId = roomId
-        self.lastMessageId = lastMessageId
+        self.lastMessageDateString = lastMessageDate?.toIso8601
     }
 }
 
@@ -40,6 +40,8 @@ struct GetChatRoomMessagesRespondableEntity: RespondableApiEntity {
     var success: Int
     var error: ErrorMessage?
     var messages: [MessageEntity]
+    var fromDate: Date?
+    var toDate: Date?
 }
 
 struct MessageEntity: Codable {
