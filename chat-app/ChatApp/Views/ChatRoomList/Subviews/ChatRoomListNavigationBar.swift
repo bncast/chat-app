@@ -108,14 +108,14 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
 
     var showChatRoomListButtons: Bool = true { didSet {
         invitationButton.isHidden = false
-        invitationButtonIndicator.isHidden = false
+        invitationButtonIndicator.isHidden = true
         menuButton.isHidden = false
         moreButton.isHidden = false
         closeButton.isHidden = false
 
         UIView.animate(withDuration: 0.2) { [weak self] in
             self?.invitationButton.alpha = 1
-            self?.invitationButtonIndicator.alpha = 1
+            self?.invitationButtonIndicator.alpha = 0
             self?.menuButton.alpha = 1
             self?.closeButton.alpha = 0
             self?.moreButton.alpha = 0
@@ -164,8 +164,9 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
     } }
 
     var hasNewInvite: Bool = false { didSet {
-        let showButton = invitationButton.isHidden == false && hasNewInvite
+        let showButton = hasNewInvite
         invitationButtonIndicator.isHidden =  !showButton
+        invitationButtonIndicator.alpha = showButton ? 1 : 0
     } }
 
     var invitationTapHandler: ((BaseButton) -> Void)?

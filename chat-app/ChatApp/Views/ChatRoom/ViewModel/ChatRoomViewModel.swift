@@ -50,36 +50,39 @@ class ChatRoomViewModel {
     var details: ChatInfo?
 
     private var fromDate: Date?
+    private var toDate: Date?
     var isLoaded = false
-    var isLoading = true
+    var isLoadingMore = true
     var shouldLoadMore = false
 
-    func load(_ date: Date? = nil) async {
-        isLoading = true
+    func load() async {
         guard let roomId = details?.roomId,
               let result = try? await GetChatRoomMessagesEntity(
-                roomId: roomId, lastMessageDate: date
+                roomId: roomId,
+                fromDate: fromDate,
+                toDate: toDate
               ).run()
 
         else {
-            isLoading = false
+            isLoadingMore = false
             return //TODO: NO DATA
         }
 
         var messages = result.messages
         fromDate = result.fromDate
+        toDate = result.toDate
 
-        var items: [Section: [Item]] = [:]
+        var newItems: [Section: [Item]] = [:]
         var sections = [Date]()
         
         messages.sort { $0.createdAt < $1.createdAt }
 
-        for (index, messageItem) in messages.enumerated() {
+        for (_, messageItem) in messages.enumerated() {
             if !sections.contains(where: { $0.isSameDayWith(date: messageItem.createdAt) }) {
 
                 let string = messageItem.createdAt.toString(by: "MMMM, dd yyyy")
 
-                items[.main(string, index)] = messages
+                newItems[.main(string, Int(messageItem.createdAt.timeIntervalSince1970))] = messages
                     .filter { $0.createdAt.isSameDayWith(date: messageItem.createdAt) }
                     .map { item in
                         var replyTo: ReplyTo?
@@ -106,14 +109,18 @@ class ChatRoomViewModel {
             }
         }
 
-        self.items = items
+        items = newItems
 
         listenToMessages()
     }
 
     func loadMore() {
         guard let fromDate else { return }
-        Task { await load(fromDate) }
+        if let date = Calendar.current.date(byAdding: .day, value: -3, to: fromDate) {
+            self.fromDate = date
+        }
+
+        Task { await load() }
     }
 
     @discardableResult

@@ -13,16 +13,18 @@ class GetChatRoomMessagesEntity: RequestableApiEntity {
     static var method: BaseNetworkOperation.Method { .get }
     var path: String {
         """
-        messages?room_id=\(roomId)\(lastMessageDateString != nil ? "&last_message_date=\(lastMessageDateString ?? "")" : "")
+        messages?room_id=\(roomId)\(range ?? "")
         """
     }
 
     var roomId: Int
-    var lastMessageDateString: String?
+    var range: String?
 
-    init(roomId: Int, lastMessageDate: Date? = nil) {
+    init(roomId: Int, fromDate: Date? = nil, toDate: Date? = nil) {
         self.roomId = roomId
-        self.lastMessageDateString = lastMessageDate?.toIso8601
+        if let fromDate, let toDate {
+            range = "&from_date=\(fromDate.toIso8601)&to_date=\(toDate.toIso8601)"
+        }
     }
 }
 

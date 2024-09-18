@@ -27,6 +27,7 @@ class ChatRoomViewController: BaseViewController {
         view.backgroundView = nil
         view.backgroundColor = .white
         view.delegate = self
+        view.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 13, right: 0)
 
         ChatRoomMessageCollectionViewCell.registerCell(to: view)
         ChatRoomMessageHeaderCollectionReusableView.registerView(to: view)
@@ -254,7 +255,7 @@ class ChatRoomViewController: BaseViewController {
             guard let self, !textView.text.isEmpty else { return }
 
             await viewModel.sendMessage(textView.text)
-
+            viewModel.isLoaded = false
             textView.text = ""
             textViewDidChange(textView)
         }
@@ -291,7 +292,7 @@ class ChatRoomViewController: BaseViewController {
     }
 
     private func loadMore() {
-        viewModel.isLoading = true
+        viewModel.isLoadingMore = true
         viewModel.loadMore()
     }
 
@@ -339,6 +340,8 @@ extension ChatRoomViewController {
 extension ChatRoomViewController {
     private func apply(_ items: [Section: [Item]]) {
         guard !items.isEmpty else { return }
+        let currentOffset = collectionView.contentOffset.y
+        let contentHeightBefore = collectionView.contentSize.height
 
         var snapshot = Snapshot()
         snapshot.appendSections(items.keys.sorted(by: { $0.sortIndex < $1.sortIndex }))
@@ -348,7 +351,7 @@ extension ChatRoomViewController {
         }
 
         if let dataSource {
-            dataSource.apply(snapshot, animatingDifferences: true)
+            dataSource.apply(snapshot, animatingDifferences: false)
         } else {
             dataSource = DataSource(
                 collectionView: collectionView,
@@ -374,10 +377,21 @@ extension ChatRoomViewController {
             }
         }
 
-        viewModel.isLoading = false
+        guard !viewModel.isLoaded else {
+            if viewModel.isLoadingMore {
+                let contentHeightAfter = self.collectionView.contentSize.height
+                let offsetChange = contentHeightAfter - contentHeightBefore
+                self.collectionView.contentOffset = CGPoint(x: 0, y: currentOffset + offsetChange)
+            }
+
+            viewModel.isLoadingMore = false
+            loadMoreIndicator.stopAnimating()
+            return
+        }
+
+        viewModel.isLoadingMore = false
         loadMoreIndicator.stopAnimating()
 
-        guard !viewModel.isLoaded else { return }
         collectionView.scrollToBottom()
         removeReplyingOrEditingIndicator()
 
@@ -515,7 +529,7 @@ extension ChatRoomViewController: UITextViewDelegate {
 
 extension ChatRoomViewController: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y <= -130 && !viewModel.isLoading && viewModel.isLoaded {
+        if scrollView.contentOffset.y <= -130 && !viewModel.isLoadingMore && viewModel.isLoaded {
             viewModel.shouldLoadMore = true
             loadMoreIndicator.startAnimating()
         }
