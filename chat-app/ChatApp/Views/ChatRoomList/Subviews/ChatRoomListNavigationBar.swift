@@ -81,11 +81,13 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
 
         UIView.animate(withDuration: 0.2) { [weak self] in
             self?.invitationButton.alpha = 0
+            self?.invitationButtonIndicator.alpha = 0
             self?.menuButton.alpha = 0
             self?.moreButton.alpha = 0
             self?.closeButton.alpha = 1
         } completion: { [weak self] _ in
             self?.invitationButton.isHidden = true
+            self?.invitationButtonIndicator.isHidden = true
             self?.menuButton.isHidden = true
             self?.moreButton.isHidden = true
         }
@@ -93,12 +95,14 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
 
     var showChatRoomListButtons: Bool = true { didSet {
         invitationButton.isHidden = false
+        invitationButtonIndicator.isHidden = false
         menuButton.isHidden = false
         moreButton.isHidden = false
         closeButton.isHidden = false
 
         UIView.animate(withDuration: 0.2) { [weak self] in
             self?.invitationButton.alpha = 1
+            self?.invitationButtonIndicator.alpha = 1
             self?.menuButton.alpha = 1
             self?.closeButton.alpha = 0
             self?.moreButton.alpha = 0
@@ -116,11 +120,13 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
 
         UIView.animate(withDuration: 0.2) { [weak self] in
             self?.invitationButton.alpha = 0
+            self?.invitationButtonIndicator.alpha = 0
             self?.menuButton.alpha = 0
             self?.closeButton.alpha = 0
             self?.moreButton.alpha = 1
         } completion: { [weak self] _ in
             self?.invitationButton.isHidden = true
+            self?.invitationButtonIndicator.isHidden = true
             self?.menuButton.isHidden = true
             self?.closeButton.isHidden = true
         }
