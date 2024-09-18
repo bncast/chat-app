@@ -11,14 +11,27 @@ import SuperEasyLayout
 class ChatRoomListNavigationBar: BaseNavigationBar {
     private(set) lazy var backView = BaseView()
 
+    private lazy var verticalStackView: UIStackView = {
+        let view = UIStackView()
+        view.axis = .vertical
+        view.spacing = -5
+        return view
+    }()
+
     private lazy var titleLabel: UILabel = {
         let view = UILabel()
         view.font = .title.semibold()
         view.textColor = UIColor.white
-        view.textAlignment = .left
         return view
     }()
     private let iconPointSize: CGFloat = 25
+
+    private lazy var peopleCountLabel: UILabel = {
+        let view = UILabel()
+        view.font = .captionSubtext
+        view.textColor = UIColor.white
+        return view
+    }()
 
     private(set) lazy var invitationButton: BaseButton = {
         let configuration = UIImage.SymbolConfiguration(pointSize: iconPointSize)
@@ -142,6 +155,12 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
 
     var title: String = "" { didSet {
         titleLabel.text = title
+        titleLabel.sizeToFit()
+    } }
+
+    var peopleCount: String = "" { didSet {
+        peopleCountLabel.text = peopleCount
+        peopleCountLabel.sizeToFit()
     } }
 
     var hasNewInvite: Bool = false { didSet {
@@ -165,7 +184,10 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
 
     override func setupLayout() {
         addSubviews([
-            titleLabel,
+            verticalStackView.addArrangedSubviews([
+                titleLabel,
+                peopleCountLabel
+            ]),
             menuButton,
             invitationButton,
             moreButton,
@@ -180,10 +202,9 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
     }
 
     override func setupConstraints() {
-        titleLabel.left == left + 42
-        titleLabel.right == right - 74
-        titleLabel.centerY == centerY
-        titleLabel.height == 50
+        verticalStackView.left == left + 42
+        verticalStackView.right == right - 74
+        verticalStackView.centerY == centerY
 
         menuButton.right == right - 18
         menuButton.width == 44

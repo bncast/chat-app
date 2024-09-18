@@ -137,6 +137,11 @@ class ChatRoomViewController: BaseViewController {
         navigationBar?.title = details.name
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationBar?.peopleCount = ""
+    }
+
     // MARK: - Setups
 
     override func setupNavigation() {
@@ -233,6 +238,12 @@ class ChatRoomViewController: BaseViewController {
                 UIView.animate(withDuration: 0.1) {
                     self?.isTypingView.alpha = typingString.isEmpty ? 0 : 1
                 }
+            }
+            .store(in: &cancellables)
+        viewModel.$peopleCountString
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] peopleCountString in
+                self?.navigationBar?.peopleCount = peopleCountString
             }
             .store(in: &cancellables)
     }

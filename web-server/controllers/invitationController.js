@@ -1,15 +1,18 @@
 const UserModel = require('../models/userModel');
+const UserDeviceModel = require('../models/userDeviceModel');
 const RoomUserModel = require('../models/roomUserModel');
 const RoomModel = require('../models/roomModel');
 const InvitationModel = require('../models/invitationModel');
 const UserController = require('../controllers/userController');
 const RoomUserController = require('../controllers/roomUserController');
 const ImageHelper = require('../utils/imageHelper');
+const NotificationController = require('../controllers/notificationController');
 
 class InvitationController {
     constructor() {
         this.userController = new UserController();
         this.roomUserController = new RoomUserController();
+        this.notificationController = new NotificationController();
     }
 
     async getAll(req, res) {
@@ -89,6 +92,19 @@ class InvitationController {
             });
             
             if (result) {
+                const userDeviceResult = await UserDeviceModel.findOne({ where: { user_id: invitee_user_id }});
+                let senderResult = await UserModel.findOne({ where: { id: userId }});
+                let roomResult = await RoomModel.findOne({ where: { room_id: room_id }});
+                await this.notificationController.sendNotification(userDeviceResult.device_push_token,
+                    senderResult.display_name,
+                    "invited you to join " + roomResult.room_name,
+                    "ROOM_INVITATION",
+                    {
+                        "roomId" : room_id,
+                        "invitationId": result.invitation_id
+                    }
+                );
+
                 res.json({
                     success: 1,
                     error: {
