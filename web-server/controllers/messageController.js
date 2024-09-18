@@ -78,7 +78,7 @@ class MessageController {
             }
             let userId = tokenCheck.result.user_id;
 
-            const { room_id, last_message_date } = req.query
+            const { room_id, from_date, to_date } = req.query
 
             const roomUsers = await RoomUserModel.findAll({ where: { room_id: room_id }});
             const roomUserIds = roomUsers.map((item) => item.room_user_id);
@@ -93,33 +93,19 @@ class MessageController {
                 },
                 order: [['created_at', 'DESC']]
             });
-            if (latestMessage) {
-                const latestDate = latestMessage.created_at;
-                const threeDaysAgo = new Date(latestDate);
-                threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
-                toDate = new Date(latestDate);
+            if (from_date && to_date) {
+                fromDate = new Date(from_date);
+                toDate = new Date(latestMessage.created_at);
             }
-            
-            if (last_message_date) {
-                const previousDate = new Date(last_message_date);
-                previousDate.setDate(previousDate.getDate() - 3); 
-                        
-                fromDate = previousDate;
-            } else {
-                const latestMessage = await MessageModel.findOne({
-                    where: {
-                        room_user_id: roomUserIds,
-                        deleted_at: null
-                    },
-                    order: [['created_at', 'DESC']]
-                });
+            else {
                 if (latestMessage) {
                     const latestDate = latestMessage.created_at;
                     const threeDaysAgo = new Date(latestDate);
                     threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
                     fromDate = threeDaysAgo;
+                    toDate = latestDate;
                 }
             }
 
@@ -165,6 +151,7 @@ class MessageController {
             
             let response = {
                 from_date: fromDate,
+                to_date: toDate,
                 messages: formattedMessages,
                 success: 1,
                 error: {

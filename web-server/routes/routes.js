@@ -93,6 +93,8 @@ router.post('/messages/typing', async (req, res) => {
 router.get('/listen', async (req, res) => {
   const { room_id } = req.query;
   const accessToken = req.headers['authorization'];
+  
+  var user_id = null;
   var fetchTokenResult = await UserTokenModel.findOne({ where: { 
       access_token: accessToken, 
       access_expiry: { 
@@ -100,10 +102,8 @@ router.get('/listen', async (req, res) => {
       },
       is_invalid: 0
   } });
-  var user_id = null;
-  if (fetchTokenResult != null) {
-    user_id = fetchTokenResult.user_id
-  }
+  if (fetchTokenResult != null) { user_id = fetchTokenResult.user_id; }
+  
   chatRoomClients.push({ room_id: room_id, clientRes: res, timestamp: Date.now(), user_id: user_id});
 });
 
