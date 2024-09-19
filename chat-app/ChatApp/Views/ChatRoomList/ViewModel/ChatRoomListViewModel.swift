@@ -44,51 +44,63 @@ final class ChatRoomListViewModel {
     private var newInvitationDate: Date?
     private var request: GetMessageRespondableEntity?
 
+    func stopListen() {
+        request = nil
+    }
+
     func load() async {
-        let result = try? await GetChatRoomListEntity().run()
-        guard let chatRooms = result?.chatRooms else {
-            await loadEmptyRooms()
-            return
-        }
-
-        if let lastInviteDate = result?.lastInvitationDate {
-            newInvitationDate = lastInviteDate
-            hasNewInvitation = if let savedDate = AppConstant.shared.lastInvitationDate {
-                savedDate < lastInviteDate
-            } else {
-                true
+        do {
+            let result = try await GetChatRoomListEntity().run()
+            let chatRooms = result.chatRooms
+            guard !chatRooms.isEmpty else {
+                return await loadEmptyRooms()
             }
+
+            if let lastInviteDate = result.lastInvitationDate {
+                newInvitationDate = lastInviteDate
+                hasNewInvitation = if let savedDate = AppConstant.shared.lastInvitationDate {
+                    savedDate < lastInviteDate
+                } else {
+                    true
+                }
+            }
+
+            let groupedItems = Dictionary(
+                grouping: chatRooms,
+                by: { $0.isJoined ? Section.myRooms : Section.otherRooms }
+            )
+
+            chatInfos = chatRooms.map {
+                ChatInfo(name: $0.chatName, roomId: $0.roomId, currentRoomUserId: $0.currentRoomUserId, imageUrlString: $0.chatImageUrl, memberDetails: $0.memberDetails.map({ detail in
+                    MemberInfo(name: detail.name, isAdmin: detail.isAdmin, roomUserId: detail.roomUserId)
+                }))
+            }
+
+            items = [
+                .myRooms: groupedItems[.myRooms]?.compactMap { room in
+                    Item.room(ItemInfo(
+                        roomId: room.roomId, name: room.chatName, isMuted: room.isMuted,
+                        preview: room.preview, hasPassword: false, imageUrlString: room.chatImageUrl
+                    ))
+                } ?? [],
+                .otherRooms: groupedItems[.otherRooms]?.compactMap { room in
+                    Item.room(ItemInfo(
+                        roomId: room.roomId, name: room.chatName, isMuted: room.isMuted,
+                        preview: room.preview, hasPassword: room.hasPassword, imageUrlString: room.chatImageUrl
+                    ))
+                } ?? []
+            ]
+
+            itemsDataSource = items
+
+            listenForUpdates()
+        } catch NetworkError.appServerError(let errorEntity) where errorEntity.error?.code == "401"{
+            NotificationCenter.default.post(name: NSNotification.Name("LogoutNotification"), object: ["showAlert": true])
+
+        } catch {
+            print("NINOTEST", error)
+            listenForUpdates()
         }
-
-        let groupedItems = Dictionary(
-            grouping: chatRooms,
-            by: { $0.isJoined ? Section.myRooms : Section.otherRooms }
-        )
-
-        chatInfos = chatRooms.map {
-            ChatInfo(name: $0.chatName, roomId: $0.roomId, currentRoomUserId: $0.currentRoomUserId, imageUrlString: $0.chatImageUrl, memberDetails: $0.memberDetails.map({ detail in
-                MemberInfo(name: detail.name, isAdmin: detail.isAdmin, roomUserId: detail.roomUserId)
-            }))
-        }
-
-        items = [
-            .myRooms: groupedItems[.myRooms]?.compactMap { room in
-                Item.room(ItemInfo(
-                    roomId: room.roomId, name: room.chatName, isMuted: room.isMuted,
-                    preview: room.preview, hasPassword: false, imageUrlString: room.chatImageUrl
-                ))
-            } ?? [],
-            .otherRooms: groupedItems[.otherRooms]?.compactMap { room in
-                Item.room(ItemInfo(
-                    roomId: room.roomId, name: room.chatName, isMuted: room.isMuted,
-                    preview: room.preview, hasPassword: room.hasPassword, imageUrlString: room.chatImageUrl
-                ))
-            } ?? []
-        ]
-
-        itemsDataSource = items
-
-        listenForUpdates()
     }
 
     func filterByName(searchKey: String) {

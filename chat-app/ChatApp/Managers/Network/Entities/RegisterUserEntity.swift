@@ -16,7 +16,7 @@ class RegisterUserEntity: RequestableApiEntity {
     var isIgnoreAccessTokenError: Bool { ignoreError }
     var isIgnoreLogoutErrors: Bool { ignoreError }
     var body: RequestBody? {
-        RegisterUserBody(displayName: displayName, username: username, password: password)
+        RegisterUserBody(displayName: displayName, username: username, password: password, deviceId: deviceId)
     }
     private var ignoreError: Bool { false }
     private let displayName: String
@@ -29,7 +29,7 @@ class RegisterUserEntity: RequestableApiEntity {
         self.displayName = displayName
         self.username = username
         self.password = password
-        self.deviceId = AppConstant.shared.deviceId ?? AppConstant.getDeviceId()
+        self.deviceId = AppConstant.shared.getDeviceId()
     }
 }
 
@@ -39,4 +39,5 @@ struct RegisterUserBody : RequestJsonBody {
     let displayName: String
     let username: String
     let password: String
+    let deviceId: String
 }

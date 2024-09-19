@@ -437,7 +437,7 @@ extension AppConstant {
         }
     }
 
-    static func getDeviceId() -> String {
+    func getDeviceId() -> String {
         if let deviceId = AppConstant.shared.deviceId {
             return deviceId
         }
