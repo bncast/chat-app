@@ -17,7 +17,7 @@ class LoginViewModel {
     func login(username: String, password: String) async -> Bool {
         do {
             errorMessage = nil
-            let result = try await LoginUserEntity(username: username, password: password, deviceId: AppConstant.getDeviceId(), deviceName: deviceName).run()
+            let result = try await LoginUserEntity(username: username, password: password, deviceId: AppConstant.shared.getDeviceId(), deviceName: deviceName).run()
 
             AppConstant.shared.accessToken = result.accessToken
             AppConstant.shared.refreshToken = result.refreshToken

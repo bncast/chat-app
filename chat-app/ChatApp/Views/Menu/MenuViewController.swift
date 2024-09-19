@@ -104,9 +104,7 @@ class MenuViewController: BaseViewController {
     }
 
     func redirectToLogin() {
-        guard let navigationController = self.navigationController else { return }
-
-        navigationController.dismiss(animated: true)
+        NotificationCenter.default.post(name: NSNotification.Name("LogoutNotification"), object: nil)
     }
 
     static func push(on parentViewController: UIViewController) {

@@ -165,6 +165,9 @@ class ChatRoomListNavigationBar: BaseNavigationBar {
 
     var hasNewInvite: Bool = false { didSet {
         let showButton = hasNewInvite
+
+        guard invitationButton.isHidden == false else { return }
+        
         invitationButtonIndicator.isHidden =  !showButton
         invitationButtonIndicator.alpha = showButton ? 1 : 0
     } }

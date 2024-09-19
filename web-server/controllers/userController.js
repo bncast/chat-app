@@ -13,6 +13,9 @@ class UserController {
         this.cryptHelper = CryptHelper.getInstance();
     }
 
+    accessTokenExpiresAt() { return new Date(Date.now() + 15 * 60 * 1000); }  // 15 minutes
+    refreshTokenExpiresAt() { return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); }  // 7 days
+
     async login(req, res) {
         try {
             const { username, password, device_id, device_name } = req.body;
@@ -33,8 +36,8 @@ class UserController {
             let signedRefreshToken
 
             if (fetchTokenResult == null) {
-                const accessTokenExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
-                const refreshTokenExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+                const accessTokenExpiresAt = this.accessTokenExpiresAt();
+                const refreshTokenExpiresAt = this.refreshTokenExpiresAt();
                 const accessToken = crypto.randomUUID();
                 const refreshToken = crypto.randomUUID();
                 signedAccessToken = this.cryptHelper.signToken(accessToken);
@@ -181,13 +184,18 @@ class UserController {
             let imageUrl = ImageHelper.getRandomProfileImageUrl(req);
             
             if (result == null) {
-                result = await UserModel.create({ username: username, display_name: display_name, password: password, image_url: imageUrl });
+                result = await UserModel.create({ 
+                    username: username, 
+                    display_name: display_name, 
+                    password: password, 
+                    image_url: imageUrl 
+                });
             } else {
                 throw new Error("User already exists.");
             }
 
-            const accessTokenExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
-            const refreshTokenExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+            const accessTokenExpiresAt = this.accessTokenExpiresAt();
+            const refreshTokenExpiresAt = this.refreshTokenExpiresAt();
             const accessToken = crypto.randomUUID();
             const refreshToken = crypto.randomUUID();
             let signedAccessToken = this.cryptHelper.signToken(accessToken);
@@ -202,7 +210,7 @@ class UserController {
                 refresh_expiry: refreshTokenExpiresAt
             });
             if (tokenResult == null) { throw new Error("Failed to create token."); }
- 
+            
             res.status(200).json({
                 info: {
                     display_name: result.display_name,
@@ -510,6 +518,7 @@ class UserController {
 
     async getAccessTokenError(accessToken) {
         if (!accessToken) { return { 
+                success: 0,
                 error: {
                     code: "401",
                     message: "Access token required"
@@ -518,10 +527,13 @@ class UserController {
         }
 
         if (!CryptHelper.getInstance().verifyToken(accessToken)) {
-            return { error: {
-                code: "401",
-                message: "Invalid token signature"
-            } };
+            return { 
+                success: 0,
+                error: {
+                    code: "401",
+                    message: "Invalid token signature"
+                } 
+            };
         }
 
         var fetchTokenResult = await UserTokenModel.findOne({ where: { 
@@ -533,10 +545,13 @@ class UserController {
         } });
         
         if (fetchTokenResult == null) {
-            return { error:{
-                code: "401",
-                message: "Token not found"
-            } };
+            return { 
+                success: 0,
+                error:{
+                    code: "401",
+                    message: "Token not found"
+                } 
+            };
         }
 
         await this.extend(accessToken);
