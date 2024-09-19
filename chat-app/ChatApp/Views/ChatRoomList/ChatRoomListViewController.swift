@@ -199,8 +199,6 @@ class ChatRoomListViewController: BaseViewController {
         }
 
         refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
-
-        Task{ await viewModel.requestNotification() }
     }
 
     private func getRoomItemInfo(_ roomId: Int) -> ChatRoomListViewModel.ItemInfo? {

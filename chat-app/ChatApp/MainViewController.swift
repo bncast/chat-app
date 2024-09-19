@@ -21,5 +21,6 @@ class MainViewController: BaseViewController {
 
     override func setupLayout() {
         view.backgroundColor = .white
+        Task { await NotificationManager.shared.requestAuthorization() }
     }
 }

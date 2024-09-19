@@ -134,10 +134,6 @@ final class ChatRoomListViewModel {
     func details(for itemInfo: ItemInfo) -> ChatInfo? {
         chatInfos.first(where: { $0.roomId == itemInfo.roomId })
     }
-
-    func requestNotification() async {
-        await NotificationManager.shared.requestAuthorization()
-    }
     
     func saveLastInvitation() {
         guard let newInvitationDate else { return }
