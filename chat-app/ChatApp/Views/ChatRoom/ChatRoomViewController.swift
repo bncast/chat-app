@@ -386,17 +386,15 @@ extension ChatRoomViewController {
 
             viewModel.isLoadingMore = false
             loadMoreIndicator.stopAnimating()
+
+            guard collectionView.isOnBottom() else { return }
+            collectionView.scrollToBottom()
+
             return
         }
 
         viewModel.isLoadingMore = false
         loadMoreIndicator.stopAnimating()
-
-        guard !viewModel.isLoaded else {
-            guard collectionView.isOnBottom() else { return }
-            collectionView.scrollToBottom()
-            return
-        }
 
         collectionView.scrollToBottom()
         removeReplyingOrEditingIndicator()
