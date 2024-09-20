@@ -34,13 +34,16 @@ class InvitationController {
             for await (const invitation of invitations) {
                 const user = await UserModel.findOne({ where: { id: invitation.created_by }});
                 const room = await RoomModel.findOne({ where: { room_id: invitation.room_id }});
-                formattedInvitations.push({
-                    chat_name: room.room_name, // Room name as chat_name
-                    chat_image_url: ImageHelper.getImagePath(req, user.image_url),
-                    inviter_name: user.display_name, // Inviter's display name
-                    room_id: invitation.room_id, // Room ID
-                    invitation_id: invitation.invitation_id
-                }); 
+                
+                if (room != null) {
+                    formattedInvitations.push({
+                        chat_name: room.room_name, // Room name as chat_name
+                        chat_image_url: ImageHelper.getImagePath(req, user.image_url),
+                        inviter_name: user.display_name, // Inviter's display name
+                        room_id: invitation.room_id, // Room ID
+                        invitation_id: invitation.invitation_id
+                    }); 
+                }
             }    
            
             res.status(200).json({
