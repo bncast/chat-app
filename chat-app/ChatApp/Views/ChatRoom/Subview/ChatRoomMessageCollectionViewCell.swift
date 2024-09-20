@@ -101,7 +101,7 @@ class ChatRoomMessageCollectionViewCell: BaseCollectionViewCell {
         view.font = .section
         view.textColor = .text
         view.numberOfLines = 0
-        view.lineBreakMode = .byCharWrapping
+        view.lineBreakMode = .byWordWrapping
         return view
     }()
 
